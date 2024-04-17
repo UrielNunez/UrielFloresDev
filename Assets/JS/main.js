@@ -79,7 +79,7 @@ srRight.reveal('.skills-box', {delay: 100});
 srRight.reveal('.form-control', {delay: 100});
 
 /*---------------PROJECT BOX------------------*/
-sr.reveal('.project-box',{interval: 200})
+srLeft.reveal('.project-box',{interval: 200})
 
 /* ----- CHANGE ACTIVE LINK ----- */
 const sections = document.querySelectorAll('section[id]')
@@ -107,4 +107,13 @@ document.querySelectorAll('[data-title]').forEach(element => {
     title = title.replace('|', '  '); // Cambia '\n' por un espacio
     // Asigna el valor modificado al atributo data-title
     element.setAttribute('data-title', title);
+});
+
+//Evento OnClick() para acceder desde mi Project List a algun otro html
+// Obtenemos el elemento con el ID 'project1'
+const projectBoxLogIn = document.getElementById('nav-button');
+// Agregamos un evento de clic al elemento
+projectBoxLogIn.addEventListener('click', function() {
+    // Redireccionamos al archivo index.html deseado
+    window.location.href = './LogIn/SignUp.html';
 });

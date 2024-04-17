@@ -65,6 +65,10 @@ html{
     border-radius: 10px;
     cursor: pointer;
     transition: .4s;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 .btn>i{
     margin-left: 10px;
@@ -210,9 +214,10 @@ nav{
 .featured-text-btn>.blue-btn:hover{
     background: var(--first-color-hover);
 }
+
 .social_icons{
     display: flex;
-    margin-top: 5em;
+    margin-top: 4rem;
     gap: 30px;
 }
 .icon{
@@ -228,7 +233,101 @@ nav{
 .icon:hover{
     color: var(--first-color);
 }
+/*ICON*/
+ul {
+    list-style: none;
+}
 
+li::after {
+    content: "";
+    display: block;
+    height: 0px;
+    transition: height 0.3s ease-in-out;
+    pointer-events: none;
+}
+.example-2 .icon-content {
+    margin: 0 10px;
+    position: relative;
+}
+.example-2 .icon-content .tooltip {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    font-size: 14px;
+    transition: all 0.3s ease; 
+}
+
+.example-2 .icon-content:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    bottom: -40px;
+}
+
+.example-2 .icon-content a {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: #787878;
+    box-shadow: 0px 2px 5px 0px rgba(97, 96, 96, 0.9);
+    transition: all 0.3s ease-in-out;
+}
+
+.example-2 .icon-content a:hover {
+    box-shadow: 3px 2px 45px 0px rgba(97, 96, 96, 0.9);
+}
+
+.example-2 .icon-content a i {
+    position: relative;
+    z-index: 1;
+    font-size: 25px;
+}
+
+.example-2 .icon-content a:hover {
+    color: white;
+}
+
+.example-2 .icon-content a .filled {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: #000;
+    transition: all 0.3s ease-in-out;
+}
+
+.example-2 .icon-content a:hover .filled {
+    height: 100%;
+}
+
+.example-2 .icon-content a[data-social="linkedin"] .filled,
+.example-2 .icon-content a[data-social="linkedin"]~.tooltip {
+    background-color: #0077B5;
+}
+
+.example-2 .icon-content a[data-social="youtube"] .filled,
+.example-2 .icon-content a[data-social="youtube"]~.tooltip {
+    background-color: #C4302B;
+}
+
+.example-2 .icon-content a[data-social="github"] .filled,
+.example-2 .icon-content a[data-social="github"]~.tooltip {
+    background-color: #000000;
+}
+  
 /*----------------------------- FEATURED IMAGE BOX ------------------------------------------*/
 .featured-image{
     display: flex;
@@ -282,17 +381,17 @@ nav{
 /*----------------------------- MAIN BOX ------------------------------------------*/
 
 .section{
-    padding-block: 5em;
+    padding-block: 9.5em;
 }
 .row{
     display: flex;
     justify-content:space-between;
     width: 100%;
-    gap: 10px;
+    gap: 5rem;
 }
 .col{
     display: flex;
-    width: 50%;
+    width: 100%;
 }
 
 /*----------------------------- REUSABLE CSS ------------------------------------------*/
@@ -304,7 +403,6 @@ nav{
     font-size: 35px;
     font-weight: 600;
     color: var(--color-white);
-    margin-bottom: 10px;
 }
 .top-header span{
     color: white;
@@ -313,7 +411,7 @@ h3{
     font-size: 25px;
     font-weight: 600;
     color: var(--color-white);
-    margin-bottom: 20px;
+    margin-bottom: 3rem;
 }
 /*----------------------------- ABOUT INFO ------------------------------------------*/
 .about-info p{
@@ -354,33 +452,6 @@ h3{
     color: var(--first-color-hover);
 }
 /*----------------------------- ABOUT INFO / SKILLS BOX ------------------------------------------*/
-.skills-box{
-    margin: 15px;
-}
-.skill-header{
-   margin-bottom: 25px; 
-}
-.skills-list{
-    display:flex;
-    flex-wrap:wrap;
-    gap: 3.5px;
-}
-.skills-list span{
-    font-size: 16.5;
-    background: var(--first-color);
-    color: var(--color-white);
-    padding: 5px 10px;
-    border-radius: 6px;
-    margin: 3px;
-}
-.image-container {
-    position: relative;
-    width: 85px;
-    height: 85px;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-}
 .images {
     margin: 0 auto;
     width: 100%;
@@ -389,6 +460,14 @@ h3{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.image-container {
+    position: relative;
+    width: 85px;
+    height: 85px;
+    overflow: hidden;
     justify-content: center;
     align-items: center;
 }
@@ -414,14 +493,13 @@ h3{
     line-height: 85px; /* Igual a la altura del contenedor */
     font-weight: 600;
     text-align: center;
+    cursor: pointer;
 }
 [data-title]::before {
     content: attr(data-title);
     white-space: pre; /* Permite que los espacios en blanco y los saltos de línea se respeten */
 
 }
-
-
 .image-container:hover::before {
     height: 100%; /* Al hacer hover, la altura aumenta a 100% (bottom to top) */
     opacity: 1;
@@ -434,6 +512,7 @@ h3{
     justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
+    cursor: pointer;
 }
 .project-container2{
     margin-top: 5em;
@@ -442,6 +521,7 @@ h3{
     justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
+    cursor: pointer;
 }
 .project-box{
     position: relative;
@@ -455,12 +535,6 @@ h3{
     border-radius: 20px;
     box-shadow: 1px 8px 10px 2px rgba(59, 59, 59, 0.274);
     overflow: hidden;
-}
-#project1{
-    margin-left: 3em;
-}
-#project3{
-    margin-right: 3em;
 }
 .project-box>i{
     font-size: 50px;
@@ -484,7 +558,68 @@ h3{
     transition: .4s;
     z-index: 1;
 }
+.project-box#project2::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('/Assets/Images/LogoXxu.jpeg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+    z-index: 1;
+}
+.project-box#project3::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('/Assets/Images/LogoXxu.jpeg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+    z-index: 1;
+}
+.project-box#project4::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('/Assets/Images/LogoXxu.jpeg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+    z-index: 1;
+}
+.project-box#project5::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('/Assets/Images/LogoXxu.jpeg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+    z-index: 1;
+}
+.project-box#project6::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('/Assets/Images/LogoXxu.jpeg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+    z-index: 1;
+}
 /*-------------------------------------WHIT ONLY COLOR --------------------------*/
+/*
 .project-box::after, .contact-info::after{
     content: " ";
     position: absolute;
@@ -494,14 +629,20 @@ h3{
     height: 100%;
     transition: .4s;
     z-index: 1;
-}
+}*/
 /*----------------------------------WHIT ONLY COLOR ----------------------------------------------*/
-.project-box:hover.project-box::after,
+/*.project-box:hover.project-box::after,
 .contact-info:hover.contact-info::after {
     bottom: 0;
-}
+}*/
 /*---------------------------------------WHIT IMAGE ------------------------------------------------*/
-.project-box#project1:hover.project-box#project1::after{
+
+.project-box#project1:hover.project-box#project1::after,
+.project-box#project2:hover.project-box#project2::after,
+.project-box#project3:hover.project-box#project3::after,
+.project-box#project4:hover.project-box#project4::after,
+.project-box#project5:hover.project-box#project5::after,
+.project-box#project6:hover.project-box#project6::after {
     bottom: 0;
 }
 .project-box:hover.project-box i,
@@ -520,14 +661,13 @@ h3{
     justify-content: center;
     align-items: center;
     padding: 20px 30px;
-    margin-left: 5em;
-    margin-right: 5em;
     width: 100%;
     height: 315px;
     background: var(--second-color);
     border-radius: 10px;
     box-shadow: 1px 8px 10px 2px rgba(116, 116, 116, 0.274);
     overflow: hidden;
+    cursor: pointer;
 }
 .contact-info>h2{
     color: var(--color-white);
@@ -558,12 +698,14 @@ h3{
     flex-direction: column;
     gap: 10PX;
     width: 100%;
-    margin-right: 5em;
 }
 .form_input{
     display: flex;
     gap: 10px;
     width: 100%;
+}
+.form_input ::placeholder{
+    color: white;
 }
 .input-field{
     width: 50%;
@@ -573,6 +715,7 @@ h3{
     border-radius: 15px;
     padding: 20PX;
     outline: none;
+    color: white;
 }
 textarea{
     width: 100%;
@@ -583,6 +726,10 @@ textarea{
     padding: 15px 20px;
     outline: none;
     resize: none;
+    color: white;
+}
+textarea::placeholder{
+    color: white;
 }
 .form-button>.btn{
     display: flex;
@@ -595,10 +742,11 @@ textarea{
 .form-button>.btn:hover{
     background: #00b5e7;
 }
-.form-button i{
+.form-button i {
     font-size: 18px;
-    rotate: -45deg;
+    transform: rotate(-45deg);
 }
+
 /*----------------------------- FOOTER BOX ------------------------------------------*/
 footer{
     display: flex;
@@ -660,84 +808,11 @@ footer{
         justify-content: center;
         width: 100%;
     }
-    #project1{
-        margin-left: 1em;
-    }
-    #project3{
-        margin-right: 1em;
-    }
-    .skills-box{
-        margin-left: 1em;
-        margin-right: 1em;
-    }
-    .contact-info{
-        margin-left: 1em;
-        margin-right: 1em;
-    }
     .contact-info p{
         font-size: 15px;
     }
-    .form-control{
-        margin-right: 0;
-    }
-    .form-control{
-        margin-left: 1em;
-        margin-right: 1em;
-    }
 }
-@media only screen and (min-width: 1370px) and (max-width: 1600px){
-    .featured-text{
-        padding: 0;
-    }
-    .image, .image img{
-        width: 320px;
-        height: 320px;
 
-    }
-    .about-info{
-        margin-left: 3em;
-        margin-right: 3em;
-    }
-    .row{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 50px;
-    }
-    .col{
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-    .project-container{
-        gap: 20px;
-        justify-content:initial;
-    }
-    #project1{
-        margin-left: 3em;
-    }
-    #project3{
-        margin-right: 3em;
-    }
-    .skills-box{
-        margin-left: 3em;
-        margin-right: 3em;
-    }
-    .contact-info{
-        margin-left: 3em;
-        margin-right: 3em;
-    }
-    .contact-info p{
-        font-size: 15px;
-    }
-    .form-control{
-        margin-right: 0;
-    }
-    .form-control{
-        margin-left: 3em;
-        margin-right: 3em;
-    }
-}
 /*----------------------------- MEDIA QUERY == 900PX / RESPONSIVE ------------------------------------------*/
 @media only screen and (min-width: 900px) and (max-width: 1023px) {
     .Container{
