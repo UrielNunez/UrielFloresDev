@@ -111,7 +111,7 @@ document.querySelectorAll('[data-title]').forEach(element => {
 
 //Evento OnClick() para acceder desde mi Project List a algun otro html
 // Obtenemos el elemento con el ID 'project1'
-const projectBoxLogIn = document.getElementById('nav-button');
+const projectBoxLogIn = document.getElementById('project1');
 // Agregamos un evento de clic al elemento
 projectBoxLogIn.addEventListener('click', function() {
     // Redireccionamos al archivo index.html deseado
