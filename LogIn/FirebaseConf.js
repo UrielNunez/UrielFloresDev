@@ -38,7 +38,7 @@ export class ManageAccount {
     //utiliza la función createUserWithEmailAndPassword para registrar un nuevo usuario en Firebase Authentication.
     createUserWithEmailAndPassword(auth, email, password)
       .then((_) => {
-        window.location.href = "logIn.html";
+        window.location.href = "./Login.html";
         // Mostrar alerta de registro exitoso
         alert("Registro exitoso. Serás redirigido a la página de inicio de sesión.");
       })
