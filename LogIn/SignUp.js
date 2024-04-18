@@ -1,5 +1,5 @@
 // Importa la clase ManageAccount desde el archivo FirebaseConf.js
-import { ManageAccount } from "../LogIn/FirebaseConf.js";
+import { ManageAccount } from "./FirebaseConf.js";
 
 // Agrega un event listener al formulario con id "form-Create" para el evento "submit"
 document.getElementById("form-Create").addEventListener("submit", (event) => {
