@@ -108,17 +108,17 @@ document.querySelectorAll('[data-title]').forEach(element => {
     // Asigna el valor modificado al atributo data-title
     element.setAttribute('data-title', title);
 });
-/*
+
 //Evento OnClick() para acceder desde mi Project List a algun otro html
 // Obtenemos el elemento con el ID 'project1'
 const projectBoxLogIn = document.getElementById('project1');
 // Agregamos un evento de clic al elemento
 projectBoxLogIn.addEventListener('click', function() {
     // Redireccionamos al archivo index.html deseado
-    window.location.href = '../Login/SignUp.html';
+    window.location.replace = './Login/SignUp.html';
     
-});*/
-
+});
+/*
 const projectBoxLogIn = document.getElementById('project1');
 projectBoxLogIn.addEventListener('click', function() {
     fetch('./Login/SignUp.html')
@@ -127,4 +127,4 @@ projectBoxLogIn.addEventListener('click', function() {
         document.body.innerHTML = html;
     })
     .catch(error => console.error('Error al cargar el HTML:', error));
-});
+});*/
