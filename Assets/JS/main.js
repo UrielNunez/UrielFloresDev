@@ -115,7 +115,7 @@ const projectBoxLogIn = document.getElementById('project1');
 // Agregamos un evento de clic al elemento
 projectBoxLogIn.addEventListener('click', function() {
     // Redireccionamos al archivo index.html deseado
-    window.location.replace = './Login/SignUp.html';
+    window.location.replace ('./Login/SignUp.html');
     
 });
 /*
