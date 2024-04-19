@@ -108,7 +108,7 @@ document.querySelectorAll('[data-title]').forEach(element => {
     // Asigna el valor modificado al atributo data-title
     element.setAttribute('data-title', title);
 });
-
+/*
 //Evento OnClick() para acceder desde mi Project List a algun otro html
 // Obtenemos el elemento con el ID 'project1'
 const projectBoxLogIn = document.getElementById('project1');
@@ -117,7 +117,7 @@ projectBoxLogIn.addEventListener('click', function() {
     // Redireccionamos al archivo index.html deseado
     window.location.replace ('./Login/SignUp.html');
     
-});
+});*/
 /*
 const projectBoxLogIn = document.getElementById('project1');
 projectBoxLogIn.addEventListener('click', function() {
@@ -128,3 +128,18 @@ projectBoxLogIn.addEventListener('click', function() {
     })
     .catch(error => console.error('Error al cargar el HTML:', error));
 });*/
+
+// Función para manejar el clic en el elemento identificado por su ID
+function abrirDocumento(idElemento, rutaDocumento) {
+    const elemento = document.getElementById(idElemento);
+    if (elemento) {
+        elemento.addEventListener('click', function() {
+            window.location.href = rutaDocumento;
+        });
+    } else {
+        console.error('El elemento con el ID proporcionado no existe.');
+    }
+}
+
+// Llama a la función para abrir el documento al hacer clic en un elemento con el ID 'project1'
+abrirDocumento('project1', '../Login/SignUp.html');
