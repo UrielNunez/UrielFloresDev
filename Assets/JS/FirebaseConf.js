@@ -2,8 +2,16 @@
 //la autenticación de usuarios. Esto proporciona las herramientas necesarias para interactuar con Firebase Authentication.
 
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -14,12 +22,12 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-   apiKey: "AIzaSyBDEOp1O-k4qzIhH95EfVWUgejYucPPkrc",
-   authDomain: "portfolio-49dc0.firebaseapp.com",
-   projectId: "portfolio-49dc0",
-   storageBucket: "portfolio-49dc0.appspot.com",
-   messagingSenderId: "653930886679",
-   appId: "1:653930886679:web:54b5c689d4e57d8f87ce52"
+  apiKey: "AIzaSyBDEOp1O-k4qzIhH95EfVWUgejYucPPkrc",
+  authDomain: "portfolio-49dc0.firebaseapp.com",
+  projectId: "portfolio-49dc0",
+  storageBucket: "portfolio-49dc0.appspot.com",
+  messagingSenderId: "653930886679",
+  appId: "1:653930886679:web:54b5c689d4e57d8f87ce52"
 };
 
 
@@ -71,16 +79,16 @@ export class ManageAccount {
     //Este método utiliza la función signOut para cerrar sesión de un usuario autenticado en Firebase Authentication.
     signOut(auth)
       .then((_) => {
-        window.location.href = window.location.origin + "/index.html";
+        window.location.href = window.location.origin + "./index.html";
       })
       .catch((error) => {
         console.error(error.message);
       });
   };
-  
+
   // Método para resetear la contraseña en caso de olvidarse de esta
   resetPassword(email) {
-    sendPasswordResetEmail(auth,email)
+    sendPasswordResetEmail(auth, email)
       .then(() => {
         console.log('Password Reset Email Sent Successfully!');
         // Mostrar alerta de correo electrónico enviado con éxito
