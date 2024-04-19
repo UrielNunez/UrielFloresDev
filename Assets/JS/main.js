@@ -119,19 +119,14 @@ projectBoxLogIn.addEventListener('click', function() {
     
 });*/
 
+
+
 const projectBoxLogIn = document.getElementById('project1');
 projectBoxLogIn.addEventListener('click', function() {
-    fetch('../Login/SignUp.html')
+    fetch('./Login/SignUp.html')
     .then(response => response.text())
     .then(html => {
         document.body.innerHTML = html;
-        // Vincular un archivo CSS externo
-        const linkTag = document.createElement('link');
-        linkTag.rel = 'stylesheet';
-        linkTag.href = '../Login/Style.css'; // Reemplaza con la ruta correcta
-        document.head.appendChild(linkTag);
     })
     .catch(error => console.error('Error al cargar el HTML:', error));
 });
-
-
