@@ -123,7 +123,7 @@ projectBoxLogIn.addEventListener('click', function() {
 
 const projectBoxLogIn = document.getElementById('project1');
 projectBoxLogIn.addEventListener('click', function() {
-    fetch('./Login/SignUp.html')
+    fetch('../Login/SignUp.html')
     .then(response => response.text())
     .then(html => {
         document.body.innerHTML = html;
