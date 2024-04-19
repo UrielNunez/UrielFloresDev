@@ -142,4 +142,4 @@ function abrirDocumento(idElemento, rutaDocumento) {
 }
 
 // Llama a la función para abrir el documento al hacer clic en un elemento con el ID 'project1'
-abrirDocumento('project1', '../Login/SignUp.html');
+abrirDocumento('project1', './Login/SignUp.html');
