@@ -118,28 +118,20 @@ projectBoxLogIn.addEventListener('click', function() {
     window.location.replace ('./Login/SignUp.html');
     
 });*/
-/*
+
 const projectBoxLogIn = document.getElementById('project1');
 projectBoxLogIn.addEventListener('click', function() {
     fetch('./Login/SignUp.html')
     .then(response => response.text())
     .then(html => {
         document.body.innerHTML = html;
+        // Vincular un archivo CSS externo
+        const linkTag = document.createElement('link');
+        linkTag.rel = 'stylesheet';
+        linkTag.href = './Login/Style.css'; // Reemplaza con la ruta correcta
+        document.head.appendChild(linkTag);
     })
     .catch(error => console.error('Error al cargar el HTML:', error));
-});*/
+});
 
-// Función para manejar el clic en el elemento identificado por su ID
-function abrirDocumento(idElemento, rutaDocumento) {
-    const elemento = document.getElementById(idElemento);
-    if (elemento) {
-        elemento.addEventListener('click', function() {
-            window.location.href = rutaDocumento;
-        });
-    } else {
-        console.error('El elemento con el ID proporcionado no existe.');
-    }
-}
 
-// Llama a la función para abrir el documento al hacer clic en un elemento con el ID 'project1'
-abrirDocumento('project1', './Login/SignUp.html');
