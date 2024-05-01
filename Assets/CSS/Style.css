@@ -45,9 +45,6 @@ html{
    width: 10px; 
    border-radius: 25px;
 }
-::-webkit-scrollbar-track{
-    background: gray;
-}
 ::-webkit-scrollbar-thumb{
     background: gray;
     border-radius: 30px;
@@ -452,6 +449,33 @@ h3{
     color: var(--first-color-hover);
 }
 /*----------------------------- ABOUT INFO / SKILLS BOX ------------------------------------------*/
+.skills-info p{
+    color: var(--body-color);
+}
+.skills-info{
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-block: 30px 70px;
+    padding-inline: 20px;
+    width: 100%;
+    background: rgba(27, 27, 27, 0.281);
+    box-shadow: 1px 8px 10px 2px rgba(59, 59, 59, 0.274);
+    border-radius: 40px;
+}
+.skills-info p{/*
+    position:relative;
+    text-align: center;*/
+    display: block;
+    margin-block-start: 2em;
+    margin-block-end: 1em;
+    margin-inline-start: 2em;
+    margin-inline-end: 2em;
+    font-size: 16.5px;
+    color: white;
+}
+
 .images {
     margin: 0 auto;
     width: 100%;
@@ -523,6 +547,30 @@ h3{
     flex-wrap: wrap;
     cursor: pointer;
 }
+.project-container3{
+    margin-top: 5em;
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    cursor: pointer;
+}
+.project-container4{
+    margin-top: 5em;
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    cursor: pointer;
+}
+.project-container5{
+    margin-top: 5em;
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    cursor: pointer;
+}
 .project-box{
     position: relative;
     display: flex;
@@ -550,74 +598,166 @@ h3{
     content: "";
     position: absolute;
     bottom: -100%;
-    background-image: url('../Images/LogoXxu.jpeg');
+    background-image: url('../Images/Lego3D.png');
     background-size: cover;
     background-position: center;
     width: 100%;
     height: 100%;
     transition: .4s;
-    z-index: 1;
 }
 .project-box#project2::after{
     content: "";
     position: absolute;
     bottom: -100%;
-    background-image: url('../Images/LogoXxu.jpeg');
+    background-image: url('../Images/AlienIMG.jpg');
     background-size: cover;
     background-position: center;
     width: 100%;
     height: 100%;
     transition: .4s;
-    z-index: 1;
 }
 .project-box#project3::after{
     content: "";
     position: absolute;
     bottom: -100%;
-    background-image: url('../Images/LogoXxu.jpeg');
+    background-image: url('../Images/University.png');
     background-size: cover;
     background-position: center;
     width: 100%;
     height: 100%;
     transition: .4s;
-    z-index: 1;
 }
 .project-box#project4::after{
     content: "";
     position: absolute;
     bottom: -100%;
-    background-image: url('../Images/LogoXxu.jpeg');
+    background-image: url('../Images/CARLOWPOLY.png');
     background-size: cover;
     background-position: center;
     width: 100%;
     height: 100%;
     transition: .4s;
-    z-index: 1;
 }
 .project-box#project5::after{
     content: "";
     position: absolute;
     bottom: -100%;
-    background-image: url('../Images/LogoXxu.jpeg');
+    background-image: url('../Images/AirPlane.png');
     background-size: cover;
     background-position: center;
     width: 100%;
     height: 100%;
     transition: .4s;
-    z-index: 1;
 }
 .project-box#project6::after{
     content: "";
     position: absolute;
     bottom: -100%;
-    background-image: url('../Images/LogoXxu.jpeg');
+    background-image: url('../Images/Tarjeta.PNG');
     background-size: cover;
     background-position: center;
     width: 100%;
     height: 100%;
     transition: .4s;
-    z-index: 1;
 }
+.project-box#project7::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/AR-MR.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#project8::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/Abduction.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#project9::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/VuforiaC.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#project10::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/Shooter.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#project11::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/AirPlane.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#project12::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/VROXXO.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#project13::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/VRCAR.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+
+.project-container3,
+.project-container4,
+.project-container5 {
+    display:none; /* Ocultar los contenedores adicionales */
+}
+
+#ver-mas-btn {
+    display: block;
+    margin: 20px auto;
+    width: 150px;
+    height: 50px;
+    margin-top: 35px;
+    border: none;
+    cursor: pointer;
+    color: var(--body-color);
+    background: var(--color-white);
+    border-radius: 50px;
+    box-shadow: 0 5px 50px 0 rgba(255, 255, 255, 0.274);
+}
+
 /*-------------------------------------WHIT ONLY COLOR --------------------------*/
 /*
 .project-box::after, .contact-info::after{
@@ -642,17 +782,71 @@ h3{
 .project-box#project3:hover.project-box#project3::after,
 .project-box#project4:hover.project-box#project4::after,
 .project-box#project5:hover.project-box#project5::after,
-.project-box#project6:hover.project-box#project6::after {
+.project-box#project6:hover.project-box#project6::after,
+.project-box#project7:hover.project-box#project7::after,
+.project-box#project8:hover.project-box#project8::after,
+.project-box#project9:hover.project-box#project9::after,
+.project-box#project10:hover.project-box#project10::after,
+.project-box#project11:hover.project-box#project11::after,
+.project-box#project12:hover.project-box#project12::after,
+.project-box#project13:hover.project-box#project13::after{
     bottom: 0;
 }
 .project-box:hover.project-box i,
 .project-box:hover.project-box>h3,
 .project-box:hover.project-box>label{
     color: var(--color-white);
-    z-index: 2;
+    z-index: 1;
     filter: blur(1px);
 
 }
+.project-box>h3{
+    text-align: center;
+}
+/*----------------------------------Section Models 3D------------------------------------------*/
+
+.model-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    cursor: pointer;
+}
+.model-box{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 30%;
+    height: 250px;
+    background: rgba(27, 27, 27, 0.281);
+    border-radius: 20px;
+    box-shadow: 1px 8px 10px 2px rgba(59, 59, 59, 0.274);
+    overflow: hidden;
+}
+.model-box h3 {
+    margin: 0; /* Elimina el margen predeterminado */
+    text-align: center; /* Centra el texto horizontalmente */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    position: absolute; /* Posiciona el h3 de manera absoluta */
+    top: 0; /* Coloca el h3 en la parte inferior del .model-box */
+    left: 0; /* Lo coloca alineado a la izquierda del .model-box */
+    font-size: 30px;
+    font-weight: bold;
+}
+#model-box,#model-box1{
+    margin-top: 2em;
+}
+#model-box1{
+    
+    background: var(--body-color);
+    border-radius: 20px;
+    box-shadow: var(--body-color);
+    cursor:auto;
+}
+
 /*----------------------------------CONTACT BOX------------------------------------------*/
 .contact-info{
     position: relative;

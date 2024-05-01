@@ -56,8 +56,24 @@ export class ManageAccount {
         alert("Error al registrar: " + error.message);
       });
   }
+  /*Register mismo HTML
+  register(email, password) {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((_) => {
+        // Ocultar el formulario de registro
+        document.getElementById('registro').style.display = 'none';
+        // Mostrar el formulario de inicio de sesión
+        document.getElementById('login').style.display = 'block';
+        // Mostrar alerta de registro exitoso
+        alert("Registro exitoso. Serás redirigido al inicio de sesión.");
+      })
+      .catch((error) => {
+        console.error(error.message);
+        // Mostrar alerta de error de registro
+        alert("Error al registrar: " + error.message);
+      });
+  }*/
   // Método para autenticar a un usuario existente con correo electrónico y contraseña
-
   authenticate(email, password) {
 
     signInWithEmailAndPassword(auth, email, password)

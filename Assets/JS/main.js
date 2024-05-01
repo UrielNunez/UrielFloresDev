@@ -75,11 +75,12 @@ const srRight = ScrollReveal({
     reset: true
 });
 
-srRight.reveal('.skills-box', {delay: 100});
+srRight.reveal('.skills-info', {delay: 100});
 srRight.reveal('.form-control', {delay: 100});
 
-/*---------------PROJECT BOX------------------*/
-srLeft.reveal('.project-box',{interval: 200})
+
+
+
 
 /* ----- CHANGE ACTIVE LINK ----- */
 const sections = document.querySelectorAll('section[id]')
@@ -116,4 +117,39 @@ const projectBoxLogIn = document.getElementById('project1');
 projectBoxLogIn.addEventListener('click', function() {
     // Redireccionamos al archivo index.html deseado
     window.location.replace('./SignUp.html');
+});
+
+//EVENTO Click para abrir un URL en otra pestaña
+function abrirEnNuevaPestaña(idElemento, url) {
+    const elemento = document.getElementById(idElemento);
+    elemento.addEventListener('click', function() {
+        window.open(url, '_blank');
+    });
+}
+
+// Llamar a la función para cada elemento que deseas agregar el evento de clic
+abrirEnNuevaPestaña('project2', 'https://youtu.be/6TZvvxwwaMo');
+abrirEnNuevaPestaña('project3', 'https://youtube.com/shorts/CEwqDqrnpFY');
+
+document.getElementById('ver-mas-btn').addEventListener('click', function () {
+    // Mostrar los contenedores ocultos
+    document.querySelector('.project-container3').style.display = 'flex';
+    document.querySelector('.project-container4').style.display = 'flex';
+    document.querySelector('.project-container5').style.display = 'flex';
+
+    // Ocultar el botón "Ver más"
+    this.style.display = 'none';
+    /*---------------SECTION PROJECT------------------*/
+    ScrollReveal().reveal('.project-container, .project-container3, .project-container5', {
+        origin: 'left',
+        distance: '80px',
+        duration: 2000,
+        reset: true
+    });
+    ScrollReveal().reveal('.project-container2, .project-container4', {
+        origin: 'right',
+        distance: '80px',
+        duration: 2000,
+        reset: true
+    });
 });
