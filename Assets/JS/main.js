@@ -60,7 +60,9 @@ sr.reveal('.social_icons', {
 sr.reveal('.featured-image', {
     delay: 300
 });
-
+sr.reveal('.featured-text-btn', {
+    delay: 200
+});
 /*---------------HEADINGS------------------*/
 sr.reveal('.top-header', {});
 
@@ -263,7 +265,7 @@ document.querySelectorAll('.image-container').forEach(box => {
         this.classList.add('touched');
     });
 });
-
+/*
 document.getElementById("DowloadCV").addEventListener("click", function() {
     // Crear un enlace <a> temporal
     var enlace = document.createElement('a');
@@ -275,5 +277,23 @@ document.getElementById("DowloadCV").addEventListener("click", function() {
     enlace.click();
   
     // Limpiar el enlace del DOM
+    document.body.removeChild(enlace);
+});*/
+
+document.getElementById("DowloadCV").addEventListener("click", function() {
+    var enlace = document.createElement('a');
+    enlace.href = '../Assets/Uriel Flores.pdf';
+    enlace.download = 'CV UrielFlores.pdf';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+});
+
+document.getElementById("DowloadCVNav").addEventListener("click", function() {
+    var enlace = document.createElement('a');
+    enlace.href = '../Assets/Uriel Flores.pdf';
+    enlace.download = 'CV UrielFlores.pdf';
+    document.body.appendChild(enlace);
+    enlace.click();
     document.body.removeChild(enlace);
 });
