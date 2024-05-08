@@ -30,7 +30,7 @@ function headerShadow() {
 
 /*---------------TYPING EFFECT------------------*/
 var typingEffect = new Typed(".typedText", {
-    strings: [" AR Developer", " VR Developer", " Designer", " YouTuber"],
+    strings: [" Unity Developer", " AR Developer", " VR Developer", " 3D Modeler"," Video Game Developer", " YouTuber", " Video Editor", " Web Developer"],
     loop: true,
     typeSpeed: 100,
     backSpeed: 80,
@@ -42,19 +42,29 @@ const sr = ScrollReveal({
     origin: 'top',
     distance: '80px',
     duration: 2000,
-    reset: true
+    reset: false
 });
 
 /*---------------HOME------------------*/
 sr.reveal('.featured-text-card', {});
-sr.reveal('.featured-name', {delay: 100});
-sr.reveal('.featured-text-info', {delay: 200});
-sr.reveal('.featured-text-btn', {delay: 200});
-sr.reveal('.social_icons', {delay: 200});
-sr.reveal('.featured-image', {delay: 300});
+sr.reveal('.featured-name', {
+    delay: 100
+});
+sr.reveal('.featured-text-info', {
+    delay: 200
+});
+sr.reveal('.featured-text-btn', {
+    delay: 200
+});
+sr.reveal('.social_icons', {
+    delay: 200
+});
+sr.reveal('.featured-image', {
+    delay: 300
+});
 
 /*---------------HEADINGS------------------*/
-sr.reveal('.top-header',{});
+sr.reveal('.top-header', {});
 
 /*---------------ABOUT INFO & CONTACT INFO------------------*/
 const srLeft = ScrollReveal({
@@ -64,8 +74,12 @@ const srLeft = ScrollReveal({
     reset: true
 });
 
-srLeft.reveal('.about-info', {delay: 100});
-srLeft.reveal('.contact-info', {delay: 100});
+srLeft.reveal('.about-info', {
+    delay: 100
+});
+srLeft.reveal('.contact-info', {
+    delay: 100
+});
 
 /*---------------ABOUT SKILLS & FORM BOX------------------*/
 const srRight = ScrollReveal({
@@ -75,30 +89,95 @@ const srRight = ScrollReveal({
     reset: true
 });
 
-srRight.reveal('.skills-info', {delay: 100});
-srRight.reveal('.form-control', {delay: 100});
-
-
+srRight.reveal('.skills-info', {
+    delay: 100
+});
+srRight.reveal('.form-control', {
+    delay: 100
+});
+/*---------------SECTION Certification------------------*/
+ScrollReveal().reveal('.IMGCertification', {
+    origin: 'top',
+    distance: '100px',
+    duration: 2000,
+    reset: true
+});
+ScrollReveal().reveal('.H3Certi, .SPANCerti, .ACerti', {
+    origin: 'bottom',
+    distance: '100px',
+    duration: 3000,
+    delay: 300,
+    reset: true
+});
+/*---------------SECTION PROJECT------------------*/
+ScrollReveal().reveal('.project-container', {
+    origin: 'left',
+    distance: '80px',
+    duration: 2000,
+    reset: true
+});
+ScrollReveal().reveal('.project-container2', {
+    origin: 'right',
+    distance: '80px',
+    duration: 2000,
+    reset: true
+});
+/*---------------SECTION 3D MODEL------------------*/
+ScrollReveal().reveal('#Model1', {
+    origin: 'top',
+    distance: '500px',
+    duration: 2500,
+    delay: 500,
+    reset: true
+});
+ScrollReveal().reveal('#Model2', {
+    origin: 'top',
+    distance: '500px',
+    duration: 2500,
+    delay: 400,
+    reset: true
+});
+ScrollReveal().reveal('#Model3', {
+    origin: 'top',
+    distance: '500px',
+    duration: 2500,
+    delay: 300,
+    reset: true
+});
+ScrollReveal().reveal('#model-box3', {
+    origin: 'top',
+    distance: '500px',
+    delay: 500,
+    duration: 2500,
+    reset: true
+});
+ScrollReveal().reveal('#model-box2', {
+    origin: 'top',
+    distance: '500px',
+    duration: 2500,
+    delay: 400,
+    reset: true
+});
 
 
 
 /* ----- CHANGE ACTIVE LINK ----- */
-const sections = document.querySelectorAll('section[id]')
+const sections = document.querySelectorAll('section[id]');
 
 function scrollActive() {
     const scrollY = window.scrollY;
     sections.forEach(current => {
         const sectionHeight = current.offsetHeight,
             sectionTop = current.offsetTop - 50,
-            sectionId = current.getAttribute('id')
+            sectionId = current.getAttribute('id');
         if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-            document.querySelector('.nav-menu a[href*=' + sectionId + ']').classList.add('active-link');
+            document.querySelector('.nav-menu a[href*="' + sectionId + '"]').classList.add('active-link');
         } else {
-            document.querySelector('.nav-menu a[href*=' + sectionId + ']').classList.remove('active-link');
+            document.querySelector('.nav-menu a[href*="' + sectionId + '"]').classList.remove('active-link');
         }
-    })
+    });
 }
-window.addEventListener('scroll', scrollActive)
+window.addEventListener('scroll', scrollActive);
 
 // Selecciona todos los elementos con el atributo data-title
 document.querySelectorAll('[data-title]').forEach(element => {
@@ -114,7 +193,7 @@ document.querySelectorAll('[data-title]').forEach(element => {
 // Obtenemos el elemento con el ID 'project1'
 const projectBoxLogIn = document.getElementById('project1');
 // Agregamos un evento de clic al elemento
-projectBoxLogIn.addEventListener('click', function() {
+projectBoxLogIn.addEventListener('click', function () {
     // Redireccionamos al archivo index.html deseado
     window.location.replace('./SignUp.html');
 });
@@ -122,7 +201,7 @@ projectBoxLogIn.addEventListener('click', function() {
 //EVENTO Click para abrir un URL en otra pestaña
 function abrirEnNuevaPestaña(idElemento, url) {
     const elemento = document.getElementById(idElemento);
-    elemento.addEventListener('click', function() {
+    elemento.addEventListener('click', function () {
         window.open(url, '_blank');
     });
 }
@@ -140,13 +219,13 @@ document.getElementById('ver-mas-btn').addEventListener('click', function () {
     // Ocultar el botón "Ver más"
     this.style.display = 'none';
     /*---------------SECTION PROJECT------------------*/
-    ScrollReveal().reveal('.project-container, .project-container3, .project-container5', {
+    ScrollReveal().reveal('.project-container3, .project-container5', {
         origin: 'left',
         distance: '80px',
         duration: 2000,
         reset: true
     });
-    ScrollReveal().reveal('.project-container2, .project-container4', {
+    ScrollReveal().reveal('.project-container4', {
         origin: 'right',
         distance: '80px',
         duration: 2000,

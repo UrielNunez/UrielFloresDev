@@ -18,7 +18,7 @@
     <div class="Container">
         <!-----------------------------HEADER------------------------------------------>
         <nav class="header" id="header">
-            <div class="nav-logo">
+            <div class="nav-logo" href="#home">
                 <p class="nav-name"> Uriel </p>
                 <span>.</span>
             </div>
@@ -35,7 +35,17 @@
                     </li>
 
                     <li class="nav_list">
+                        <a href="#certifications" class="nav-link">Certifications</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
                         <a href="#projects" class="nav-link">Projects</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#3Dmodel" class="nav-link">3D Models</a>
                         <div class="circle"></div>
                     </li>
 
@@ -64,11 +74,10 @@
                         <span>Uriel Flores</span>
                     </div>
                     <div class="featured-name">
-                        <p>I´m <span class="typedText">Unity Developer </span></p>
+                        <p>I´m <span class="typedText"> </span></p>
                     </div>
                     <div class="featured-text-info">
-                        <p>Experienced Unity Developer with a passion for creating inmersive
-                            experences
+                        <p>Experienced Unity developer with a passion for creating immersive experiences in AR, MR, and VR, as well as a passion for developing video games and 3D models.
                         </p>
                     </div>
                     <div class="featured-text-btn">
@@ -126,17 +135,14 @@
                     <h1>About Me</h1>
                     <span>Hover / Tap over the skill to see the name of my skills</span>
                 </div>
-                <div class="row">
-                    <div class="col">
+                <div class="row" id="ROW">
+                    <div class="col" id="COL">
                         <div class="about-info">
                             <h3>My Introduction</h3>
                             <p>
-                                My career objective is to leverage my strong technical skills and passion for software
-                                development in a dynamic and innovative organization as a Software Engineer. I aim to
-                                contribute to the development of cutting-edge software solutions while continually
-                                enhancing my knowledge and expertise in programming languages, frameworks, and emerging
-                                technologies. I'm mostly focused on Full Stack Web and Mobile development, and I'm also
-                                an AWS Certified Cloud Practitioner.
+                                Passionate about Unity development and video games, I've dedicated my career to exploring creative and technical possibilities in this exciting field. With experience as an Augmented Reality and Virtual Reality Developer, I've contributed to projects providing comprehensive solutions focused on the user. I led an indie project where we successfully created an internal demo, showcasing my Unity and 3D modeling skills.
+
+Recently, I taught Fundamentals of Programming and Interactive Design at the Technological University of Mexico (UNITEC), sharing my knowledge and experience with Unity. I hold two Unity certificates, reflecting my dedication to ongoing learning and professional growth.
                             </p>
 
                             <div class="about-btn">
@@ -145,7 +151,7 @@
 
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col" id="COL">
                         <div class="skills-info">
                             <h3>My Skills</h3>
                             <div class="images">
@@ -292,12 +298,20 @@
                 <div class="row">
                     <div class="col">
                         <div class="Certification1">
+                            <img class="IMGCertification" src="./Assets/Images/unity-essentials-pathway.png" alt="Unity Certification">
+                            <h3 class="H3Certi">Unity Essentials</h3>
+                            <span class="SPANCerti"> September 20, 2023</span>
+                            <a class="ACerti" href="https://www.credly.com/badges/7423ff56-4972-47e9-b928-b4bb055cfbb2/public_url" target="_blank"> View Certification</a>
 
                         </div>
 
                     </div>
                     <div class="col">
-                        <div class="Certification1">
+                        <div class="Certification2">
+                            <img class="IMGCertification" src="./Assets/Images/unity-mobile-ar-development (1).png" alt="Unity Certification">
+                            <h3 class="H3Certi">Unity AR Mobile Development</h3>
+                            <span class="SPANCerti"> January 06, 2024</span>
+                            <a class="ACerti" href="https://www.credly.com/badges/fc42c17e-a0e4-469f-9190-5974d703da04/public_url" target="_blank"> View Certification</a>
 
                         </div>
 
@@ -396,35 +410,32 @@
                 <button id="ver-mas-btn">Ver más</button>
             </section>
            
-            <section>
+            <section class="section" id="3Dmodel">
                 <div class="top-header">
                     <h1>3D MODELS</h1>
                     <span>Click on the 3D model and use the mouse or keyboard controls to move and see it better.</span>
                 </div>
                 <div class="model-container">
                     
-                    <div class="model-box">
-                        <spline-viewer loading-anim-type="spinner-small-light" url="https://prod.spline.design/PgSqWvdUBTPNo3X7/scene.splinecode"></spline-viewer>                        
+                    <div class="model-box" id="Model1">
+                        <iframe src='https://my.spline.design/lego-f9daab3fa13da5142035fe49b6321fd3/' frameborder='0' width='100%' height='100%'></iframe>
                         <h3>Lego</h3>
                     </div>
-                    <div class="model-box">
-                        <spline-viewer loading-anim-type="spinner-small-light" url="https://prod.spline.design/TbRIJNBl7hv4SYez/scene.splinecode"></spline-viewer>                        
+                    <div class="model-box" id="Model2">
+                        <iframe src='https://my.spline.design/untitled-61b03bf3371e2bdde2b74dc4e46a6112/' frameborder='0' width='100%' height='100%'></iframe>
                         <h3>Alien</h3>
                     </div>
-                    <div class="model-box">
-                        <spline-viewer loading-anim-type="spinner-small-light" url="https://prod.spline.design/4NhF39QQsSr7jrlO/scene.splinecode"></spline-viewer>                    
+                    <div class="model-box" id="Model3">
+                        <iframe src='https://my.spline.design/untitled-87decaeb5f9f051cde76d2da76de310b/' frameborder='0' width='100%' height='100%'></iframe>
                         <h3>University Mascot</h3>
                     </div>
-                    <div class="model-box" id="model-box">
-                        <spline-viewer loading-anim-type="spinner-small-light" url="https://prod.spline.design/68vrrf3rHRpOHNE3/scene.splinecode"></spline-viewer>
+                    <div class="model-box" id="model-box3">
                         <h3>LowPoly Car</h3>
                     </div>
-                    <div class="model-box" id="model-box">
-                        <spline-viewer loading-anim-type="spinner-small-light" url="https://prod.spline.design/zKAaWHYFgLpzNJgy/scene.splinecode"></spline-viewer>
+                    <div class="model-box" id="model-box2">
                         <h3>LowPoly Airplane</h3>
                     </div>
-                    <div class="model-box" id="model-box1">
-                    </div>
+                    
                 </div>
             </section>
             
