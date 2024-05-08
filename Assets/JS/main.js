@@ -243,3 +243,14 @@ document.querySelectorAll('.project-box').forEach(box => {
         this.classList.add('touched');
     });
 });
+
+document.querySelectorAll('.image-container').forEach(box => {
+    box.addEventListener('touchstart', function() {
+        // Removemos la clase 'touched' de todos los elementos
+        document.querySelectorAll('.image-container').forEach(box => {
+            box.classList.remove('touched');
+        });
+        // Añadimos la clase 'touched' solo al elemento que se tocó
+        this.classList.add('touched');
+    });
+});
