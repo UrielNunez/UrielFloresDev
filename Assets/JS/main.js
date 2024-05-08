@@ -53,9 +53,7 @@ sr.reveal('.featured-name', {
 sr.reveal('.featured-text-info', {
     delay: 200
 });
-sr.reveal('.featured-text-btn', {
-    delay: 200
-});
+
 sr.reveal('.social_icons', {
     delay: 200
 });
@@ -264,4 +262,18 @@ document.querySelectorAll('.image-container').forEach(box => {
         // Añadimos la clase 'touched' solo al elemento que se tocó
         this.classList.add('touched');
     });
+});
+
+document.getElementById("DowloadCV").addEventListener("click", function() {
+    // Crear un enlace <a> temporal
+    var enlace = document.createElement('a');
+    enlace.href = '../Assets/Uriel Flores.pdf'; // Ruta relativa al PDF en la misma carpeta
+    enlace.download = 'CV UrielFlores.pdf'; // Nombre del archivo que se descargará
+  
+    // Agregar el enlace al DOM y hacer clic en él
+    document.body.appendChild(enlace);
+    enlace.click();
+  
+    // Limpiar el enlace del DOM
+    document.body.removeChild(enlace);
 });
