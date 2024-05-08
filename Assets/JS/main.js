@@ -232,3 +232,14 @@ document.getElementById('ver-mas-btn').addEventListener('click', function () {
         reset: true
     });
 });
+
+document.querySelectorAll('.project-box').forEach(box => {
+    box.addEventListener('touchstart', function() {
+        // Removemos la clase 'touched' de todos los elementos
+        document.querySelectorAll('.project-box').forEach(box => {
+            box.classList.remove('touched');
+        });
+        // Añadimos la clase 'touched' solo al elemento que se tocó
+        this.classList.add('touched');
+    });
+});

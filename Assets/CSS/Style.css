@@ -822,6 +822,9 @@ h3{
     bottom: 0;
 }*/
 /*---------------------------------------WHIT IMAGE ------------------------------------------------*/
+.project-box#project1.touched.project-box#project1::after{
+    bottom: 0;
+}
 
 .project-box#project1:hover.project-box#project1::after,
 .project-box#project2:hover.project-box#project2::after,
