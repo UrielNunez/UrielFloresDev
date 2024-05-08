@@ -191,12 +191,12 @@ document.querySelectorAll('[data-title]').forEach(element => {
 
 //Evento OnClick() para acceder desde mi Project List a algun otro html
 // Obtenemos el elemento con el ID 'project1'
-const projectBoxLogIn = document.getElementById('project1');
+/*const projectBoxLogIn = document.getElementById('project1');
 // Agregamos un evento de clic al elemento
 projectBoxLogIn.addEventListener('click', function () {
     // Redireccionamos al archivo index.html deseado
     window.location.replace('./SignUp.html');
-});
+});*/
 
 //EVENTO Click para abrir un URL en otra pestaña
 function abrirEnNuevaPestaña(idElemento, url) {
@@ -205,10 +205,21 @@ function abrirEnNuevaPestaña(idElemento, url) {
         window.open(url, '_blank');
     });
 }
-
 // Llamar a la función para cada elemento que deseas agregar el evento de clic
-abrirEnNuevaPestaña('project2', 'https://youtu.be/6TZvvxwwaMo');
-abrirEnNuevaPestaña('project3', 'https://youtube.com/shorts/CEwqDqrnpFY');
+abrirEnNuevaPestaña('project1', '');
+abrirEnNuevaPestaña('project2', 'https://youtube.com/shorts/illV7EX43V0');
+abrirEnNuevaPestaña('project3', 'https://youtube.com/shorts/VUm09i6QVnI');
+abrirEnNuevaPestaña('project4', 'https://youtube.com/shorts/I-UzIeOrLEM');
+abrirEnNuevaPestaña('project5', '');
+abrirEnNuevaPestaña('project6', 'https://youtube.com/shorts/CEwqDqrnpFY');
+abrirEnNuevaPestaña('project7', '');
+abrirEnNuevaPestaña('project8', 'https://youtu.be/bd2rsa_CbWY');
+abrirEnNuevaPestaña('project9', 'https://youtu.be/6TZvvxwwaMo');
+abrirEnNuevaPestaña('project10', 'https://youtu.be/P97FeD85Css');
+abrirEnNuevaPestaña('project11', '');
+abrirEnNuevaPestaña('project12', 'https://youtu.be/AVCLFNbJQ58');
+abrirEnNuevaPestaña('project13', 'https://youtu.be/J0kA1nhzyYY');
+
 
 document.getElementById('ver-mas-btn').addEventListener('click', function () {
     // Mostrar los contenedores ocultos
