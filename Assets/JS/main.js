@@ -206,13 +206,13 @@ function abrirEnNuevaPestaña(idElemento, url) {
     });
 }
 // Llamar a la función para cada elemento que deseas agregar el evento de clic
-abrirEnNuevaPestaña('project1', '');
+abrirEnNuevaPestaña('project1', 'https://youtube.com/shorts/gSRnQISudSc');
 abrirEnNuevaPestaña('project2', 'https://youtube.com/shorts/illV7EX43V0');
 abrirEnNuevaPestaña('project3', 'https://youtube.com/shorts/VUm09i6QVnI');
 abrirEnNuevaPestaña('project4', 'https://youtube.com/shorts/I-UzIeOrLEM');
-abrirEnNuevaPestaña('project5', '');
+abrirEnNuevaPestaña('project5', 'https://youtube.com/shorts/xccC4h1vJyc');
 abrirEnNuevaPestaña('project6', 'https://youtube.com/shorts/CEwqDqrnpFY');
-abrirEnNuevaPestaña('project7', '');
+abrirEnNuevaPestaña('project7', 'https://youtube.com/shorts/beJROF9HkgU');
 abrirEnNuevaPestaña('project8', 'https://youtu.be/bd2rsa_CbWY');
 abrirEnNuevaPestaña('project9', 'https://youtu.be/6TZvvxwwaMo');
 abrirEnNuevaPestaña('project10', 'https://youtu.be/P97FeD85Css');
