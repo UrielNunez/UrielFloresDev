@@ -30,7 +30,7 @@ body{
     background: var(--body-color);
 }
 .Container{
-    width: 100%;
+    width: 99%;
     /*max-width: 1920px; /* Se agrega un ancho máximo para evitar que el contenido se extienda demasiado en pantallas grandes */
     margin: 0 auto; /* Centra el contenido horizontalmente */
 }
@@ -695,7 +695,29 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project6::after{
+.project-box#Uproject1::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/Runner.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#Uproject2::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/Valentin.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#Uproject3::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -706,7 +728,7 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project7::after{
+.project-box#Uproject4::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -717,7 +739,7 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project8::after{
+.project-box#Uproject5::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -728,7 +750,7 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project9::after{
+.project-box#Uproject6::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -739,7 +761,7 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project10::after{
+.project-box#Uproject7::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -750,7 +772,7 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project11::after{
+.project-box#Uproject8::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -761,7 +783,7 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project12::after{
+.project-box#Uproject9::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -772,7 +794,7 @@ h3{
     height: 100%;
     transition: .4s;
 }
-.project-box#project13::after{
+.project-box#Uproject10::after{
     content: "";
     position: absolute;
     bottom: -100%;
@@ -827,14 +849,16 @@ h3{
 .project-box#project3:hover.project-box#project3::after,
 .project-box#project4:hover.project-box#project4::after,
 .project-box#project5:hover.project-box#project5::after,
-.project-box#project6:hover.project-box#project6::after,
-.project-box#project7:hover.project-box#project7::after,
-.project-box#project8:hover.project-box#project8::after,
-.project-box#project9:hover.project-box#project9::after,
-.project-box#project10:hover.project-box#project10::after,
-.project-box#project11:hover.project-box#project11::after,
-.project-box#project12:hover.project-box#project12::after,
-.project-box#project13:hover.project-box#project13::after{
+.project-box#Uproject1:hover.project-box#Uproject1::after,
+.project-box#Uproject2:hover.project-box#Uproject2::after,
+.project-box#Uproject3:hover.project-box#Uproject3::after,
+.project-box#Uproject4:hover.project-box#Uproject4::after,
+.project-box#Uproject5:hover.project-box#Uproject5::after,
+.project-box#Uproject6:hover.project-box#Uproject6::after,
+.project-box#Uproject7:hover.project-box#Uproject7::after,
+.project-box#Uproject8:hover.project-box#Uproject8::after,
+.project-box#Uproject9:hover.project-box#Uproject9::after,
+.project-box#Uproject10:hover.project-box#Uproject10::after{
     bottom: 0;
 }
 .project-box:hover.project-box i,
@@ -1026,6 +1050,23 @@ footer{
 
 /* ----- MEDIA QUERY == 1024px / RESPONSIVE ----- */
 @media only screen and (max-width: 1024px){
+    .wrapper {
+        max-width: 100%; /* Ajusta el ancho máximo al 100% */
+        overflow-x: hidden; /* Evita el desplazamiento horizontal */
+    }
+    .nav{
+        padding-inline: 10vw;
+    }
+    .nav-button {
+        display: none;
+    }
+
+    .nav_menu_list {
+        justify-content: space-between; /* Ajusta la distribución de los elementos */
+        width: 100%;
+    }
+
+    
     .nav-link {
         margin-inline: 0;
     }
@@ -1056,6 +1097,10 @@ footer{
 }
 /* ----- MEDIA QUERY == 900px / RESPONSIVE ----- */
 @media only screen and (max-width: 900px) {
+    .wrapper {
+        max-width: 100%; /* Ajusta el ancho máximo al 100% */
+        overflow-x: hidden; /* Evita el desplazamiento horizontal */
+    }
     .nav-button{
         display: none;
     }
@@ -1140,6 +1185,10 @@ footer{
 }
 /* ----- MEDIA QUERY == 540px / RESPONSIVE ----- */
 @media only screen and (max-width: 540px){
+    .wrapper {
+        max-width: 100%; /* Ajusta el ancho máximo al 100% */
+        overflow-x: hidden; /* Evita el desplazamiento horizontal */
+    }
     .featured-name{
         font-size: 40px;
     }

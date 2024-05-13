@@ -211,21 +211,22 @@ abrirEnNuevaPestaña('project2', 'https://youtube.com/shorts/illV7EX43V0');
 abrirEnNuevaPestaña('project3', 'https://youtube.com/shorts/VUm09i6QVnI');
 abrirEnNuevaPestaña('project4', 'https://youtube.com/shorts/I-UzIeOrLEM');
 abrirEnNuevaPestaña('project5', 'https://youtube.com/shorts/xccC4h1vJyc');
-abrirEnNuevaPestaña('project6', 'https://youtube.com/shorts/CEwqDqrnpFY');
-abrirEnNuevaPestaña('project7', 'https://youtube.com/shorts/beJROF9HkgU');
-abrirEnNuevaPestaña('project8', 'https://youtu.be/bd2rsa_CbWY');
-abrirEnNuevaPestaña('project9', 'https://youtu.be/6TZvvxwwaMo');
-abrirEnNuevaPestaña('project10', 'https://youtu.be/P97FeD85Css');
-abrirEnNuevaPestaña('project11', '');
-abrirEnNuevaPestaña('project12', 'https://youtu.be/AVCLFNbJQ58');
-abrirEnNuevaPestaña('project13', 'https://youtu.be/J0kA1nhzyYY');
+abrirEnNuevaPestaña('Uproject1', 'https://youtu.be/KpOluCbwejo');
+abrirEnNuevaPestaña('Uproject2', 'https://urielnunez.github.io/SanValentinVirtual/');
+abrirEnNuevaPestaña('Uproject3', 'https://youtube.com/shorts/CEwqDqrnpFY');
+abrirEnNuevaPestaña('Uproject4', 'https://youtube.com/shorts/beJROF9HkgU');
+abrirEnNuevaPestaña('Uproject5', 'https://youtu.be/bd2rsa_CbWY');
+abrirEnNuevaPestaña('Uproject6', 'https://youtu.be/6TZvvxwwaMo');
+abrirEnNuevaPestaña('Uproject7', 'https://youtu.be/P97FeD85Css');
+abrirEnNuevaPestaña('Uproject8', '');
+abrirEnNuevaPestaña('Uproject9', 'https://youtu.be/AVCLFNbJQ58');
+abrirEnNuevaPestaña('Uproject10', 'https://youtu.be/J0kA1nhzyYY');
 
 
 document.getElementById('ver-mas-btn').addEventListener('click', function () {
     // Mostrar los contenedores ocultos
     document.querySelector('.project-container3').style.display = 'flex';
     document.querySelector('.project-container4').style.display = 'flex';
-    document.querySelector('.project-container5').style.display = 'flex';
 
     // Ocultar el botón "Ver más"
     this.style.display = 'none';
