@@ -385,6 +385,7 @@ li::after {
     justify-content:space-between;
     width: 100%;
     gap: 5rem;
+    margin-bottom: 50px;
 }
 .col{
     display: flex;
@@ -630,10 +631,16 @@ h3{
     box-shadow: 1px 8px 10px 2px rgba(59, 59, 59, 0.274);
     overflow: hidden;
 }
-.project-box>i{
-    font-size: 50px;
-    color: var(--second-color);
+.project-box > i,
+.project-box > svg.project-icon,
+ .project-box > img.project-icon{
+    width: 50px;
+    height: 50px;
+    font-size: 50px; /* para <i> */
+    fill: var(--second-color); /* para <svg> */
+    color: var(--second-color); /* para <i> */
     margin-bottom: 25px;
+    filter: brightness(0) saturate(100%) invert(63%) sepia(61%) saturate(7488%) hue-rotate(163deg) brightness(98%) contrast(101%);
 }
 .project-box label{
     font-size: 16.5px;
@@ -706,6 +713,17 @@ h3{
     height: 100%;
     transition: .4s;
 }
+.project-box#Uproject1-1::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/Brandon.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
 .project-box#Uproject2::after{
     content: "";
     position: absolute;
@@ -717,11 +735,33 @@ h3{
     height: 100%;
     transition: .4s;
 }
+.project-box#Uproject2-1::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/Carmen.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
 .project-box#Uproject3::after{
     content: "";
     position: absolute;
     bottom: -100%;
     background-image: url('../Images/Tarjeta.PNG');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#Uproject3-1::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/Quehubierapasadosi.jpg');
     background-size: cover;
     background-position: center;
     width: 100%;
@@ -805,6 +845,17 @@ h3{
     height: 100%;
     transition: .4s;
 }
+.project-box#Uproject11::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/PortfolioUnity.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
 
 .project-container3,
 .project-container4,
@@ -850,18 +901,24 @@ h3{
 .project-box#project4:hover.project-box#project4::after,
 .project-box#project5:hover.project-box#project5::after,
 .project-box#Uproject1:hover.project-box#Uproject1::after,
+.project-box#Uproject1-1:hover.project-box#Uproject1-1::after,
 .project-box#Uproject2:hover.project-box#Uproject2::after,
+.project-box#Uproject2-1:hover.project-box#Uproject2-1::after,
 .project-box#Uproject3:hover.project-box#Uproject3::after,
+.project-box#Uproject3-1:hover.project-box#Uproject3-1::after,
 .project-box#Uproject4:hover.project-box#Uproject4::after,
 .project-box#Uproject5:hover.project-box#Uproject5::after,
 .project-box#Uproject6:hover.project-box#Uproject6::after,
 .project-box#Uproject7:hover.project-box#Uproject7::after,
 .project-box#Uproject8:hover.project-box#Uproject8::after,
 .project-box#Uproject9:hover.project-box#Uproject9::after,
-.project-box#Uproject10:hover.project-box#Uproject10::after{
+.project-box#Uproject10:hover.project-box#Uproject10::after,
+.project-box#Uproject11:hover.project-box#Uproject11::after{
     bottom: 0;
 }
 .project-box:hover.project-box i,
+.project-box:hover.project-box svg,
+.project-box:hover.project-box img,
 .project-box:hover.project-box>h3,
 .project-box:hover.project-box>label{
     color: var(--color-white);
@@ -1216,5 +1273,3 @@ footer{
         overflow-x: hidden; /* Evita el desplazamiento horizontal */
     }
 }
-
-

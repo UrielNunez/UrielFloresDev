@@ -30,7 +30,7 @@ function headerShadow() {
 
 /*---------------TYPING EFFECT------------------*/
 var typingEffect = new Typed(".typedText", {
-    strings: [" Unity Developer", " AR Developer", " VR Developer", " 3D Modeler"," Video Game Developer", " YouTuber", " Video Editor", " Web Developer"],
+    strings: [" Unity Developer", " Video Game Developer", " AR Developer", " Video Editor", " Web Developer", " VR Developer", " 3D Modeler", " YouTuber"],
     loop: true,
     typeSpeed: 100,
     backSpeed: 80,
@@ -221,6 +221,12 @@ abrirEnNuevaPestaña('Uproject7', 'https://youtu.be/P97FeD85Css');
 abrirEnNuevaPestaña('Uproject8', '');
 abrirEnNuevaPestaña('Uproject9', 'https://youtu.be/AVCLFNbJQ58');
 abrirEnNuevaPestaña('Uproject10', 'https://youtu.be/J0kA1nhzyYY');
+abrirEnNuevaPestaña('Uproject11', 'https://urielnunez.github.io/UnityPortfolio/');
+
+abrirEnNuevaPestaña('Uproject1-1', 'https://www.tiktok.com/@brandon_tavaresss');
+abrirEnNuevaPestaña('Uproject2-1', 'https://www.instagram.com/carmenbauza_saludybelleza/');
+abrirEnNuevaPestaña('Uproject3-1', 'https://www.youtube.com/@Quehubierapasadosioficial');
+
 
 
 document.getElementById('ver-mas-btn').addEventListener('click', function () {
@@ -283,7 +289,7 @@ document.getElementById("DowloadCV").addEventListener("click", function() {
 
 document.getElementById("DowloadCV").addEventListener("click", function() {
     var enlace = document.createElement('a');
-    enlace.href = '../Assets/Uriel Flores.pdf';
+    enlace.href = '';
     enlace.download = 'CV UrielFlores.pdf';
     document.body.appendChild(enlace);
     enlace.click();
@@ -292,7 +298,7 @@ document.getElementById("DowloadCV").addEventListener("click", function() {
 
 document.getElementById("DowloadCVNav").addEventListener("click", function() {
     var enlace = document.createElement('a');
-    enlace.href = '../Assets/Uriel Flores.pdf';
+    enlace.href = '';
     enlace.download = 'CV UrielFlores.pdf';
     document.body.appendChild(enlace);
     enlace.click();
