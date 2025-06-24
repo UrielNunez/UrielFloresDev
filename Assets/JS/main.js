@@ -223,6 +223,9 @@ abrirEnNuevaPestaña('Uproject9', 'https://youtu.be/AVCLFNbJQ58');
 abrirEnNuevaPestaña('Uproject10', 'https://youtu.be/J0kA1nhzyYY');
 abrirEnNuevaPestaña('Uproject11', 'https://urielnunez.github.io/UnityPortfolio/');
 
+abrirEnNuevaPestaña('Uproject13', 'https://thebigday.mx/');
+
+
 abrirEnNuevaPestaña('Uproject1-1', 'https://www.tiktok.com/@brandon_tavaresss');
 abrirEnNuevaPestaña('Uproject2-1', 'https://www.instagram.com/carmenbauza_saludybelleza/');
 abrirEnNuevaPestaña('Uproject3-1', 'https://www.youtube.com/@Quehubierapasadosioficial');
@@ -233,6 +236,7 @@ document.getElementById('ver-mas-btn').addEventListener('click', function () {
     // Mostrar los contenedores ocultos
     document.querySelector('.project-container3').style.display = 'flex';
     document.querySelector('.project-container4').style.display = 'flex';
+    document.querySelector('.project-container5').style.display = 'flex';
 
     // Ocultar el botón "Ver más"
     this.style.display = 'none';

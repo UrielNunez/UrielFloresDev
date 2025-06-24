@@ -856,6 +856,28 @@ h3{
     height: 100%;
     transition: .4s;
 }
+.project-box#Uproject12::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
+.project-box#Uproject13::after{
+    content: "";
+    position: absolute;
+    bottom: -100%;
+    background-image: url('../Images/thebigday.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    transition: .4s;
+}
 
 .project-container3,
 .project-container4,
@@ -913,7 +935,9 @@ h3{
 .project-box#Uproject8:hover.project-box#Uproject8::after,
 .project-box#Uproject9:hover.project-box#Uproject9::after,
 .project-box#Uproject10:hover.project-box#Uproject10::after,
-.project-box#Uproject11:hover.project-box#Uproject11::after{
+.project-box#Uproject11:hover.project-box#Uproject11::after,
+.project-box#Uproject12:hover.project-box#Uproject12::after,
+.project-box#Uproject13:hover.project-box#Uproject13::after{
     bottom: 0;
 }
 .project-box:hover.project-box i,
