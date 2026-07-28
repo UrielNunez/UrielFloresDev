@@ -189,14 +189,7 @@ document.querySelectorAll('[data-title]').forEach(element => {
     element.setAttribute('data-title', title);
 });
 
-//Evento OnClick() para acceder desde mi Project List a algun otro html
-// Obtenemos el elemento con el ID 'project1'
-/*const projectBoxLogIn = document.getElementById('project1');
-// Agregamos un evento de clic al elemento
-projectBoxLogIn.addEventListener('click', function () {
-    // Redireccionamos al archivo index.html deseado
-    window.location.replace('./SignUp.html');
-});*/
+
 
 //EVENTO Click para abrir un URL en otra pestaña
 function abrirEnNuevaPestaña(idElemento, url) {
@@ -277,25 +270,11 @@ document.querySelectorAll('.image-container').forEach(box => {
         this.classList.add('touched');
     });
 });
-/*
-document.getElementById("DowloadCV").addEventListener("click", function() {
-    // Crear un enlace <a> temporal
-    var enlace = document.createElement('a');
-    enlace.href = '../Assets/Uriel Flores.pdf'; // Ruta relativa al PDF en la misma carpeta
-    enlace.download = 'CV UrielFlores.pdf'; // Nombre del archivo que se descargará
-  
-    // Agregar el enlace al DOM y hacer clic en él
-    document.body.appendChild(enlace);
-    enlace.click();
-  
-    // Limpiar el enlace del DOM
-    document.body.removeChild(enlace);
-});*/
 
 document.getElementById("DowloadCV").addEventListener("click", function() {
     var enlace = document.createElement('a');
     enlace.href = '';
-    enlace.download = 'CV UrielFlores.pdf';
+    enlace.download = 'CV.pdf';
     document.body.appendChild(enlace);
     enlace.click();
     document.body.removeChild(enlace);
@@ -304,7 +283,7 @@ document.getElementById("DowloadCV").addEventListener("click", function() {
 document.getElementById("DowloadCVNav").addEventListener("click", function() {
     var enlace = document.createElement('a');
     enlace.href = '';
-    enlace.download = 'CV UrielFlores.pdf';
+    enlace.download = 'CV.pdf';
     document.body.appendChild(enlace);
     enlace.click();
     document.body.removeChild(enlace);
