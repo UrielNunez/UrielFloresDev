@@ -1,13 +1,31 @@
 /*---------------NAVIGATION BAR FUNCTION------------------*/
-function menuFunction() {
-    var menuBtn = document.getElementById("myNavMenu");
+const navMenu = document.getElementById('myNavMenu');
+const menuToggle = document.getElementById('menuToggle');
+const hamburgerIcon = document.getElementById('hamburgerIcon');
 
-    if (menuBtn.className === "nav-menu") {
-        menuBtn.className += " responsive ";
-    } else {
-        menuBtn.className = "nav-menu";
-    }
+function setMenuState(isOpen) {
+    navMenu.classList.toggle('responsive', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+    menuToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    hamburgerIcon.className = isOpen ? 'uil uil-times' : 'uil uil-bars';
+    document.body.classList.toggle('menu-open', isOpen);
 }
+
+menuToggle.addEventListener('click', () => {
+    setMenuState(!navMenu.classList.contains('responsive'));
+});
+
+navMenu.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => setMenuState(false));
+});
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') setMenuState(false);
+});
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 1100) setMenuState(false);
+});
 
 /*---------------ADD SHADOW ON NAVIGATION BAR WHILE SROLLING------------------*/
 window.onscroll = function () {
@@ -18,13 +36,9 @@ function headerShadow() {
     const navHeader = document.getElementById("header");
 
     if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-        navHeader.style.boxShadow = "0 5px 20px rgba(255, 255, 255, 0.1)";
-        navHeader.style.height = "70px";
-        navHeader.style.lineHeight = "70px";
+        navHeader.classList.add('is-scrolled');
     } else {
-        navHeader.style.boxShadow = "none";
-        navHeader.style.height = "90px";
-        navHeader.style.lineHeight = "90px";
+        navHeader.classList.remove('is-scrolled');
     }
 }
 

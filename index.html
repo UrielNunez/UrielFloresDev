@@ -19,10 +19,10 @@
         <!-----------------------------HEADER------------------------------------------>
         <nav class="header" id="header">
 
-            <div class="nav-logo" href="#home">
+            <a class="nav-logo" href="#home" aria-label="Go to home">
                 <p class="nav-name"> Uriel </p>
                 <span>.</span>
-            </div>
+            </a>
 
 
             <div class="nav-menu" id="myNavMenu">
@@ -69,7 +69,10 @@
                 <button class="btn" id="DowloadCVNav">Dowload CV <i class="uil uil-file-download-alt"></i></button>
             </div>
             <div class="nav-menu-btn">
-                <i class="uil uil-bars" id="hamburgerIcon" onclick="menuFunction()"></i>
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu"
+                    aria-controls="myNavMenu" aria-expanded="false">
+                    <i class="uil uil-bars" id="hamburgerIcon" aria-hidden="true"></i>
+                </button>
             </div>
 
         </nav>
@@ -790,12 +793,28 @@
             </footer>
         </main>
     </div>
+    <!-----------------------------LEGO DOCK------------------------------------------>
+    <aside class="lego-dock" aria-label="Animated LEGO character">
+        <div class="lego-stage" id="legoStage">
+            <canvas class="lego-canvas" id="legoCanvas" aria-label="Animated LEGO character"></canvas>
+            <p class="lego-status" id="legoStatus" role="status">Loading 3D character…</p>
+        </div>
+    </aside>
     <!-----------------------------3D MODELS----------------------------------------->
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.2.4/build/spline-viewer.js"></script>
     <!-----------------------------TYPING JS LINK------------------------------------------>
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <!-----------------------------SCROLL REVEAL JS LINK------------------------------------------>
     <script src="https://unpkg.com/scrollreveal"></script>
+    <!-----------------------------LEGO FBX PREVIEW------------------------------------------>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.1/build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="./Assets/JS/lego-preview.js"></script>
     <!-----------------------------MAIN JS------------------------------------------>
     <script src="./Assets/JS/main.js"></script>
 </body>
