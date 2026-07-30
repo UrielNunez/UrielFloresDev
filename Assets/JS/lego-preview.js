@@ -62,17 +62,18 @@ new FBXLoader().load(
         if (!Number.isFinite(firstHeight) || firstHeight <= 0) {
             throw new Error('The FBX model has no measurable height.');
         }
-        model.scale.multiplyScalar(3 / firstHeight);
+        model.scale.multiplyScalar(5 / firstHeight);
 
         model.updateMatrixWorld(true);
         const bounds = new THREE.Box3().setFromObject(model);
         const center = bounds.getCenter(new THREE.Vector3());
         const size = bounds.getSize(new THREE.Vector3());
         model.position.set(-center.x, -bounds.min.y, -center.z);
+        model.position.y += 0.3;
         scene.add(model);
 
-        const cameraDistance = Math.max(size.x, size.y, size.z) * 2.2;
-        camera.position.set(cameraDistance, size.y * 0.8, cameraDistance);
+        const cameraDistance = Math.max(size.x, size.y, size.z) * 2.0;
+        camera.position.set(cameraDistance, size.y * 0.7, cameraDistance);
         camera.lookAt(0, size.y / 2, 0);
 
         if (model.animations.length > 0) {
