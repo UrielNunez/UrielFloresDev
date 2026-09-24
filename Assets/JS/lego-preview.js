@@ -1,102 +1,203 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/FBXLoader.js';
-
 const stage = document.getElementById('legoStage');
 const canvas = document.getElementById('legoCanvas');
 const status = document.getElementById('legoStatus');
-
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 1000);
-camera.position.set(6, 4, 7);
-camera.lookAt(0, 1.5, 0);
-
+// Parallel projection keeps the character size consistent across the screen.
+const camera = new THREE.OrthographicCamera(-4, 4, 6, -0.4, 0.1, 100);
+camera.position.set(0, 0, 20);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.shadowMap.enabled = true;
-
-scene.add(new THREE.HemisphereLight(0xffffff, 0x202020, 2.5));
-
-const keyLight = new THREE.DirectionalLight(0xffffff, 3);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+scene.add(new THREE.HemisphereLight(0xe8f2ff, 0x77716a, 1.8));
+const keyLight = new THREE.DirectionalLight(0xfff4e8, 1.5);
 keyLight.position.set(4, 7, 5);
-keyLight.castShadow = true;
 scene.add(keyLight);
-
+const fillLight = new THREE.DirectionalLight(0xdbeeff, 0.8);
+fillLight.position.set(-5, 3, 4);
+scene.add(fillLight);
+const walker = new THREE.Group();
+scene.add(walker);
+const joints = [];
 const clock = new THREE.Clock();
-let mixer;
-const faceTexture = new THREE.TextureLoader().load('./Assets/Models/Idle_SpriteSheet.png');
+let elapsed = 0;
+let distance = 0;
+let gaitPhase = 0;
+let gaitWeight = 0;
+let travelLimit = 0;
+let characterWidth = 3;
+let frame;
+let ready = false;
+let failed = false;
+const manager = new THREE.LoadingManager();
+manager.setURLModifier(url => url.includes('Hair Normal.png') || url.includes('Hair%20Normal.png')
+    ? './Assets/Models/Hair_Normal_preview.png' : url);
+function showError() {
+    failed = true;
+    status.classList.remove('is-hidden');
+    status.setAttribute('aria-label', 'Unable to load 3D character');
+    status.textContent = 'Unable to load the 3D character.';
+}
+manager.onError = showError;
+manager.onLoad = () => {
+    if (failed || !walker.children.length) return;
+    ready = true;
+    elapsed = 0;
+    distance = 0;
+    gaitPhase = 0;
+    gaitWeight = 0;
+    status.classList.add('is-hidden');
+    updatePlayback();
+};
+const faceTexture = new THREE.TextureLoader(manager).load('./Assets/Models/Idle_SpriteSheet.png');
 faceTexture.colorSpace = THREE.SRGBColorSpace;
-
 function resizeRenderer() {
     const { width, height } = stage.getBoundingClientRect();
+    if (!width || !height) return;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(width, height, false);
-    camera.aspect = width / height;
+    const halfWidth = 6.4 * width / height / 2;
+    camera.left = -halfWidth;
+    camera.right = halfWidth;
     camera.updateProjectionMatrix();
+    travelLimit = Math.max(0, halfWidth - characterWidth / 2 - 0.7);
+    draw();
 }
-
 new ResizeObserver(resizeRenderer).observe(stage);
-resizeRenderer();
-
-new FBXLoader().load(
-    './Assets/Models/Player_Idle.fbx',
-    model => {
-        model.scale.setScalar(0.01);
-        model.traverse(node => {
-            if (node.isMesh) {
-                node.castShadow = true;
-                node.receiveShadow = true;
-
-                if (node.name.includes('GEOFaceIdle')) {
-                    node.material = new THREE.MeshBasicMaterial({
-                        map: faceTexture,
-                        transparent: true,
-                        depthWrite: false
-                    });
-                }
-            }
+new FBXLoader(manager).load('./Assets/Models/Player_Idle.fbx', model => {
+    model.scale.setScalar(0.01);
+    model.traverse(node => {
+        if (node.isMesh) {
+            const soften = source => {
+                const material = new THREE.MeshStandardMaterial({
+                    color: source.color, map: source.map, normalMap: source.normalMap,
+                    roughness: 0.72, metalness: 0,
+                    transparent: source.transparent, opacity: source.opacity, side: source.side
+                });
+                material.normalScale.setScalar(0.3);
+                return material;
+            };
+            node.material = Array.isArray(node.material) ? node.material.map(soften) : soften(node.material);
+        }
+        if (node.isMesh && node.name.includes('GEOFaceIdle')) {
+            node.material = new THREE.MeshBasicMaterial({ map: faceTexture, transparent: true, depthWrite: false });
+        }
     });
-
-        model.updateMatrixWorld(true);
-        const firstBounds = new THREE.Box3().setFromObject(model);
-        const firstHeight = firstBounds.getSize(new THREE.Vector3()).y;
-        if (!Number.isFinite(firstHeight) || firstHeight <= 0) {
-            throw new Error('The FBX model has no measurable height.');
-        }
-        model.scale.multiplyScalar(5 / firstHeight);
-
-        model.updateMatrixWorld(true);
-        const bounds = new THREE.Box3().setFromObject(model);
-        const center = bounds.getCenter(new THREE.Vector3());
-        const size = bounds.getSize(new THREE.Vector3());
-        model.position.set(-center.x, -bounds.min.y, -center.z);
-        model.position.y += 0.3;
-        scene.add(model);
-
-        const cameraDistance = Math.max(size.x, size.y, size.z) * 2.0;
-        camera.position.set(cameraDistance, size.y * 0.7, cameraDistance);
-        camera.lookAt(0, size.y / 2, 0);
-
-        if (model.animations.length > 0) {
-            mixer = new THREE.AnimationMixer(model);
-            mixer.clipAction(model.animations[0]).play();
-        }
-
-        status.textContent = model.animations.length > 0
-            ? 'Idle animation loaded successfully.'
-            : 'Model loaded (no animation clip detected).';
-        status.classList.add('is-hidden');
-    },
-    undefined,
-    error => {
-        console.error('Unable to load Player_Idle.fbx:', error);
-        status.textContent = 'The FBX model could not be loaded.';
+    // Sample the original idle pose before adding procedural steps.
+    if (model.animations.length) {
+        const mixer = new THREE.AnimationMixer(model);
+        mixer.clipAction(model.animations[0]).play();
+        mixer.update(0);
     }
-);
-
-function render() {
-    requestAnimationFrame(render);
-    mixer?.update(clock.getDelta());
+    model.updateMatrixWorld(true);
+    const height = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3()).y;
+    if (!Number.isFinite(height) || height <= 0) {
+        showError();
+        return;
+    }
+    model.scale.multiplyScalar(5 / height);
+    model.updateMatrixWorld(true);
+    const bounds = new THREE.Box3().setFromObject(model);
+    const center = bounds.getCenter(new THREE.Vector3());
+    characterWidth = bounds.getSize(new THREE.Vector3()).x;
+    model.position.set(-center.x, -bounds.min.y, -center.z);
+    walker.add(model);
+    model.updateMatrixWorld(true);
+    // FBXLoader sanitizes names such as UpLeg.L to UpLegL.
+    model.traverse(bone => {
+        const match = /^(UpLeg|LowLeg|Foot|UpArm|LowArm|Hand)[._]?([LR])$/.exec(bone.name);
+        if (!bone.isBone || (!match && !/^Spine[12]$/.test(bone.name))) return;
+        const parentRotation = bone.parent.getWorldQuaternion(new THREE.Quaternion());
+        joints.push({ bone, kind: match ? match[1] : bone.name, side: match?.[2] === 'L' ? 1 : -1,
+            rest: bone.quaternion.clone(),
+            axis: new THREE.Vector3(1, 0, 0).applyQuaternion(parentRotation.invert()),
+            twistAxis: new THREE.Vector3(0, 1, 0).applyQuaternion(parentRotation),
+            rotation: new THREE.Quaternion() });
+    });
+    resizeRenderer();
+}, undefined, error => {
+    console.error('Unable to load Player_Idle.fbx:', error);
+    showError();
+});
+// A capsule-shaped route keeps each turnaround a continuous walking arc.
+function routePose() {
+    const radius = Math.min(0.85, travelLimit * 0.45);
+    const straight = Math.max(0, travelLimit - radius);
+    const arc = Math.PI * radius;
+    const perimeter = 4 * straight + 2 * arc;
+    if (!perimeter) return { x: 0, z: 0, yaw: 0, turning: false };
+    let position = (distance + straight) % perimeter;
+    if (position < 2 * straight) return { x: -straight + position, z: -radius, yaw: Math.PI / 2, turning: false };
+    position -= 2 * straight;
+    if (position < arc) {
+        const angle = position / radius;
+        return { x: straight + radius * Math.sin(angle), z: -radius * Math.cos(angle), yaw: Math.PI / 2 - angle, turning: true };
+    }
+    position -= arc;
+    if (position < 2 * straight) return { x: straight - position, z: radius, yaw: -Math.PI / 2, turning: false };
+    const angle = (position - 2 * straight) / radius;
+    return { x: -straight - radius * Math.sin(angle), z: radius * Math.cos(angle), yaw: -Math.PI / 2 - angle, turning: true };
+}
+const heading = new THREE.Quaternion();
+const upAxis = new THREE.Vector3(0, 1, 0);
+function draw(delta = 0) {
+    const moving = ready && !reducedMotion.matches;
+    const pose = routePose();
+    const departure = THREE.MathUtils.smootherstep(elapsed, 1.8, 3);
+    const targetSpeed = moving && travelLimit > 0 ? departure * (pose.turning ? 0.8 : 1.25) : 0;
+    gaitWeight = THREE.MathUtils.damp(gaitWeight, targetSpeed / 1.25, 5, delta);
+    distance += 1.25 * gaitWeight * delta;
+    gaitPhase += 1.25 * gaitWeight * delta * Math.PI * 2 / 1.5;
+    const current = routePose();
+    const yaw = moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
+    heading.setFromAxisAngle(upAxis, yaw);
+    walker.quaternion.slerp(heading, moving ? 1 - Math.exp(-8 * delta) : 1);
+    walker.position.set(moving ? current.x : 0, 0, moving ? current.z : 0);
+    const weight = moving ? gaitWeight : 0;
+    // Twice-per-cycle rise is smooth at foot contact, without abs()/max() snaps.
+    walker.position.y = (1 - Math.cos(2 * gaitPhase)) * 0.025 * weight;
+    for (const joint of joints) {
+        const phase = gaitPhase + (joint.side === 1 ? 0 : Math.PI);
+        const swing = Math.cos(phase);
+        const lift = Math.pow((1 + Math.sin(phase)) / 2, 3);
+        let angle = 0;
+        if (joint.kind === 'UpLeg') angle = swing * 0.36;
+        if (joint.kind === 'LowLeg') angle = -lift * 0.6;
+        if (joint.kind === 'Foot') angle = -swing * 0.18 + lift * 0.22;
+        if (joint.kind === 'UpArm') angle = -swing * 0.3;
+        if (joint.kind === 'LowArm') angle = -0.12 - (1 - swing) * 0.09;
+        if (joint.kind === 'Hand') angle = Math.sin(phase - 0.35) * 0.035;
+        if (joint.kind === 'Spine1') angle = 0.025 + Math.cos(2 * gaitPhase) * 0.015;
+        if (joint.kind === 'Spine2') angle = -0.015;
+        joint.rotation.setFromAxisAngle(joint.axis, angle * weight);
+        joint.bone.quaternion.copy(joint.rest).premultiply(joint.rotation);
+        if (joint.kind.startsWith('Spine')) {
+            joint.rotation.setFromAxisAngle(joint.twistAxis, Math.sin(gaitPhase) * (joint.kind === 'Spine1' ? 0.035 : -0.065) * weight);
+            joint.bone.quaternion.premultiply(joint.rotation);
+        }
+    }
+    walker.visible = ready;
     renderer.render(scene, camera);
 }
-
-render();
+function render() {
+    const delta = Math.min(clock.getDelta(), 0.05);
+    elapsed += delta;
+    draw(delta);
+    frame = requestAnimationFrame(render);
+}
+function updatePlayback() {
+    cancelAnimationFrame(frame);
+    clock.stop();
+    draw();
+    if (ready && !document.hidden && !reducedMotion.matches) {
+        clock.start();
+        frame = requestAnimationFrame(render);
+    }
+}
+reducedMotion.addEventListener('change', updatePlayback);
+document.addEventListener('visibilitychange', updatePlayback);
+resizeRenderer();
+updatePlayback();

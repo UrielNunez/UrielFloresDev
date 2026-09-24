@@ -11,6 +11,17 @@
     <!-----------------------------FAVICON------------------------------------------>
     <link rel="shortcut icon" href="./Assets/Images/LogoXxu.jpeg" type="image/x-icon">
     <title>Portfolio UrielDEV</title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preload" href="./Assets/Models/Player_Idle.fbx" as="fetch" crossorigin>
+    <link rel="preload" href="./Assets/Models/Idle_SpriteSheet.png" as="image">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.1/build/three.module.js"
+            }
+        }
+    </script>
+    <link rel="modulepreload" href="./Assets/JS/lego-preview.js">
 </head>
 
 <body>
@@ -143,7 +154,7 @@
             <section class="section" id="about">
                 <div class="top-header">
                     <h1>About Me</h1>
-                    <span>Hover over the skill to see the name of my skills</span>
+                    <span>A little about me and the tools behind my work.</span>
                 </div>
                 <div class="row" id="ROW">
                     <div class="col" id="COL">
@@ -169,180 +180,58 @@
                     </div>
                     <div class="col" id="COL">
                         <div class="skills-info">
-                            <h3>My Skills</h3>
-                            <div class="images">
-
-                                <div class="image-container" data-title="Unity" alt="Unity">
-                                    <img id="img1" src="./Assets/Images/uNITY.png" alt="Unity">
-                                </div>
-
-                                <div class="image-container" data-title="C|Sharp">
-                                    <img id="img2" src="./Assets/Images/C.png">
-                                </div>
-
-                                <div class="image-container" data-title="Visual|Studio">
-                                    <img id="img3" src="./Assets/Images/Visual.png">
-                                </div>
-
-                                <div class="image-container" data-title="R|Aumentada">
-                                    <img id="img4" src="./Assets/Images/AR.png">
-                                </div>
-
-                                <div class="image-container" data-title="Blender">
-                                    <img id="img5" src="./Assets/Images/Blender.png">
-                                </div>
-
-                                <div class="image-container" data-title="ARKit">
-                                    <img id="img6" src="./Assets/Images/ARKIT.webp">
-                                </div>
-
-                                <div class="image-container" data-title="ARCore">
-                                    <img id="img7" src="./Assets/Images/ArCore.png">
-                                </div>
-
-                                <div class="image-container" data-title="8th|Wall">
-                                    <img id="img8" src="./Assets/Images/8th.png">
-                                </div>
-
-                                <div class="image-container" data-title="Apple">
-                                    <img id="img9" src="./Assets/Images/Apple.png">
-                                </div>
-
-                                <div class="image-container" data-title="Android">
-                                    <img id="img10" src="./Assets/Images/Android.png">
-                                </div>
-
-                                <div class="image-container" data-title="R|Virtual">
-                                    <img id="img11" src="./Assets/Images/VR.png">
-                                </div>
-
-                                <div class="image-container" data-title="Meta|Quest">
-                                    <img id="img12" src="./Assets/Images/Meta.png">
-                                </div>
-
-                                <div class="image-container" data-title="Steam|VR">
-                                    <img id="img13" src="./Assets/Images/SteamVR.png">
-                                </div>
-
-                                <div class="image-container" data-title="Asset|Store">
-                                    <img id="img14" src="./Assets/Images/Asset.png">
-                                </div>
-
-                                <div class="image-container" data-title="Oculus|Quest">
-                                    <img id="img15" src="./Assets/Images/Oculus.png">
-                                </div>
-
-                                <div class="image-container" data-title="Vuforia|Engine">
-                                    <img id="img16" src="./Assets/Images/Vuforia.png">
-                                </div>
-
-
-                                <div class="image-container" data-title="HTML 5">
-                                    <img id="img1" src="./Assets/Images/html.png" alt="Unity">
-                                </div>
-
-                                <div class="image-container" data-title="CSS">
-                                    <img id="img2" src="./Assets/Images/css.png">
-                                </div>
-
-                                <div class="image-container" data-title="Boostrap">
-                                    <img id="img3" src="./Assets/Images/boostrap.png">
-                                </div>
-
-                                <div class="image-container" data-title="BoostrapVue">
-                                    <img id="img4" src="./Assets/Images/boostrapvue.png">
-                                </div>
-
-                                <div class="image-container" data-title="JavaScript">
-                                    <img id="img5" src="./Assets/Images/js.png">
-                                </div>
-
-                                <div class="image-container" data-title="VUE.JS">
-                                    <img id="img6" src="./Assets/Images/vue.png">
-                                </div>
-
-                                <div class="image-container" data-title="Node.JS">
-                                    <img id="img7" src="./Assets/Images/node.png">
-                                </div>
-
-                                <div class="image-container"  data-title="PHP">
-                                    <img id="img21" src="./Assets/Images/php.svg">
-                                </div>
-
-                                <div class="image-container" data-title="Firebase">
-                                    <img id="img8" src="./Assets/Images/firebase.png">
-                                </div>
-
-                                <div class="image-container" data-title="Cpanel">
-                                    <img id="img22" src="./Assets/Images/cpanel.svg">
-                                </div>
-
-                                <div class="image-container" data-title="MySQL">
-                                    <img id="img9" src="./Assets/Images/mysql.png">
-                                </div>
-
-                                <div class="image-container" data-title="Git">
-                                    <img id="img10" src="./Assets/Images/git.png">
-                                </div>
-
-                                <div class="image-container" data-title="GitHub">
-                                    <img id="img11" src="./Assets/Images/github.png">
-                                </div>
-
-                                <div class="image-container" data-title="GitLab">
-                                    <img id="img12" src="./Assets/Images/gitlab.png">
-                                </div>
-
-                                <div class="image-container" data-title="Jira">
-                                    <img id="img13" src="./Assets/Images/jira.png">
-                                </div>
-
-                                <div class="image-container" data-title="Trello">
-                                    <img id="img14" src="./Assets/Images/trello.png">
-                                </div>
-
-                                <div class="image-container" data-title="Notion">
-                                    <img id="img15" src="./Assets/Images/notion.png">
-                                </div>
-
-                                <div class="image-container" data-title="Photoshop">
-                                    <img id="img16" src="./Assets/Images/photoshop.svg">
-                                </div>
-
-                                <div class="image-container" data-title="Ilustrador">
-                                    <img id="img17" src="./Assets/Images/illustrator.svg">
-                                </div>
-
-                                <div class="image-container" data-title="CapCut">
-                                    <img id="img18" src="./Assets/Images/cap.png">
-                                </div>
-
-                                <div class="image-container" data-title="DaVinci">
-                                    <img id="img19" src="./Assets/Images/davi.png">
-                                </div>
-
-                                <div class="image-container" data-title="Canva">
-                                    <img id="img20" src="./Assets/Images/canva.svg">
-                                </div>
-
-                                <div class="image-container" data-title="ClickUp">
-                                    <img id="img18" src="./Assets/Images/clickup.png">
-                                </div>
-
-                                <div class="image-container" data-title="Milanote">
-                                    <img id="img19" src="./Assets/Images/milanote.png">
-                                </div>
-
-                                <div class="image-container" data-title="Miro">
-                                    <img id="img20" src="./Assets/Images/miro.png">
-                                </div>
-
-
-
-
-
+                            <div class="skills-heading"><span class="skills-eyebrow">MY TOOLKIT</span><h3>My Skills</h3><p>The technologies and tools I use to bring ideas to life.</p></div>
+                            <div class="skills-groups">
+                                <section class="skill-group" aria-labelledby="skill-group-01"><header><span class="skill-number">01</span><h4 id="skill-group-01">Immersive & 3D</h4></header><p>Games, interactive worlds and extended reality.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="./Assets/Images/uNITY.png" alt="" loading="lazy" width="28" height="28"><span>Unity</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/C.png" alt="" loading="lazy" width="28" height="28"><span>C#</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Visual.png" alt="" loading="lazy" width="28" height="28"><span>Visual Studio</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/AR.png" alt="" loading="lazy" width="28" height="28"><span>Augmented Reality</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Blender.png" alt="" loading="lazy" width="28" height="28"><span>Blender</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/ARKIT.webp" alt="" loading="lazy" width="28" height="28"><span>ARKit</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/ArCore.png" alt="" loading="lazy" width="28" height="28"><span>ARCore</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/8th.png" alt="" loading="lazy" width="28" height="28"><span>8th Wall</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Apple.png" alt="" loading="lazy" width="28" height="28"><span>Apple</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Android.png" alt="" loading="lazy" width="28" height="28"><span>Android</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/VR.png" alt="" loading="lazy" width="28" height="28"><span>Virtual Reality</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Meta.png" alt="" loading="lazy" width="28" height="28"><span>Meta Quest</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/SteamVR.png" alt="" loading="lazy" width="28" height="28"><span>Steam VR</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Asset.png" alt="" loading="lazy" width="28" height="28"><span>Asset Store</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Oculus.png" alt="" loading="lazy" width="28" height="28"><span>Oculus Quest</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/Vuforia.png" alt="" loading="lazy" width="28" height="28"><span>Vuforia Engine</span></li>
+                                </ul></section>
+                                <section class="skill-group" aria-labelledby="skill-group-02"><header><span class="skill-number">02</span><h4 id="skill-group-02">Web development</h4></header><p>Interfaces, services and data.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="./Assets/Images/html.png" alt="" loading="lazy" width="28" height="28"><span>HTML 5</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/css.png" alt="" loading="lazy" width="28" height="28"><span>CSS</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/boostrap.png" alt="" loading="lazy" width="28" height="28"><span>Bootstrap</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/boostrapvue.png" alt="" loading="lazy" width="28" height="28"><span>BootstrapVue</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/js.png" alt="" loading="lazy" width="28" height="28"><span>JavaScript</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/vue.png" alt="" loading="lazy" width="28" height="28"><span>Vue.js</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/node.png" alt="" loading="lazy" width="28" height="28"><span>Node.js</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/php.svg" alt="" loading="lazy" width="28" height="28"><span>PHP</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/firebase.png" alt="" loading="lazy" width="28" height="28"><span>Firebase</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/cpanel.svg" alt="" loading="lazy" width="28" height="28"><span>cPanel</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/mysql.png" alt="" loading="lazy" width="28" height="28"><span>MySQL</span></li>
+                                </ul></section>
+                                <section class="skill-group" aria-labelledby="skill-group-03"><header><span class="skill-number">03</span><h4 id="skill-group-03">Design & video</h4></header><p>Visual storytelling and creative production.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="./Assets/Images/photoshop.svg" alt="" loading="lazy" width="28" height="28"><span>Photoshop</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/illustrator.svg" alt="" loading="lazy" width="28" height="28"><span>Illustrator</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/cap.png" alt="" loading="lazy" width="28" height="28"><span>CapCut</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/davi.png" alt="" loading="lazy" width="28" height="28"><span>DaVinci Resolve</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/canva.svg" alt="" loading="lazy" width="28" height="28"><span>Canva</span></li>
+                                </ul></section>
+                                <section class="skill-group" aria-labelledby="skill-group-04"><header><span class="skill-number">04</span><h4 id="skill-group-04">Tools & collaboration</h4></header><p>From planning to version control.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="./Assets/Images/git.png" alt="" loading="lazy" width="28" height="28"><span>Git</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/github.png" alt="" loading="lazy" width="28" height="28"><span>GitHub</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/gitlab.png" alt="" loading="lazy" width="28" height="28"><span>GitLab</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/jira.png" alt="" loading="lazy" width="28" height="28"><span>Jira</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/trello.png" alt="" loading="lazy" width="28" height="28"><span>Trello</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/notion.png" alt="" loading="lazy" width="28" height="28"><span>Notion</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/clickup.png" alt="" loading="lazy" width="28" height="28"><span>ClickUp</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/milanote.png" alt="" loading="lazy" width="28" height="28"><span>Milanote</span></li>
+                                    <li class="skill-item"><img src="./Assets/Images/miro.png" alt="" loading="lazy" width="28" height="28"><span>Miro</span></li>
+                                </ul></section>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -791,23 +680,18 @@
     <aside class="lego-dock" aria-label="Animated LEGO character">
         <div class="lego-stage" id="legoStage">
             <canvas class="lego-canvas" id="legoCanvas" aria-label="Animated LEGO character"></canvas>
-            <p class="lego-status" id="legoStatus" role="status">Loading 3D character…</p>
+            <div class="lego-status" id="legoStatus" role="status" aria-label="Loading 3D character">
+                <span class="lego-loader" aria-hidden="true"><i></i><i></i><i></i></span>
+            </div>
         </div>
     </aside>
     <!-----------------------------3D MODELS----------------------------------------->
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.2.4/build/spline-viewer.js"></script>
     <!-----------------------------TYPING JS LINK------------------------------------------>
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <!-----------------------------SCROLL REVEAL JS LINK------------------------------------------>
     <script src="https://unpkg.com/scrollreveal"></script>
     <!-----------------------------LEGO FBX PREVIEW------------------------------------------>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.1/build/three.module.js"
-            }
-        }
-    </script>
+
     <script type="module" src="./Assets/JS/lego-preview.js"></script>
     <!-----------------------------MAIN JS------------------------------------------>
     <script src="./Assets/JS/main.js"></script>

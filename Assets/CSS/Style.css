@@ -469,85 +469,26 @@ h3{
     color: var(--first-color-hover);
 }
 /*----------------------------- ABOUT INFO / SKILLS BOX ------------------------------------------*/
-.skills-info p{
-    color: var(--body-color);
-}
-.skills-info{
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding-block: 30px 70px;
-    padding-inline: 20px;
-    width: 100%;
-    background: rgba(27, 27, 27, 0.281);
-    box-shadow: 1px 8px 10px 2px rgba(59, 59, 59, 0.274);
-    border-radius: 40px;
-}
-.skills-info p{/*
-    position:relative;
-    text-align: center;*/
-    display: block;
-    margin-block-start: 2em;
-    margin-block-end: 1em;
-    margin-inline-start: 2em;
-    margin-inline-end: 2em;
-    font-size: 16.5px;
-    color: white;
-}
-
-.images {
-    margin: 0 auto;
-    width: 100%;
-    max-height: 250px;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-}
-.image-container {
-    position: relative;
-    width: 85px;
-    height: 85px;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-}
-.images img{
-    max-width: 85px; /* Se establece un ancho máximo para evitar que la imagen se desborde de su contenedor */
-    max-height: 85px;
-    padding: 5px; /* Agregar relleno para las imágenes más pequeñas */
-    object-fit: cover;
-    box-sizing:border-box; /* Incluir el relleno en el cálculo del tamaño total */
-}
-.image-container::before {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 0; /* Inicialmente, el color no está visible */
-    background: rgba(30, 159, 171, 0.651); /* Color rojo semi-transparente */
-    transition: height 0.4s ease; /* Transición para la altura (bottom to top) */
-    border-radius: 15px;
-    color: white;
-    font-size: 16px;
-    opacity: 0;
-    z-index: 2;
-    line-height: 85px; /* Igual a la altura del contenedor */
-    font-weight: 600;
-    text-align: center;
-    cursor: pointer;
-}
-[data-title]::before {
-    content: attr(data-title);
-    white-space: pre; /* Permite que los espacios en blanco y los saltos de línea se respeten */
-
-}
-.image-container:hover::before {
-    height: 100%; /* Al hacer hover, la altura aumenta a 100% (bottom to top) */
-    opacity: 1;
-}
+#about #ROW{ flex-direction: column; gap: 48px; }
+#about #ROW > .col{ width: 100%; min-width: 0; }
+.skills-info{ width: 100%; min-width: 0; }
+.skills-heading{ margin-bottom: 24px; }
+.skills-eyebrow{ color: var(--tex-color-third); font-size: 12px; letter-spacing: .18em; font-weight: 700; }
+.skills-heading h3{ font-size: clamp(28px, 4vw, 40px); margin: 8px 0; }
+.skills-info p{ color: #aaaeb4; font-size: 14px; line-height: 1.6; margin: 0; }
+.skills-groups{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.skill-group{ padding: clamp(16px, 2.5vw, 28px); border: 1px solid #34383b; border-radius: 20px; background: linear-gradient(135deg, #232a2b, #202022 65%); }
+.skill-group header{ display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.skill-group h4{ color: #f4f5f6; font-size: clamp(17px, 2vw, 21px); font-weight: 600; }
+.skill-number{ color: var(--tex-color-third); font-size: 12px; letter-spacing: .06em; }
+.skill-list{ list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 0; margin: 20px 0 0; }
+.skill-item{ display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; background: rgba(255,255,255,.025); transition: background .2s, border-color .2s, transform .2s; }
+.skill-item img{ width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+.skill-item span{ color: #e2e5e7; font-size: 13px; line-height: 1.35; overflow-wrap: anywhere; }
+@media (hover: hover){ .skill-item:hover{ background: rgba(30,159,171,.1); border-color: rgba(30,159,171,.45); transform: translateY(-2px); } }
+@media (max-width: 760px){ .skills-groups{ grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 360px){ .skill-list{ grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce){ .skill-item{ transition: none; } }
 /*----------------------------- SECTION CERTIFICATIONS ------------------------------------------*/
 .Certification1, .Certification2{
     text-align: center;
@@ -1157,6 +1098,46 @@ textarea::placeholder{
 }
 .lego-status.is-hidden{
     display: none;
+}
+
+/* Small assembling bricks echo the character and portfolio accent colors. */
+.lego-loader{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 18px 22px;
+    border: 1px solid rgba(30, 159, 171, .25);
+    border-radius: 18px;
+    background: rgba(27, 27, 27, .88);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .18);
+}
+.lego-loader i{
+    position: relative;
+    display: block;
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    background: var(--tex-color-third);
+    animation: lego-build 1.2s ease-in-out infinite;
+}
+.lego-loader i::before{
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 3px;
+    top: -3px;
+    left: 3px;
+    border-radius: 2px 2px 0 0;
+    background: inherit;
+}
+.lego-loader i:nth-child(2){ background: var(--third-color); animation-delay: .15s; }
+.lego-loader i:nth-child(3){ background: var(--first-color); animation-delay: .3s; }
+@keyframes lego-build{
+    0%, 70%, 100%{ transform: translateY(0); opacity: .55; }
+    35%{ transform: translateY(-9px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce){
+    .lego-loader i{ animation: none; opacity: 1; }
 }
 
 /*----------------------------- FOOTER BOX ------------------------------------------*/
