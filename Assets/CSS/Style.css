@@ -1160,7 +1160,7 @@ textarea::placeholder{
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 90;
+    z-index: 110;
     width: 100%;
     height: clamp(150px, 22vh, 220px);
     pointer-events: none;
@@ -1169,7 +1169,7 @@ textarea::placeholder{
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
     background: transparent;
 }
 .lego-canvas{
@@ -1189,6 +1189,41 @@ textarea::placeholder{
 }
 .lego-status.is-hidden{
     display: none;
+}
+.lego-welcome{
+    position: absolute;
+    left: 50%;
+    bottom: min(190px, 88%);
+    width: min(350px, calc(100% - 32px));
+    padding: 13px 16px;
+    border: 1px solid rgba(30, 159, 171, .42);
+    border-radius: 16px 16px 4px 16px;
+    background: rgba(27, 27, 27, .94);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .26);
+    color: var(--color-white);
+    font-size: clamp(12px, 1.1vw, 14px);
+    line-height: 1.42;
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(.98);
+    transform-origin: bottom center;
+    transition: opacity .35s ease, transform .35s ease;
+    z-index: 2;
+}
+.lego-welcome::after{
+    content: '';
+    position: absolute;
+    left: calc(50% - 8px);
+    bottom: -8px;
+    width: 15px;
+    height: 15px;
+    background: inherit;
+    border-right: inherit;
+    border-bottom: inherit;
+    transform: rotate(45deg);
+}
+.lego-welcome.is-visible{
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
 }
 
 /* Small assembling bricks echo the character and portfolio accent colors. */
@@ -1446,8 +1481,14 @@ footer{
     .input-field{
         width: 100%;
     }
-        .lego-dock{
+    .lego-dock{
         height: clamp(130px, 18vh, 150px);
+    }
+    .lego-welcome{
+        left: 50%;
+        bottom: 125px;
+        width: min(320px, calc(100% - 28px));
+        font-size: 12px;
     }
     
 }

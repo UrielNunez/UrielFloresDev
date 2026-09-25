@@ -3,6 +3,7 @@ import { FBXLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/
 const stage = document.getElementById('legoStage');
 const canvas = document.getElementById('legoCanvas');
 const status = document.getElementById('legoStatus');
+const welcome = document.getElementById('legoWelcome');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const scene = new THREE.Scene();
 // Parallel projection keeps the character size consistent across the screen.
@@ -32,6 +33,9 @@ let characterWidth = 3;
 let frame;
 let ready = false;
 let failed = false;
+let welcomeEndsAt = 0;
+let faceMaterial;
+let portraitTexture;
 const manager = new THREE.LoadingManager();
 manager.setURLModifier(url => url.includes('Hair Normal.png') || url.includes('Hair%20Normal.png')
     ? './Assets/Models/Hair_Normal_preview.png' : url);
@@ -50,9 +54,41 @@ manager.onLoad = () => {
     gaitPhase = 0;
     gaitWeight = 0;
     status.classList.add('is-hidden');
+    welcome.classList.add('is-visible');
+    welcomeEndsAt = performance.now() + 10000;
     updatePlayback();
 };
-const faceTexture = new THREE.TextureLoader(manager).load('./Assets/Models/Idle_SpriteSheet.png');
+const faceTexture = new THREE.TextureLoader(manager).load('./Assets/Models/Idle_SpriteSheet.png', texture => {
+    const source = texture.image;
+    const tile = document.createElement('canvas');
+    tile.width = tile.height = 256;
+    // Same friendly face used by the intro export, taken from the sprite sheet.
+    tile.getContext('2d').drawImage(source, 0, source.height - 256, 256, 256, 0, 0, 256, 256);
+    // The sprite uses white as its empty background. Turn it into the same
+    // warm LEGO skin tone used by the intro while preserving the expression.
+    const context = tile.getContext('2d');
+    const pixels = context.getImageData(0, 0, tile.width, tile.height);
+    for (let index = 0; index < pixels.data.length; index += 4) {
+        const red = pixels.data[index];
+        const green = pixels.data[index + 1];
+        const blue = pixels.data[index + 2];
+        if (red > 235 && green > 235 && blue > 235) {
+            pixels.data[index] = 222;
+            pixels.data[index + 1] = 170;
+            pixels.data[index + 2] = 116;
+            pixels.data[index + 3] = 255;
+        }
+    }
+    context.putImageData(pixels, 0, 0);
+    const portrait = new THREE.CanvasTexture(tile);
+    portrait.colorSpace = THREE.SRGBColorSpace;
+    portrait.needsUpdate = true;
+    portraitTexture = portrait;
+    if (faceMaterial) {
+        faceMaterial.map = portraitTexture;
+        faceMaterial.needsUpdate = true;
+    }
+});
 faceTexture.colorSpace = THREE.SRGBColorSpace;
 function resizeRenderer() {
     const { width, height } = stage.getBoundingClientRect();
@@ -82,8 +118,24 @@ new FBXLoader(manager).load('./Assets/Models/Player_Idle.fbx', model => {
             };
             node.material = Array.isArray(node.material) ? node.material.map(soften) : soften(node.material);
         }
-        if (node.isMesh && node.name.includes('GEOFaceIdle')) {
-            node.material = new THREE.MeshBasicMaterial({ map: faceTexture, transparent: true, depthWrite: false });
+        if (node.isMesh && /^GEOFace/i.test(node.name)) {
+            if (node.name.includes('Idle')) {
+                faceMaterial = new THREE.MeshBasicMaterial({
+                    map: portraitTexture || faceTexture,
+                    transparent: true,
+                    depthWrite: false,
+                    side: THREE.DoubleSide,
+                    polygonOffset: true,
+                    polygonOffsetFactor: -1,
+                    polygonOffsetUnits: -1
+                });
+                node.material = faceMaterial;
+                node.renderOrder = 2;
+            } else {
+                // The FBX ships Run and Jump face planes in the same position.
+                // They otherwise cover the selected Idle expression in white.
+                node.visible = false;
+            }
         }
     });
     // Sample the original idle pose before adding procedural steps.
@@ -144,7 +196,9 @@ function routePose() {
 const heading = new THREE.Quaternion();
 const upAxis = new THREE.Vector3(0, 1, 0);
 function draw(delta = 0) {
-    const moving = ready && !reducedMotion.matches;
+    const greeting = ready && performance.now() < welcomeEndsAt;
+    if (ready && !greeting) welcome.classList.remove('is-visible');
+    const moving = ready && !greeting && !reducedMotion.matches;
     const pose = routePose();
     const departure = THREE.MathUtils.smootherstep(elapsed, 1.8, 3);
     const targetSpeed = moving && travelLimit > 0 ? departure * (pose.turning ? 0.8 : 1.25) : 0;

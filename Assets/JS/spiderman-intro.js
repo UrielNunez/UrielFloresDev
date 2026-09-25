@@ -64,7 +64,9 @@ function resize() {
 
 function frameModel() {
     const dockHeight = document.getElementById('legoStage').getBoundingClientRect().height;
-    const pixels = Math.max(80, dockHeight * 5 / 6.4);
+    // Keep the intro character close to the walker size, with enough presence
+    // for its face and arm movement to read clearly.
+    const pixels = Math.max(112, dockHeight * 1.08);
     const distance = modelHeight * window.innerHeight / pixels / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
     camera.position.set(framingCenter.x, framingCenter.y, framingCenter.z + distance);
     camera.lookAt(framingCenter);
@@ -89,17 +91,24 @@ function updateStory(time) {
     model.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(model, true);
     const top = new THREE.Vector3(box.getCenter(new THREE.Vector3()).x, box.max.y, box.getCenter(new THREE.Vector3()).z);
-    suspensionGeometry.setFromPoints([top, new THREE.Vector3(top.x, top.y + box.getSize(new THREE.Vector3()).y * 0.95, top.z)]);
+    // Pin the upper end outside the viewport, so the web remains continuous
+    // throughout the descent and the final climb.
+    const ceiling = screenPointAtDepth(window.innerWidth * 0.5, -18, top.z);
+    suspensionGeometry.setFromPoints([top, ceiling]);
 
     const launchProgress = THREE.MathUtils.smootherstep(time, clipDuration * 0.69, clipDuration * 0.79);
     const pullProgress = THREE.MathUtils.smootherstep(time, clipDuration * 0.79, clipDuration * 0.985);
+    const descentProgress = THREE.MathUtils.smootherstep(time, 0, Math.min(2.25, clipDuration * 0.24));
 
     // The portfolio waits below the viewport until the web catches it, then
     // follows the character upward as one continuous pull.
     const pageOffset = (1 - pullProgress) * 108;
     document.body.style.setProperty('--portfolio-intro-y', `${pageOffset}vh`);
     overlay.style.setProperty('--intro-backdrop-opacity', String(1 - pullProgress * 0.98));
-    model.position.y = modelBaseY + pullProgress * modelHeight * 2.65;
+    // The character enters from above, pauses to look around in its authored
+    // animation, then rises with the portfolio after the web catches it.
+    model.position.y = modelBaseY + (1 - descentProgress) * modelHeight * 1.45
+        + pullProgress * modelHeight * 2.65;
     const characterOpacity = 1 - THREE.MathUtils.smootherstep(pullProgress, 0.18, 0.95);
     for (const material of fadingMaterials) material.opacity = characterOpacity;
     suspensionMaterial.opacity = characterOpacity * 0.92;
@@ -152,7 +161,7 @@ async function startPortfolio() {
         ]);
         await loadScript('./Assets/JS/main.js');
     } finally {
-        import('./lego-preview.js');
+        import('./lego-preview.js?v=5');
     }
 }
 

@@ -13,6 +13,8 @@
     <title>Portfolio UrielDEV</title>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preload" href="./Assets/Models/spiderman-intro.glb?v=2" as="fetch" crossorigin fetchpriority="high">
+    <link rel="preload" href="./Assets/Models/Player_Idle.fbx" as="fetch" crossorigin fetchpriority="high">
+    <link rel="preload" href="./Assets/Models/Idle_SpriteSheet.png" as="image" fetchpriority="high">
     <script type="importmap">
         {
             "imports": {
@@ -20,7 +22,8 @@
             }
         }
     </script>
-    <link rel="modulepreload" href="./Assets/JS/spiderman-intro.js?v=2">
+    <link rel="modulepreload" href="./Assets/JS/spiderman-intro.js?v=3">
+    <link rel="modulepreload" href="./Assets/JS/lego-preview.js?v=5">
 </head>
 
 <body class="intro-pending">
@@ -688,6 +691,9 @@
     <aside class="lego-dock" aria-label="Animated LEGO character">
         <div class="lego-stage" id="legoStage">
             <canvas class="lego-canvas" id="legoCanvas" aria-label="Animated LEGO character"></canvas>
+            <div class="lego-welcome" id="legoWelcome" role="status" aria-live="polite">
+                <span>Hello, I’m Uriel Flores. Welcome to my web portfolio. Here you can find information about my projects and my journey as a developer.</span>
+            </div>
             <div class="lego-status" id="legoStatus" role="status" aria-label="Loading 3D character">
                 <span class="lego-loader" aria-hidden="true"><i></i><i></i><i></i></span>
             </div>
@@ -695,7 +701,7 @@
     </aside>
     <!-----------------------------3D MODELS----------------------------------------->
     <!-----------------------------3D INTRO / APP BOOTSTRAP------------------------------------------>
-    <script type="module" src="./Assets/JS/spiderman-intro.js?v=2"></script>
+    <script type="module" src="./Assets/JS/spiderman-intro.js?v=3"></script>
 </body>
 
 </html>
