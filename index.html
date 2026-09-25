@@ -12,8 +12,7 @@
     <link rel="shortcut icon" href="./Assets/Images/LogoXxu.jpeg" type="image/x-icon">
     <title>Portfolio UrielDEV</title>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <link rel="preload" href="./Assets/Models/Player_Idle.fbx" as="fetch" crossorigin>
-    <link rel="preload" href="./Assets/Models/Idle_SpriteSheet.png" as="image">
+    <link rel="preload" href="./Assets/Models/spiderman-intro.glb?v=2" as="fetch" crossorigin fetchpriority="high">
     <script type="importmap">
         {
             "imports": {
@@ -21,10 +20,19 @@
             }
         }
     </script>
-    <link rel="modulepreload" href="./Assets/JS/lego-preview.js">
+    <link rel="modulepreload" href="./Assets/JS/spiderman-intro.js?v=2">
 </head>
 
-<body>
+<body class="intro-pending">
+
+    <div class="spiderman-intro" id="spidermanIntro" aria-label="Loading portfolio" aria-live="polite">
+        <canvas id="spidermanIntroCanvas" aria-hidden="true"></canvas>
+        <div class="spiderman-intro__loading" id="spidermanIntroLoading">
+            <span class="spiderman-intro__mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span id="spidermanIntroText">Preparing experience</span>
+        </div>
+        <button class="spiderman-intro__skip" id="spidermanIntroSkip" type="button">Skip intro</button>
+    </div>
 
     <div class="Container">
         <!-----------------------------HEADER------------------------------------------>
@@ -686,15 +694,8 @@
         </div>
     </aside>
     <!-----------------------------3D MODELS----------------------------------------->
-    <!-----------------------------TYPING JS LINK------------------------------------------>
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
-    <!-----------------------------SCROLL REVEAL JS LINK------------------------------------------>
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <!-----------------------------LEGO FBX PREVIEW------------------------------------------>
-
-    <script type="module" src="./Assets/JS/lego-preview.js"></script>
-    <!-----------------------------MAIN JS------------------------------------------>
-    <script src="./Assets/JS/main.js"></script>
+    <!-----------------------------3D INTRO / APP BOOTSTRAP------------------------------------------>
+    <script type="module" src="./Assets/JS/spiderman-intro.js?v=2"></script>
 </body>
 
 </html>
