@@ -161,7 +161,7 @@ async function startPortfolio() {
         ]);
         await loadScript('./Assets/JS/main.js');
     } finally {
-        import('./lego-preview.js?v=5');
+        import('./lego-preview.js?v=6');
     }
 }
 

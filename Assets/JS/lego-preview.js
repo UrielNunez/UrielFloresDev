@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { FBXLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/DRACOLoader.js';
 const stage = document.getElementById('legoStage');
 const canvas = document.getElementById('legoCanvas');
 const status = document.getElementById('legoStatus');
@@ -34,11 +35,7 @@ let frame;
 let ready = false;
 let failed = false;
 let welcomeEndsAt = 0;
-let faceMaterial;
-let portraitTexture;
 const manager = new THREE.LoadingManager();
-manager.setURLModifier(url => url.includes('Hair Normal.png') || url.includes('Hair%20Normal.png')
-    ? './Assets/Models/Hair_Normal_preview.png' : url);
 function showError() {
     failed = true;
     status.classList.remove('is-hidden');
@@ -58,38 +55,6 @@ manager.onLoad = () => {
     welcomeEndsAt = performance.now() + 10000;
     updatePlayback();
 };
-const faceTexture = new THREE.TextureLoader(manager).load('./Assets/Models/Idle_SpriteSheet.png', texture => {
-    const source = texture.image;
-    const tile = document.createElement('canvas');
-    tile.width = tile.height = 256;
-    // Same friendly face used by the intro export, taken from the sprite sheet.
-    tile.getContext('2d').drawImage(source, 0, source.height - 256, 256, 256, 0, 0, 256, 256);
-    // The sprite uses white as its empty background. Turn it into the same
-    // warm LEGO skin tone used by the intro while preserving the expression.
-    const context = tile.getContext('2d');
-    const pixels = context.getImageData(0, 0, tile.width, tile.height);
-    for (let index = 0; index < pixels.data.length; index += 4) {
-        const red = pixels.data[index];
-        const green = pixels.data[index + 1];
-        const blue = pixels.data[index + 2];
-        if (red > 235 && green > 235 && blue > 235) {
-            pixels.data[index] = 222;
-            pixels.data[index + 1] = 170;
-            pixels.data[index + 2] = 116;
-            pixels.data[index + 3] = 255;
-        }
-    }
-    context.putImageData(pixels, 0, 0);
-    const portrait = new THREE.CanvasTexture(tile);
-    portrait.colorSpace = THREE.SRGBColorSpace;
-    portrait.needsUpdate = true;
-    portraitTexture = portrait;
-    if (faceMaterial) {
-        faceMaterial.map = portraitTexture;
-        faceMaterial.needsUpdate = true;
-    }
-});
-faceTexture.colorSpace = THREE.SRGBColorSpace;
 function resizeRenderer() {
     const { width, height } = stage.getBoundingClientRect();
     if (!width || !height) return;
@@ -103,10 +68,27 @@ function resizeRenderer() {
     draw();
 }
 new ResizeObserver(resizeRenderer).observe(stage);
-new FBXLoader(manager).load('./Assets/Models/Player_Idle.fbx', model => {
+const draco = new DRACOLoader(manager);
+draco.setDecoderPath('https://unpkg.com/three@0.160.1/examples/jsm/libs/draco/');
+const loader = new GLTFLoader(manager);
+loader.setDRACOLoader(draco);
+loader.load('./Assets/Models/lego-walker.glb?v=1', gltf => {
+    const model = gltf.scene;
     model.scale.setScalar(0.01);
     model.traverse(node => {
-        if (node.isMesh) {
+        if (node.isMesh && /^GEOFace/i.test(node.name)) {
+            const source = Array.isArray(node.material) ? node.material[0] : node.material;
+            node.material = new THREE.MeshBasicMaterial({
+                map: source.map,
+                transparent: true,
+                depthWrite: false,
+                side: THREE.DoubleSide,
+                polygonOffset: true,
+                polygonOffsetFactor: -1,
+                polygonOffsetUnits: -1
+            });
+            node.renderOrder = 2;
+        } else if (node.isMesh) {
             const soften = source => {
                 const material = new THREE.MeshStandardMaterial({
                     color: source.color, map: source.map, normalMap: source.normalMap,
@@ -118,30 +100,11 @@ new FBXLoader(manager).load('./Assets/Models/Player_Idle.fbx', model => {
             };
             node.material = Array.isArray(node.material) ? node.material.map(soften) : soften(node.material);
         }
-        if (node.isMesh && /^GEOFace/i.test(node.name)) {
-            if (node.name.includes('Idle')) {
-                faceMaterial = new THREE.MeshBasicMaterial({
-                    map: portraitTexture || faceTexture,
-                    transparent: true,
-                    depthWrite: false,
-                    side: THREE.DoubleSide,
-                    polygonOffset: true,
-                    polygonOffsetFactor: -1,
-                    polygonOffsetUnits: -1
-                });
-                node.material = faceMaterial;
-                node.renderOrder = 2;
-            } else {
-                // The FBX ships Run and Jump face planes in the same position.
-                // They otherwise cover the selected Idle expression in white.
-                node.visible = false;
-            }
-        }
     });
     // Sample the original idle pose before adding procedural steps.
-    if (model.animations.length) {
+    if (gltf.animations.length) {
         const mixer = new THREE.AnimationMixer(model);
-        mixer.clipAction(model.animations[0]).play();
+        mixer.clipAction(gltf.animations[0]).play();
         mixer.update(0);
     }
     model.updateMatrixWorld(true);
@@ -158,7 +121,7 @@ new FBXLoader(manager).load('./Assets/Models/Player_Idle.fbx', model => {
     model.position.set(-center.x, -bounds.min.y, -center.z);
     walker.add(model);
     model.updateMatrixWorld(true);
-    // FBXLoader sanitizes names such as UpLeg.L to UpLegL.
+    // Accept both dotted Blender names and sanitized legacy names.
     model.traverse(bone => {
         const match = /^(UpLeg|LowLeg|Foot|UpArm|LowArm|Hand)[._]?([LR])$/.exec(bone.name);
         if (!bone.isBone || (!match && !/^Spine[12]$/.test(bone.name))) return;
@@ -171,7 +134,7 @@ new FBXLoader(manager).load('./Assets/Models/Player_Idle.fbx', model => {
     });
     resizeRenderer();
 }, undefined, error => {
-    console.error('Unable to load Player_Idle.fbx:', error);
+    console.error('Unable to load lego-walker.glb:', error);
     showError();
 });
 // A capsule-shaped route keeps each turnaround a continuous walking arc.
