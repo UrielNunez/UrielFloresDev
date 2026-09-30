@@ -285,20 +285,20 @@ document.querySelectorAll('.image-container').forEach(box => {
     });
 });
 
-document.getElementById("DowloadCV").addEventListener("click", function() {
-    var enlace = document.createElement('a');
-    enlace.href = '';
-    enlace.download = 'CV.pdf';
-    document.body.appendChild(enlace);
-    enlace.click();
-    document.body.removeChild(enlace);
-});
+/*---------------PROFESSIONAL JOURNEY ROUTE------------------*/
+const journeyMap = document.querySelector('.journey-map');
 
-document.getElementById("DowloadCVNav").addEventListener("click", function() {
-    var enlace = document.createElement('a');
-    enlace.href = '';
-    enlace.download = 'CV.pdf';
-    document.body.appendChild(enlace);
-    enlace.click();
-    document.body.removeChild(enlace);
-});
+function updateJourneyRoute() {
+    if (!journeyMap) return;
+    const bounds = journeyMap.getBoundingClientRect();
+    const start = window.innerHeight * .72;
+    const distance = bounds.height + window.innerHeight * .22;
+    const progress = Math.min(1, Math.max(0, (start - bounds.top) / distance));
+    journeyMap.style.setProperty('--journey-progress', progress.toFixed(3));
+}
+
+if (journeyMap) {
+    updateJourneyRoute();
+    window.addEventListener('scroll', updateJourneyRoute, { passive: true });
+    window.addEventListener('resize', updateJourneyRoute, { passive: true });
+}

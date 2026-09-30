@@ -1,0 +1,28 @@
+import * as THREE from 'three';
+import { GLTFLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/DRACOLoader.js';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const draco = new DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.160.1/examples/jsm/libs/draco/');
+const loader = new GLTFLoader(); loader.setDRACOLoader(draco);
+function rendererFor(canvas){const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));return renderer}
+function fitModel(model,targetHeight){model.scale.setScalar(.01);model.updateMatrixWorld(true);const first=new THREE.Box3().setFromObject(model);const height=first.getSize(new THREE.Vector3()).y;model.scale.multiplyScalar(targetHeight/height);model.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(model);const center=bounds.getCenter(new THREE.Vector3());model.position.set(-center.x,-bounds.min.y,-center.z)}
+function lights(scene){scene.add(new THREE.HemisphereLight(0xddeeff,0x272139,2.2));const key=new THREE.DirectionalLight(0xffffff,2.4);key.position.set(5,8,7);scene.add(key);const rim=new THREE.DirectionalLight(0x2ad7e3,2);rim.position.set(-6,2,-2);scene.add(rim)}
+
+const intro=document.querySelector('#intro'),introCanvas=document.querySelector('#intro-canvas'),introRenderer=rendererFor(introCanvas),introScene=new THREE.Scene();lights(introScene);
+const introCamera=new THREE.PerspectiveCamera(28,1,.1,100);introCamera.position.set(0,2.7,13);
+let introMixer,introModel,introLoaded=false,introStarted=performance.now();const progressBar=document.querySelector('#load-progress'),progressLabel=document.querySelector('#load-label');
+function closeIntro(){if(!intro?.isConnected)return;intro.classList.add('hidden');document.body.classList.remove('intro-active');setTimeout(()=>intro.remove(),900)}
+document.querySelector('#skip-intro').addEventListener('click',closeIntro);setTimeout(()=>{if(document.body.classList.contains('intro-active'))closeIntro()},7500);
+loader.load('../Assets/Models/spiderman-intro.glb?v=2',gltf=>{introModel=gltf.scene;fitModel(introModel,7.5);introModel.position.x=2.7;introScene.add(introModel);if(gltf.animations.length){introMixer=new THREE.AnimationMixer(introModel);introMixer.clipAction(gltf.animations[0]).play()}introLoaded=true;progressBar.style.width='100%';progressLabel.textContent='Experience ready'},event=>{if(!event.total)return;const value=Math.min(99,Math.round(event.loaded/event.total*100));progressBar.style.width=`${value}%`;progressLabel.textContent=`Construyendo experiencia ${value}%`},closeIntro);
+
+const heroCanvas=document.querySelector('#hero-canvas'),heroShell=document.querySelector('.hero-visual'),heroRenderer=rendererFor(heroCanvas),heroScene=new THREE.Scene();lights(heroScene);
+const heroCamera=new THREE.PerspectiveCamera(28,1,.1,100);heroCamera.position.set(0,3,14);let heroMixer,heroModel;
+loader.load('../Assets/Models/lego-walker.glb?v=1',gltf=>{heroModel=gltf.scene;fitModel(heroModel,7.2);heroModel.rotation.y=Math.PI;heroScene.add(heroModel);if(gltf.animations.length){heroMixer=new THREE.AnimationMixer(heroModel);heroMixer.clipAction(gltf.animations[0]).play()}});
+
+const mascotCanvas=document.querySelector('#mascot-canvas'),mascotShell=document.querySelector('.mascot'),mascotRenderer=rendererFor(mascotCanvas),mascotScene=new THREE.Scene();lights(mascotScene);
+const mascotCamera=new THREE.OrthographicCamera(-8,8,4.8,-.2,.1,100);mascotCamera.position.set(0,0,20);const walker=new THREE.Group();mascotScene.add(walker);let mascotMixer,mascotModel,mascotLimit=6,direction=1;
+loader.load('../Assets/Models/lego-walker.glb?v=1',gltf=>{mascotModel=gltf.scene;fitModel(mascotModel,4.2);walker.add(mascotModel);if(gltf.animations.length){mascotMixer=new THREE.AnimationMixer(mascotModel);mascotMixer.clipAction(gltf.animations[0]).play()}document.querySelector('#mascot-status').classList.add('hidden')});
+
+function resize(){const introRect=intro?.getBoundingClientRect();if(introRect?.width){introRenderer.setSize(introRect.width,introRect.height,false);introCamera.aspect=introRect.width/introRect.height;introCamera.updateProjectionMatrix()}const heroRect=heroShell.getBoundingClientRect();heroRenderer.setSize(heroRect.width,heroRect.height,false);heroCamera.aspect=heroRect.width/heroRect.height;heroCamera.updateProjectionMatrix();const mascotRect=mascotShell.getBoundingClientRect();mascotRenderer.setSize(mascotRect.width,mascotRect.height,false);const half=2.8*mascotRect.width/mascotRect.height;mascotCamera.left=-half;mascotCamera.right=half;mascotCamera.updateProjectionMatrix();mascotLimit=Math.max(3,half-2.4)}
+addEventListener('resize',resize);resize();const clock=new THREE.Clock();
+function animate(){requestAnimationFrame(animate);const delta=Math.min(clock.getDelta(),.05),time=performance.now()*.001;if(intro?.isConnected){introMixer?.update(delta);if(introModel)introModel.rotation.y=Math.sin(time*.55)*.16;introRenderer.render(introScene,introCamera);if(introLoaded&&performance.now()-introStarted>4300)closeIntro()}heroMixer?.update(delta);if(heroModel){heroModel.rotation.y=Math.sin(time*.45)*.18;heroModel.position.y=Math.sin(time*.8)*.07}heroRenderer.render(heroScene,heroCamera);mascotMixer?.update(delta);if(mascotModel&&!reduced){walker.position.x+=direction*delta*1.25;if(Math.abs(walker.position.x)>mascotLimit){direction*=-1;mascotModel.rotation.y+=Math.PI}}mascotRenderer.render(mascotScene,mascotCamera)}animate();

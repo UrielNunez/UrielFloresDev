@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090d">
+    <meta name="description" content="Portafolio de Uriel Flores — software, videojuegos y experiencias inmersivas.">
+    <title>Uriel Flores · Creative Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./redesign.css">
+</head>
+<body class="intro-active">
+    <div class="intro" id="intro" aria-label="Intro del portafolio">
+        <canvas id="intro-canvas"></canvas>
+        <div class="intro-copy"><p>Uriel Flores presenta</p><h1>Ideas que<br><em>cobran vida.</em></h1><div class="load-line"><i id="load-progress"></i></div><span id="load-label">Construyendo experiencia 0%</span></div>
+        <button id="skip-intro" type="button">Omitir intro ↗</button>
+    </div>
+    <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+    <header class="nav-shell">
+        <a class="logo" href="#inicio">URIEL<span>.DEV</span></a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="nav">Menú</button>
+        <nav id="nav"><a href="#perfil">Perfil</a><a href="#trayectoria">Trayectoria</a><a href="#proyectos">Proyectos</a><a href="#contacto">Contacto</a></nav>
+        <a class="nav-cta" href="../Assets/CV.pdf" target="_blank">Descargar CV ↗</a>
+    </header>
+    <main>
+        <section class="hero" id="inicio">
+            <div class="hero-grid"></div>
+            <div class="hero-copy reveal">
+                <p class="kicker"><i></i> Software engineer · Unity developer · 3D creator</p>
+                <h1>Desarrollo ideas que se pueden <span>usar, explorar</span> y recordar.</h1>
+                <p class="hero-summary">Construyo sistemas web y experiencias interactivas combinando ingeniería, diseño, narrativa y mundos 3D.</p>
+                <div class="hero-actions"><a class="btn primary" href="#proyectos">Explorar proyectos <b>↘</b></a><a class="btn" href="#trayectoria">Conocer mi historia</a></div>
+                <div class="hero-meta"><div><strong>04+</strong><span>Años creando</span></div><div><strong>WEB / XR</strong><span>Dos mundos, un perfil</span></div><div><strong>LEÓN, MX</strong><span>Construyendo desde aquí</span></div></div>
+            </div>
+            <div class="hero-visual reveal"><canvas id="hero-canvas" aria-label="Modelo LEGO animado"></canvas><div class="model-hud"><span>LIVE MODEL</span><span>BLENDER → THREE.JS</span></div><div class="reticle"></div></div>
+            <a class="scroll-cue" href="#perfil"><span>Scroll to explore</span><i>↓</i></a>
+        </section>
+        <section class="profile section" id="perfil">
+            <div class="section-code">01 / PERFIL</div>
+            <div class="profile-head reveal"><p>Mi especialidad no es una sola herramienta.</p><h2>Es conectar disciplinas para construir una experiencia <em>completa.</em></h2></div>
+            <div class="discipline-grid">
+                <article class="discipline reveal"><span>01</span><div class="discipline-icon">&lt;/&gt;</div><h3>Software & Web</h3><p>Traduzco procesos reales en sistemas claros: requerimientos, arquitectura, UI, bases de datos, lógica de negocio, pruebas y producción.</p><ul><li>PHP</li><li>JavaScript</li><li>MySQL</li><li>Vue</li><li>Node</li></ul></article>
+                <article class="discipline featured reveal"><span>02</span><div class="discipline-icon">◈</div><h3>Immersive & Games</h3><p>Creo mecánicas, narrativas, UI y mundos para videojuegos, realidad aumentada, virtual y experiencias WebGL.</p><ul><li>Unity</li><li>C#</li><li>AR / VR</li><li>Vuforia</li><li>WebGL</li></ul></article>
+                <article class="discipline reveal"><span>03</span><div class="discipline-icon">⬡</div><h3>3D & Motion</h3><p>Modelo, texturizo, hago rigging y animo personajes y objetos listos para experiencias en tiempo real.</p><ul><li>Blender</li><li>Rigging</li><li>Animation</li><li>Shaders</li><li>UX</li></ul></article>
+            </div>
+        </section>
+        <section class="career section" id="trayectoria">
+            <div class="section-code">02 / TRAYECTORIA</div>
+            <header class="section-title reveal"><div><p class="kicker"><i></i> Career log</p><h2>Cada etapa agregó una nueva capa a mi forma de crear.</h2></div><p>De sitios web y servidores a aulas, videojuegos comerciales y sistemas internos. Una trayectoria que une tecnología, comunicación y diseño.</p></header>
+            <div class="career-console">
+                <div class="career-nav" role="tablist" aria-label="Experiencia profesional">
+                    <button class="career-tab active" data-entry="cepsa" type="button"><span>2025—HOY</span><b>Transportes CEPSA</b><small>Web Developer</small></button>
+                    <button class="career-tab" data-entry="gato" type="button"><span>2025</span><b>GatoLobo Estudio</b><small>Unity 3D Developer</small></button>
+                    <button class="career-tab" data-entry="unitec" type="button"><span>2024—2025</span><b>UNITEC</b><small>Docente universitario</small></button>
+                    <button class="career-tab" data-entry="freelance" type="button"><span>2022—HOY</span><b>Freelance</b><small>Immersive / 3D</small></button>
+                    <button class="career-tab" data-entry="techboys" type="button"><span>2021—2022</span><b>TechBoys</b><small>Full-stack Developer</small></button>
+                </div>
+                <div class="career-stage reveal"><div class="career-scan"></div>
+                    <article class="career-entry active" id="cepsa"><p class="entry-id">ENTRY_05 · CURRENT MISSION</p><h3>Diseñando sistemas desde el proceso real.</h3><p>Trabajo junto a las áreas operativas para detectar oportunidades de mejora y transformarlas en herramientas internas. Participo desde el levantamiento y los mockups hasta el modelado de datos, frontend, backend, pruebas y salida a producción.</p><div class="impact"><span><b>RESEARCH</b>Requerimientos y procesos</span><span><b>BUILD</b>PHP · JS · MySQL</span><span><b>DELIVER</b>Pruebas y adopción</span></div><blockquote>“El mejor sistema comienza entendiendo cómo trabaja la gente.”</blockquote></article>
+                    <article class="career-entry" id="gato"><p class="entry-id">ENTRY_04 · COMMERCIAL GAME</p><h3>Convirtiendo narrativa en sistemas jugables.</h3><p>Implementé eventos narrativos, misiones, transiciones, tutoriales e interfaces para un videojuego comercial en acceso anticipado. Integré contenido, coordiné builds y validé nuevas funcionalidades con el equipo.</p><div class="impact"><span><b>DESIGN</b>UI y tutoriales</span><span><b>CODE</b>Unity · C#</span><span><b>SHIP</b>Builds y QA</span></div><blockquote>“Código, narrativa y ritmo deben hablar el mismo idioma.”</blockquote></article>
+                    <article class="career-entry" id="unitec"><p class="entry-id">ENTRY_03 · SHARE KNOWLEDGE</p><h3>Enseñar también es diseñar experiencias.</h3><p>Impartí fundamentos, POO y sistemas interactivos. Guié proyectos de web, Unity, AR, VR y realidad mixta, cuidando la estructura técnica, la comunicación y el diseño adaptable.</p><div class="impact"><span><b>MENTOR</b>Programación y POO</span><span><b>CREATE</b>AR · VR · WebGL</span><span><b>GUIDE</b>Proyectos completos</span></div><blockquote>“Enseñar afinó mi forma de explicar, documentar y colaborar.”</blockquote></article>
+                    <article class="career-entry" id="freelance"><p class="entry-id">ENTRY_02 · INDEPENDENT BUILDER</p><h3>De una idea suelta a una experiencia entregada.</h3><p>He desarrollado videojuegos, aplicaciones inmersivas y contenido 3D desde el concepto hasta la publicación. Modelo, hago rigging, animo, diseño UI y construyo experiencias para web, iOS y Android.</p><div class="impact"><span><b>MAKE</b>Blender · Unity</span><span><b>EXPLORE</b>AR · VR · Games</span><span><b>OWN</b>Ciclo completo</span></div><blockquote>“La autonomía funciona cuando no pierdes de vista al usuario.”</blockquote></article>
+                    <article class="career-entry" id="techboys"><p class="entry-id">ENTRY_01 · FOUNDATION</p><h3>Aprendiendo a construir, desplegar y responder.</h3><p>Participé en la creación y mantenimiento de soluciones web, colaboré con clientes, administré repositorios y desplegué proyectos en servidores Linux CentOS.</p><div class="impact"><span><b>BUILD</b>Full-stack web</span><span><b>COLLAB</b>GitHub y clientes</span><span><b>DEPLOY</b>Linux CentOS</span></div><blockquote>“Entregar también significa mantener, iterar y responder.”</blockquote></article>
+                </div>
+            </div>
+        </section>
+        <section class="projects section" id="proyectos">
+            <div class="section-code">03 / PROYECTOS</div>
+            <header class="section-title reveal"><div><p class="kicker"><i></i> Selected worlds</p><h2>Experiencias que viven más allá de una pantalla estática.</h2></div><p>Una selección de proyectos web, Unity, realidad aumentada y mundos 3D.</p></header>
+            <div class="project-list">
+                <a class="project-card wide reveal" href="https://urielnunez.github.io/UnityPortfolio/" target="_blank" rel="noreferrer"><img src="../Assets/Images/PortfolioUnity.png" alt="Mundo 3D del portafolio Unity"><div class="project-overlay"><span>01 · UNITY / WEBGL / BLENDER</span><h3>Portfolio World</h3><p>Un portafolio que se recorre como mundo interactivo.</p><b>Explorar experiencia ↗</b></div></a>
+                <a class="project-card reveal" href="https://urielnunez.github.io/PortafolioWebAR/" target="_blank" rel="noreferrer"><img src="../Assets/Images/Tarjeta.PNG" alt="Tarjeta interactiva de realidad aumentada"><div class="project-overlay"><span>02 · WEBAR / MINDAR</span><h3>Business Card AR</h3><p>Una identidad impresa que abre una capa digital.</p><b>Abrir AR ↗</b></div></a>
+                <a class="project-card reveal" href="https://youtu.be/KpOluCbwejo" target="_blank" rel="noreferrer"><img src="../Assets/Images/Runner.png" alt="Videojuego Runner construido con Unity"><div class="project-overlay"><span>03 · UNITY / GAME DESIGN</span><h3>Runner Game</h3><p>Mecánicas, ritmo y experiencia construidas en Unity.</p><b>Ver gameplay ↗</b></div></a>
+                <a class="project-card wide reveal" href="https://thebigday.mx/" target="_blank" rel="noreferrer"><img src="../Assets/Images/thebigday.png" alt="Sitio web TheBigDay"><div class="project-overlay"><span>04 · FULL STACK / PRODUCT</span><h3>TheBigDay</h3><p>Desarrollo web en equipo, desde implementación hasta despliegue.</p><b>Visitar proyecto ↗</b></div></a>
+            </div>
+        </section>
+        <section class="process section"><div class="section-code">04 / PROCESO</div><div class="process-grid reveal"><div><p class="kicker"><i></i> Cómo construyo</p><h2>No comienzo con código. Comienzo con una pregunta.</h2></div><ol><li><span>01</span><div><h3>Entender</h3><p>Escuchar, observar el contexto y definir el problema correcto.</p></div></li><li><span>02</span><div><h3>Dar forma</h3><p>Diagramar, prototipar y volver visible la idea antes de construir.</p></div></li><li><span>03</span><div><h3>Crear</h3><p>Conectar código, interacción y diseño en una experiencia coherente.</p></div></li><li><span>04</span><div><h3>Probar y evolucionar</h3><p>Validar con personas, documentar y mejorar a partir del uso real.</p></div></li></ol></div></section>
+        <section class="contact section" id="contacto"><div class="contact-light"></div><p class="kicker"><i></i> Nueva misión disponible</p><h2>Construyamos una idea que todavía no existe.</h2><div class="contact-actions"><a href="mailto:floresnunezuriel@gmail.com">floresnunezuriel@gmail.com <span>↗</span></a><div><a href="https://www.linkedin.com/in/urielfloresdev/" target="_blank">LinkedIn</a><a href="https://github.com/UrielNunez" target="_blank">GitHub</a><a href="https://www.youtube.com/channel/UC_QY_geiGRC_5t9x_Ww9YIA" target="_blank">YouTube</a></div></div></section>
+    </main>
+    <footer><span>Uriel Flores · Creative Developer</span><span>Software / Games / Immersive / 3D</span><span>© 2026</span></footer>
+    <aside class="mascot" aria-label="Mascota LEGO animada"><canvas id="mascot-canvas"></canvas><span id="mascot-status">Loading character…</span></aside>
+    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.1/build/three.module.js"}}</script>
+    <script src="./redesign.js"></script><script type="module" src="./experience.js"></script>
+</body></html>
