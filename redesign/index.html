@@ -1,83 +1,791 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090d">
-    <meta name="description" content="Portafolio de Uriel Flores — software, videojuegos y experiencias inmersivas.">
-    <title>Uriel Flores · Creative Developer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <noscript><style>body.intro-pending{overflow:auto}body.intro-pending>.Container{transform:none}.spiderman-intro,.lego-dock{display:none}</style></noscript>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-----------------------------UNICONS------------------------------------------>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <!-----------------------------CSS------------------------------------------>
+    <link rel="stylesheet" href="../Assets/CSS/Style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Madimi+One&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./redesign.css">
+    <!-----------------------------FAVICON------------------------------------------>
+    <link rel="shortcut icon" href="../Assets/Images/LogoXxu.jpeg" type="image/x-icon">
+    <title>UrielDEV — Portfolio / New proposal</title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preload" href="../Assets/Models/spiderman-intro.glb?v=2" as="fetch" crossorigin fetchpriority="high">
+    <link rel="preload" href="../Assets/Models/lego-walker.glb?v=1" as="fetch" crossorigin fetchpriority="high">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.1/build/three.module.js"
+            }
+        }
+    </script>
+    <link rel="modulepreload" href="./intro.js?v=4">
+    <link rel="modulepreload" href="./walker.js">
 </head>
-<body class="intro-active">
-    <div class="intro" id="intro" aria-label="Intro del portafolio">
-        <canvas id="intro-canvas"></canvas>
-        <div class="intro-copy"><p>Uriel Flores presenta</p><h1>Ideas que<br><em>cobran vida.</em></h1><div class="load-line"><i id="load-progress"></i></div><span id="load-label">Construyendo experiencia 0%</span></div>
-        <button id="skip-intro" type="button">Omitir intro ↗</button>
+
+<body class="intro-pending">
+    <a class="skip-content" href="#home">Skip to content</a>
+
+    <div class="spiderman-intro" id="spidermanIntro" aria-label="Loading portfolio" aria-live="polite">
+        <canvas id="spidermanIntroCanvas" aria-hidden="true"></canvas>
+        <div class="spiderman-intro__loading" id="spidermanIntroLoading">
+            <span class="spiderman-intro__mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span id="spidermanIntroText">Preparing experience</span>
+        </div>
+        <button class="spiderman-intro__skip" id="spidermanIntroSkip" type="button">Skip intro</button>
     </div>
-    <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
-    <header class="nav-shell">
-        <a class="logo" href="#inicio">URIEL<span>.DEV</span></a>
-        <button class="menu-button" type="button" aria-expanded="false" aria-controls="nav">Menú</button>
-        <nav id="nav"><a href="#perfil">Perfil</a><a href="#trayectoria">Trayectoria</a><a href="#proyectos">Proyectos</a><a href="#contacto">Contacto</a></nav>
-        <a class="nav-cta" href="../Assets/CV.pdf" target="_blank">Descargar CV ↗</a>
-    </header>
-    <main>
-        <section class="hero" id="inicio">
-            <div class="hero-grid"></div>
-            <div class="hero-copy reveal">
-                <p class="kicker"><i></i> Software engineer · Unity developer · 3D creator</p>
-                <h1>Desarrollo ideas que se pueden <span>usar, explorar</span> y recordar.</h1>
-                <p class="hero-summary">Construyo sistemas web y experiencias interactivas combinando ingeniería, diseño, narrativa y mundos 3D.</p>
-                <div class="hero-actions"><a class="btn primary" href="#proyectos">Explorar proyectos <b>↘</b></a><a class="btn" href="#trayectoria">Conocer mi historia</a></div>
-                <div class="hero-meta"><div><strong>04+</strong><span>Años creando</span></div><div><strong>WEB / XR</strong><span>Dos mundos, un perfil</span></div><div><strong>LEÓN, MX</strong><span>Construyendo desde aquí</span></div></div>
+
+    <div class="Container">
+        <!-----------------------------HEADER------------------------------------------>
+        <nav class="header" id="header">
+
+            <a class="nav-logo" href="#home" aria-label="Go to home">
+                <p class="nav-name"> Uriel </p>
+                <span>.</span>
+            </a>
+
+
+            <div class="nav-menu" id="myNavMenu">
+                <ul class="nav_menu_list">
+
+                    <li class="nav_list">
+                        <a href="#home" class="nav-link active-link">Home</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#about" class="nav-link">About</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#journey" class="nav-link">Journey</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#certifications" class="nav-link">Certifications</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#projects" class="nav-link">Projects</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#blender" class="nav-link">Blender Projects</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#Video" class="nav-link">Video Editing</a>
+                        <div class="circle"></div>
+                    </li>
+
+                    <li class="nav_list">
+                        <a href="#contact" class="nav-link">Contact</a>
+                        <div class="circle"></div>
+                    </li>
+                </ul>
             </div>
-            <div class="hero-visual reveal"><canvas id="hero-canvas" aria-label="Modelo LEGO animado"></canvas><div class="model-hud"><span>LIVE MODEL</span><span>BLENDER → THREE.JS</span></div><div class="reticle"></div></div>
-            <a class="scroll-cue" href="#perfil"><span>Scroll to explore</span><i>↓</i></a>
-        </section>
-        <section class="profile section" id="perfil">
-            <div class="section-code">01 / PERFIL</div>
-            <div class="profile-head reveal"><p>Mi especialidad no es una sola herramienta.</p><h2>Es conectar disciplinas para construir una experiencia <em>completa.</em></h2></div>
-            <div class="discipline-grid">
-                <article class="discipline reveal"><span>01</span><div class="discipline-icon">&lt;/&gt;</div><h3>Software & Web</h3><p>Traduzco procesos reales en sistemas claros: requerimientos, arquitectura, UI, bases de datos, lógica de negocio, pruebas y producción.</p><ul><li>PHP</li><li>JavaScript</li><li>MySQL</li><li>Vue</li><li>Node</li></ul></article>
-                <article class="discipline featured reveal"><span>02</span><div class="discipline-icon">◈</div><h3>Immersive & Games</h3><p>Creo mecánicas, narrativas, UI y mundos para videojuegos, realidad aumentada, virtual y experiencias WebGL.</p><ul><li>Unity</li><li>C#</li><li>AR / VR</li><li>Vuforia</li><li>WebGL</li></ul></article>
-                <article class="discipline reveal"><span>03</span><div class="discipline-icon">⬡</div><h3>3D & Motion</h3><p>Modelo, texturizo, hago rigging y animo personajes y objetos listos para experiencias en tiempo real.</p><ul><li>Blender</li><li>Rigging</li><li>Animation</li><li>Shaders</li><li>UX</li></ul></article>
+
+            <div class="nav-button" id="nav-button">
+                <a class="btn" href="../Assets/CV.pdf" download>Download CV <i class="uil uil-file-download-alt"></i></a>
             </div>
-        </section>
-        <section class="career section" id="trayectoria">
-            <div class="section-code">02 / TRAYECTORIA</div>
-            <header class="section-title reveal"><div><p class="kicker"><i></i> Career log</p><h2>Cada etapa agregó una nueva capa a mi forma de crear.</h2></div><p>De sitios web y servidores a aulas, videojuegos comerciales y sistemas internos. Una trayectoria que une tecnología, comunicación y diseño.</p></header>
-            <div class="career-console">
-                <div class="career-nav" role="tablist" aria-label="Experiencia profesional">
-                    <button class="career-tab active" data-entry="cepsa" type="button"><span>2025—HOY</span><b>Transportes CEPSA</b><small>Web Developer</small></button>
-                    <button class="career-tab" data-entry="gato" type="button"><span>2025</span><b>GatoLobo Estudio</b><small>Unity 3D Developer</small></button>
-                    <button class="career-tab" data-entry="unitec" type="button"><span>2024—2025</span><b>UNITEC</b><small>Docente universitario</small></button>
-                    <button class="career-tab" data-entry="freelance" type="button"><span>2022—HOY</span><b>Freelance</b><small>Immersive / 3D</small></button>
-                    <button class="career-tab" data-entry="techboys" type="button"><span>2021—2022</span><b>TechBoys</b><small>Full-stack Developer</small></button>
+            <div class="nav-menu-btn">
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu"
+                    aria-controls="myNavMenu" aria-expanded="false">
+                    <i class="uil uil-bars" id="hamburgerIcon" aria-hidden="true"></i>
+                </button>
+            </div>
+
+        </nav>
+
+        <!-----------------------------MAIN------------------------------------------>
+        <main class="wrapper">
+            <!-----------------------------SECTION FEATURE BOX/HOME------------------------------------------>
+            <section class="featured-box" id="home">
+                <div class="featured-text">
+                    <p class="home-eyebrow">SOFTWARE · INTERACTION · IMAGINATION</p>
+                    <div class="featured-text-card">
+                        <span>Uriel Flores</span>
+                    </div>
+                    <div class="featured-name">
+                        <h1>I’m <span class="typedText">Web Developer</span><span class="hero-dot">.</span></h1>
+                    </div>
+                    <div class="featured-text-info">
+                        <p>I build web systems that solve real problems and interactive worlds that invite you to explore. Software engineering, Unity and 3D — connected by curiosity.
+                        </p>
+                    </div>
+                    <div class="featured-text-btn">
+                        <a href="#projects" class="btn blue-btn">Explore my work <i class="uil uil-arrow-up-right"></i></a>
+
+                        <a class="btn" href="../Assets/CV.pdf" download>Download CV <i class="uil uil-file-download-alt"></i></a>
+
+                    </div>
+                    <div class="social_icons">
+                        <ul class="example-2">
+                            <li class="icon-content">
+                                <a href="https://www.linkedin.com/in/urielfloresdev/" aria-label="Linkedin"
+                                    data-social="linkedin" target="_blank">
+                                    <div class="filled"></div>
+                                    <i class="uil uil-linkedin"></i>
+                                </a>
+                                <div class="tooltip">Linkedin</div>
+                            </li>
+                        </ul>
+                        <ul class="example-2">
+                            <li class="icon-content">
+                                <a href="https://www.youtube.com/channel/UC_QY_geiGRC_5t9x_Ww9YIA" aria-label="YouTube"
+                                    data-social="youtube" target="_blank">
+                                    <div class="filled"></div>
+                                    <i class="uil uil-youtube"></i>
+                                </a>
+                                <div class="tooltip">YouTube</div>
+                            </li>
+                        </ul>
+                        <ul class="example-2">
+                            <li class="icon-content">
+                                <a href="https://github.com/UrielNunez" aria-label="GitHub" data-social="github"
+                                    target="_blank">
+                                    <div class="filled"></div>
+                                    <i class="uil uil-github-alt"></i>
+                                </a>
+                                <div class="tooltip">GitHub</div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="career-stage reveal"><div class="career-scan"></div>
-                    <article class="career-entry active" id="cepsa"><p class="entry-id">ENTRY_05 · CURRENT MISSION</p><h3>Diseñando sistemas desde el proceso real.</h3><p>Trabajo junto a las áreas operativas para detectar oportunidades de mejora y transformarlas en herramientas internas. Participo desde el levantamiento y los mockups hasta el modelado de datos, frontend, backend, pruebas y salida a producción.</p><div class="impact"><span><b>RESEARCH</b>Requerimientos y procesos</span><span><b>BUILD</b>PHP · JS · MySQL</span><span><b>DELIVER</b>Pruebas y adopción</span></div><blockquote>“El mejor sistema comienza entendiendo cómo trabaja la gente.”</blockquote></article>
-                    <article class="career-entry" id="gato"><p class="entry-id">ENTRY_04 · COMMERCIAL GAME</p><h3>Convirtiendo narrativa en sistemas jugables.</h3><p>Implementé eventos narrativos, misiones, transiciones, tutoriales e interfaces para un videojuego comercial en acceso anticipado. Integré contenido, coordiné builds y validé nuevas funcionalidades con el equipo.</p><div class="impact"><span><b>DESIGN</b>UI y tutoriales</span><span><b>CODE</b>Unity · C#</span><span><b>SHIP</b>Builds y QA</span></div><blockquote>“Código, narrativa y ritmo deben hablar el mismo idioma.”</blockquote></article>
-                    <article class="career-entry" id="unitec"><p class="entry-id">ENTRY_03 · SHARE KNOWLEDGE</p><h3>Enseñar también es diseñar experiencias.</h3><p>Impartí fundamentos, POO y sistemas interactivos. Guié proyectos de web, Unity, AR, VR y realidad mixta, cuidando la estructura técnica, la comunicación y el diseño adaptable.</p><div class="impact"><span><b>MENTOR</b>Programación y POO</span><span><b>CREATE</b>AR · VR · WebGL</span><span><b>GUIDE</b>Proyectos completos</span></div><blockquote>“Enseñar afinó mi forma de explicar, documentar y colaborar.”</blockquote></article>
-                    <article class="career-entry" id="freelance"><p class="entry-id">ENTRY_02 · INDEPENDENT BUILDER</p><h3>De una idea suelta a una experiencia entregada.</h3><p>He desarrollado videojuegos, aplicaciones inmersivas y contenido 3D desde el concepto hasta la publicación. Modelo, hago rigging, animo, diseño UI y construyo experiencias para web, iOS y Android.</p><div class="impact"><span><b>MAKE</b>Blender · Unity</span><span><b>EXPLORE</b>AR · VR · Games</span><span><b>OWN</b>Ciclo completo</span></div><blockquote>“La autonomía funciona cuando no pierdes de vista al usuario.”</blockquote></article>
-                    <article class="career-entry" id="techboys"><p class="entry-id">ENTRY_01 · FOUNDATION</p><h3>Aprendiendo a construir, desplegar y responder.</h3><p>Participé en la creación y mantenimiento de soluciones web, colaboré con clientes, administré repositorios y desplegué proyectos en servidores Linux CentOS.</p><div class="impact"><span><b>BUILD</b>Full-stack web</span><span><b>COLLAB</b>GitHub y clientes</span><span><b>DEPLOY</b>Linux CentOS</span></div><blockquote>“Entregar también significa mantener, iterar y responder.”</blockquote></article>
+                <div class="featured-image"><span class="orbit-label orbit-label--top"><i class="uil uil-brackets-curly"></i> Build. Play. Create.</span><span class="orbit-label orbit-label--bottom"><i class="uil uil-cube"></i> A little beyond the ordinary</span>
+                    <div class="image">
+                        <img src="../Assets/Images/LogoXxu.jpeg" alt="avatar">
+                    </div>
                 </div>
+            </section>
+            <div class="identity-strip" aria-label="Areas of work"><span><i class="uil uil-brackets-curly"></i> Web development</span><b>+</b><span><i class="uil uil-game-structure"></i> Games & XR</span><b>+</b><span><i class="uil uil-cube"></i> 3D & animation</span><b>+</b><span><i class="uil uil-film"></i> Video & storytelling</span></div>
+            <!-----------------------------SECTION ABOUT------------------------------------------>
+            <section class="section" id="about">
+                <div class="top-header">
+                    <h1>About Me</h1>
+                    <span>A little about me and the tools behind my work.</span>
+                </div>
+                <div class="row" id="ROW">
+                    <div class="col" id="COL">
+                        <div class="about-info">
+                            <h3>My Introduction</h3>
+                            <p>
+                                I'm a Software Engineer with experience in both web development and immersive technologies.
+                                I enjoy building efficient, user-centered applications, from enterprise web systems using PHP, JavaScript, MySQL, HTML, and CSS to VR, AR, and video game experiences
+                                developed with Unity.
+                                <br>
+                                <br>
+                                Throughout my career, I've participated in the entire software development lifecycle,
+                                including requirements gathering, UI/UX design, implementation, database design, testing, and deployment.
+                                I also have experience teaching software development and interactive technologies at the university level,
+                                helping students build a strong foundation in programming and immersive application development.
+                            </p>
+
+                            <div class="about-btn">
+                                <a class="btn" href="../Assets/CV.pdf" download>Download CV <i class="uil uil-import"></i></a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col" id="COL">
+                        <div class="skills-info">
+                            <div class="skills-heading"><span class="skills-eyebrow">MY TOOLKIT</span><h3>My Skills</h3><p>The technologies and tools I use to bring ideas to life.</p></div>
+                            <div class="skills-groups">
+                                <section class="skill-group" aria-labelledby="skill-group-01"><header><span class="skill-number">01</span><h4 id="skill-group-01">Immersive & 3D</h4></header><p>Games, interactive worlds and extended reality.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="../Assets/Images/uNITY.png" alt="" loading="lazy" width="28" height="28"><span>Unity</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/C.png" alt="" loading="lazy" width="28" height="28"><span>C#</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Visual.png" alt="" loading="lazy" width="28" height="28"><span>Visual Studio</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/AR.png" alt="" loading="lazy" width="28" height="28"><span>Augmented Reality</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Blender.png" alt="" loading="lazy" width="28" height="28"><span>Blender</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/ARKIT.webp" alt="" loading="lazy" width="28" height="28"><span>ARKit</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/ArCore.png" alt="" loading="lazy" width="28" height="28"><span>ARCore</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/8th.png" alt="" loading="lazy" width="28" height="28"><span>8th Wall</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Apple.png" alt="" loading="lazy" width="28" height="28"><span>Apple</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Android.png" alt="" loading="lazy" width="28" height="28"><span>Android</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/VR.png" alt="" loading="lazy" width="28" height="28"><span>Virtual Reality</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Meta.png" alt="" loading="lazy" width="28" height="28"><span>Meta Quest</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/SteamVR.png" alt="" loading="lazy" width="28" height="28"><span>Steam VR</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Asset.png" alt="" loading="lazy" width="28" height="28"><span>Asset Store</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Oculus.png" alt="" loading="lazy" width="28" height="28"><span>Oculus Quest</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/Vuforia.png" alt="" loading="lazy" width="28" height="28"><span>Vuforia Engine</span></li>
+                                </ul></section>
+                                <section class="skill-group" aria-labelledby="skill-group-02"><header><span class="skill-number">02</span><h4 id="skill-group-02">Web development</h4></header><p>Interfaces, services and data.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="../Assets/Images/html.png" alt="" loading="lazy" width="28" height="28"><span>HTML 5</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/css.png" alt="" loading="lazy" width="28" height="28"><span>CSS</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/boostrap.png" alt="" loading="lazy" width="28" height="28"><span>Bootstrap</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/boostrapvue.png" alt="" loading="lazy" width="28" height="28"><span>BootstrapVue</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/js.png" alt="" loading="lazy" width="28" height="28"><span>JavaScript</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/vue.png" alt="" loading="lazy" width="28" height="28"><span>Vue.js</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/node.png" alt="" loading="lazy" width="28" height="28"><span>Node.js</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/php.svg" alt="" loading="lazy" width="28" height="28"><span>PHP</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/firebase.png" alt="" loading="lazy" width="28" height="28"><span>Firebase</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/cpanel.svg" alt="" loading="lazy" width="28" height="28"><span>cPanel</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/mysql.png" alt="" loading="lazy" width="28" height="28"><span>MySQL</span></li>
+                                </ul></section>
+                                <section class="skill-group" aria-labelledby="skill-group-03"><header><span class="skill-number">03</span><h4 id="skill-group-03">Design & video</h4></header><p>Visual storytelling and creative production.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="../Assets/Images/photoshop.svg" alt="" loading="lazy" width="28" height="28"><span>Photoshop</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/illustrator.svg" alt="" loading="lazy" width="28" height="28"><span>Illustrator</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/cap.png" alt="" loading="lazy" width="28" height="28"><span>CapCut</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/davi.png" alt="" loading="lazy" width="28" height="28"><span>DaVinci Resolve</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/canva.svg" alt="" loading="lazy" width="28" height="28"><span>Canva</span></li>
+                                </ul></section>
+                                <section class="skill-group" aria-labelledby="skill-group-04"><header><span class="skill-number">04</span><h4 id="skill-group-04">Tools & collaboration</h4></header><p>From planning to version control.</p><ul class="skill-list">
+                                    <li class="skill-item"><img src="../Assets/Images/git.png" alt="" loading="lazy" width="28" height="28"><span>Git</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/github.png" alt="" loading="lazy" width="28" height="28"><span>GitHub</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/gitlab.png" alt="" loading="lazy" width="28" height="28"><span>GitLab</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/jira.png" alt="" loading="lazy" width="28" height="28"><span>Jira</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/trello.png" alt="" loading="lazy" width="28" height="28"><span>Trello</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/notion.png" alt="" loading="lazy" width="28" height="28"><span>Notion</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/clickup.png" alt="" loading="lazy" width="28" height="28"><span>ClickUp</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/milanote.png" alt="" loading="lazy" width="28" height="28"><span>Milanote</span></li>
+                                    <li class="skill-item"><img src="../Assets/Images/miro.png" alt="" loading="lazy" width="28" height="28"><span>Miro</span></li>
+                                </ul></section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-----------------------------SECTION PROFESSIONAL JOURNEY------------------------------------------>
+            <section class="section journey-section" id="journey">
+                <div class="top-header journey-heading">
+                    <span class="journey-kicker">CAREER LOG // 2021 — NOW</span>
+                    <h1>My Professional Journey</h1>
+                    <span>Every role added a new layer to the way I build digital experiences.</span>
+                </div>
+
+                <div class="journey-manifesto">
+                    <p>I do not see web development, games and 3D as separate paths. They are different tools for the same purpose:</p>
+                    <strong>turning an idea into an experience people can understand, use and remember.</strong>
+                    <div class="journey-disciplines" aria-label="Professional disciplines">
+                        <span>WEB SYSTEMS</span><i></i><span>GAMEPLAY</span><i></i><span>IMMERSIVE 3D</span><i></i><span>MENTORSHIP</span>
+                    </div>
+                </div>
+
+                <div class="journey-map">
+                    <div class="journey-route" aria-hidden="true"><span></span></div>
+
+                    <article class="journey-chapter journey-chapter--right journey-chapter--current">
+                        <div class="journey-node" aria-hidden="true"><span>05</span></div>
+                        <div class="journey-year" aria-hidden="true"><strong>NOW</strong><span>BUILDING SYSTEMS</span></div>
+                        <div class="journey-card">
+                            <header><span class="journey-status">CURRENT MISSION</span><time>Aug 2025 — Present</time></header>
+                            <h2>Full Stack Developer</h2>
+                            <h3>CEPSA</h3>
+                            <p>I transform operational needs into internal web systems, participating from requirements and flow design to implementation, database structure, testing and documentation.</p>
+                            <ul>
+                                <li>Build interfaces and business workflows with JavaScript, HTML and CSS.</li>
+                                <li>Develop backend functionality and data solutions with PHP and MySQL.</li>
+                                <li>Validate each iteration with the people who use the system every day.</li>
+                            </ul>
+                            <div class="journey-tags"><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>UI/UX</span></div>
+                            <blockquote>Field note: good software begins by understanding the real process—not only the requested screen.</blockquote>
+                        </div>
+                    </article>
+
+                    <article class="journey-chapter journey-chapter--left">
+                        <div class="journey-node" aria-hidden="true"><span>04</span></div>
+                        <div class="journey-year" aria-hidden="true"><strong>2025</strong><span>CRAFTING WORLDS</span></div>
+                        <div class="journey-card">
+                            <header><span class="journey-status">GAME PRODUCTION</span><time>Jan — Jun 2025</time></header>
+                            <h2>Unity Developer</h2>
+                            <h3>GatoLobo Studio</h3>
+                            <p>I worked on a commercial videogame where code, narrative and player experience had to function as one system.</p>
+                            <ul>
+                                <li>Implemented gameplay events, missions, UI and tutorial sequences.</li>
+                                <li>Collaborated with a multidisciplinary team through Unity Version Control.</li>
+                                <li>Prepared builds, tested complete flows and iterated from feedback.</li>
+                            </ul>
+                            <div class="journey-tags"><span>Unity</span><span>C#</span><span>Gameplay</span><span>UVCS</span></div>
+                            <blockquote>Field note: a mechanic is only finished when the player understands what it makes possible.</blockquote>
+                        </div>
+                    </article>
+
+                    <article class="journey-chapter journey-chapter--right">
+                        <div class="journey-node" aria-hidden="true"><span>03</span></div>
+                        <div class="journey-year" aria-hidden="true"><strong>2024</strong><span>SHARING KNOWLEDGE</span></div>
+                        <div class="journey-card">
+                            <header><span class="journey-status">TEACHING</span><time>Jan 2024 — Jan 2025</time></header>
+                            <h2>Software Development Professor</h2>
+                            <h3>UNITEC</h3>
+                            <p>Teaching pushed me to explain technology clearly and to design learning experiences where every concept became something students could build.</p>
+                            <ul>
+                                <li>Taught programming fundamentals and object-oriented development.</li>
+                                <li>Guided interactive projects with Unity, AR, VR and WebGL.</li>
+                                <li>Reviewed code, interaction design and presentation as one complete product.</li>
+                            </ul>
+                            <div class="journey-tags"><span>Mentoring</span><span>OOP</span><span>Unity</span><span>WebGL</span></div>
+                            <blockquote>Field note: if I can make a complex idea clear, I understand it well enough to build it better.</blockquote>
+                        </div>
+                    </article>
+
+                    <article class="journey-chapter journey-chapter--left">
+                        <div class="journey-node" aria-hidden="true"><span>02</span></div>
+                        <div class="journey-year" aria-hidden="true"><strong>2022</strong><span>EXPLORING REALITIES</span></div>
+                        <div class="journey-card">
+                            <header><span class="journey-status">INDEPENDENT LAB</span><time>Aug 2022 — Present</time></header>
+                            <h2>Immersive Developer &amp; 3D Creator</h2>
+                            <h3>Freelance / Personal Projects</h3>
+                            <p>This is where I connect the full pipeline: modeling an asset, making it move, programming its behavior and delivering it on a real device.</p>
+                            <ul>
+                                <li>Create 3D models, rigs and animations with Blender.</li>
+                                <li>Prototype AR and VR experiences for mobile and Meta Quest.</li>
+                                <li>Design interfaces and optimize content for WebGL, iOS and Android.</li>
+                            </ul>
+                            <div class="journey-tags"><span>Blender</span><span>AR/VR</span><span>Mobile</span><span>3D</span></div>
+                            <blockquote>Field note: experimentation is where my strongest ideas stop being sketches and become experiences.</blockquote>
+                        </div>
+                    </article>
+
+                    <article class="journey-chapter journey-chapter--right journey-chapter--origin">
+                        <div class="journey-node" aria-hidden="true"><span>01</span></div>
+                        <div class="journey-year" aria-hidden="true"><strong>2021</strong><span>THE FIRST DEPLOY</span></div>
+                        <div class="journey-card">
+                            <header><span class="journey-status">ORIGIN POINT</span><time>Aug 2021 — Aug 2022</time></header>
+                            <h2>Full Stack Developer</h2>
+                            <h3>TechBoys</h3>
+                            <p>My first professional chapter taught me how to convert client requirements into maintainable features and how much work exists between writing code and shipping a product.</p>
+                            <ul>
+                                <li>Developed and maintained full-stack web functionality.</li>
+                                <li>Collaborated through GitHub and structured version-control workflows.</li>
+                                <li>Deployed and maintained applications on CentOS servers.</li>
+                            </ul>
+                            <div class="journey-tags"><span>Full Stack</span><span>GitHub</span><span>CentOS</span><span>Delivery</span></div>
+                            <blockquote>Field note: this was the point where personal curiosity became professional responsibility.</blockquote>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="journey-next">
+                    <span>QUEST CONTINUES</span>
+                    <p>The next chapter is built from better systems, more expressive worlds and ideas I have not tried yet.</p>
+                </div>
+            </section>
+
+            <section class="section" id="certifications">
+                <div class="top-header">
+                    <h1>Certifications</h1>
+                    <span>Tap on 'View Certification' to see the details of the certification.</span>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="Certification1">
+                            <img class="IMGCertification" src="../Assets/Images/unity-essentials-pathway.png"
+                                alt="Unity Certification">
+                            <h3 class="H3Certi">Unity Essentials</h3>
+                            <span class="SPANCerti"> September 20, 2023</span>
+                            <a class="ACerti"
+                                href="https://www.credly.com/badges/7423ff56-4972-47e9-b928-b4bb055cfbb2/public_url"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="Certification2">
+                            <img class="IMGCertification" src="../Assets/Images/unity-mobile-ar-development (1).png"
+                                alt="Unity Certification">
+                            <h3 class="H3Certi">Unity AR Mobile Development</h3>
+                            <span class="SPANCerti"> January 06, 2024</span>
+                            <a class="ACerti"
+                                href="https://www.credly.com/badges/fc42c17e-a0e4-469f-9190-5974d703da04/public_url"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                </div>
+                <!-------------------------UDEMY CURSES----------------------------->
+                <div class="row">
+                    <div class="col">
+                        <div class="Certification1">
+                            <img class="IMGCertification" src="../Assets/Images/Udemy600.png" alt="Unity Certification">
+                            <h3 class="H3Certi">How to Build a CRUD with PHP and MySQL + Bootstrap 5 — Step by Step</h3>
+                            <span class="SPANCerti"> August 25, 2025</span>
+                            <a class="ACerti"
+                                href="https://www.udemy.com/certificate/UC-4dc4fb17-2a69-493a-af16-645d4e432e92/"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="Certification2">
+                            <img class="IMGCertification" src="../Assets/Images/Udemy600.png" alt="Unity Certification"
+                                style="fill: white;">
+                            <h3 class="H3Certi">Object-Oriented Programming with JavaScript</h3>
+                            <span class="SPANCerti"> December 05, 2024</span>
+                            <a class="ACerti"
+                                href="https://www.udemy.com/certificate/UC-341ecbff-e1fb-472e-81a4-58378f3009d3/"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="Certification1">
+                            <img class="IMGCertification" src="../Assets/Images/Udemy600.png" alt="Unity Certification">
+                            <h3 class="H3Certi">Data Structures in JavaScript</h3>
+                            <span class="SPANCerti"> June 08, 2025</span>
+                            <a class="ACerti"
+                                href="https://www.udemy.com/certificate/UC-91913880-484c-4cef-afa8-6befd279ed79/"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="Certification2">
+                            <img class="IMGCertification" src="../Assets/Images/Udemy600.png" alt="Unity Certification"
+                                style="fill: white;">
+                            <h3 class="H3Certi">Unity Version Control with Unity 6</h3>
+                            <span class="SPANCerti"> May 02, 2025</span>
+                            <a class="ACerti"
+                                href="https://www.udemy.com/certificate/UC-b7c9c689-e6cf-46fe-a4ae-cefe2b46ab0e/"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="Certification1">
+                            <img class="IMGCertification" src="../Assets/Images/Udemy600.png" alt="Unity Certification">
+                            <h3 class="H3Certi">Blender 2.8 Game Character Creation</h3>
+                            <span class="SPANCerti"> March 21, 2023</span>
+                            <a class="ACerti"
+                                href="https://www.udemy.com/certificate/UC-f9472bc7-0403-4508-b1f6-3fe6d92ccd19/"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="Certification2">
+                             <img class="IMGCertification" src="../Assets/Images/Udemy600.png" alt="Unity Certification"
+                                style="fill: white;">
+                            <h3 class="H3Certi">Master in Augmented Reality with Unity</h3>
+                            <span class="SPANCerti"> January 08, 2025</span>
+                            <a class="ACerti"
+                                href="https://www.udemy.com/certificate/UC-5dc96abd-bb63-49b5-84ea-02a37ae136ce/"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="Certification1">
+                            <img class="IMGCertification" src="../Assets/Images/Udemy600.png" alt="Unity Certification"
+                                style="fill: white;">
+                            <h3 class="H3Certi">Introduction to Web AR development</h3>
+                            <span class="SPANCerti"> July 10, 2025</span>
+                            <a class="ACerti"
+                                href="https://www.udemy.com/certificate/UC-0c24f7eb-366f-425a-8d5f-f648b175b468/"
+                                target="_blank"> View Certification</a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </section>
+
+            <!-----------------------------SECTION Unity PROJECTS------------------------------------------>
+            <section class="section" id="projects">
+                <div class="top-header">
+                    <h1>Projects</h1>
+                    <span>Explore the projects below. Select a card to open the full experience.</span>
+                </div>
+
+                <div class="project-container">
+                    <a class="project-box" id="Uproject14" href="https://urielnunez.github.io/PortafolioWebAR/" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Tarjeta.PNG" alt="Business Card WebAR" loading="lazy" decoding="async"><div class="project-description">
+                        <img class="project-icon" src="../Assets/Images/MindAR.png">
+                        <h3>Business Card WebAR</h3>
+                        <label>Made With MindAR.js</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+
+
+                    <a class="project-box" id="Uproject11" href="https://urielnunez.github.io/UnityPortfolio/" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/PortfolioUnity.png" alt="Unity Portfolio" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="M3.489 10.164c-.565.548-.885 1.172-.885 1.835 0 2.167 3.415 3.921 7.631 3.921 2.339 0 4.437-.484 5.837-1.335-1.533 1.426-4.265 2.43-7.385 2.43C3.89 17.015 0 14.769 0 11.999s3.89-5.014 8.689-5.014c3.131.002 5.872 1.009 7.398 2.444-1.399-.856-3.504-1.351-5.852-1.351-2.506 0-4.73.621-6.121 1.579l.785 3.395.971-3.481h.737l.971 3.481.805-3.481h.805L7.953 14.11h-.717l-.991-3.566L5.24 14.11h-.714zm19.839 3.48h-.162v.424h-.142v-.424h-.164v-.122h.468zm.064-.122h.209l.095.364.096-.364H24v.546h-.133v-.415h-.002l-.113.415h-.109l-.115-.415h-.003v.415h-.133zm-5.699.515c-.2.084-.399.126-.601.126-.319 0-.608-.055-.863-.166q-.3825-.1665-.645-.459c-.175-.195-.311-.424-.404-.688-.093-.263-.14-.547-.14-.851 0-.313.047-.601.14-.869.093-.269.226-.502.402-.699.175-.2.39-.355.645-.468s.541-.171.863-.171c.215 0 .421.034.621.098.199.064.381.16.543.284s.295.279.399.463.169.395.193.632h-.874c-.055-.233-.159-.408-.315-.525-.155-.118-.343-.176-.567-.176-.207 0-.382.04-.526.12s-.262.187-.35.322a1.41 1.41 0 0 0-.196.459c-.039.171-.062.348-.062.532 0 .175.02.346.062.512.04.167.107.315.196.448.088.133.206.24.35.32s.319.119.526.119c.303 0 .539-.077.705-.23s.262-.375.29-.668h-.922v-.689h1.75v2.255h-.584l-.093-.472c-.162.21-.344.357-.543.441m2.708-4.14v3.395h2.033v.774h-2.949V9.897zm-9.204 1.585c.109.151.191.337.251.557.053.21.08.452.08.716v.047H9.372c.011.41.164.876.807.876.45 0 .703-.344.719-.537l.002-.042h.592l-.007.051c-.008.075-.051.222-.135.377-.049.086-.104.166-.166.239a1.3 1.3 0 0 1-.248.218c-.071.046-.158.1-.287.139-.148.047-.326.069-.543.069-.415 0-.763-.151-1.007-.434a1.43 1.43 0 0 1-.266-.482c-.06-.182-.091-.386-.091-.601 0-.485.12-.896.348-1.186.125-.158.278-.28.457-.362.191-.086.41-.131.654-.131.218 0 .413.043.581.127.165.082.304.202.415.359m-1.064.047c-.402 0-.741.357-.765.785h1.543c-.046-.528-.302-.785-.778-.785m4.373.388c.058.182.086.381.084.588 0 .19-.022.385-.064.563-.049.206-.122.39-.22.545-.11.178-.252.318-.419.415-.186.109-.408.164-.654.164-.228 0-.426-.057-.585-.173a.89.89 0 0 1-.198-.193v.282h-.561V9.983h.59v1.393c.093-.111.202-.2.324-.262.146-.078.313-.118.497-.12.199 0 .383.04.547.118.158.075.295.184.408.324.109.135.193.297.251.481m-.53.67c0-.2-.013-.459-.111-.672-.12-.26-.335-.384-.654-.384-.3 0-.506.135-.628.417-.084.195-.126.452-.126.785 0 .696.412.942.765.942.244 0 .435-.102.565-.303.125-.191.189-.462.189-.785" />
+                        </svg>
+                        <h3>Unity Portfolio</h3>
+                        <label>Made With Unity/WebGL & Blender</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                </div>
+
+                <div class="project-container2">
+                    <a class="project-box" id="Uproject1" href="https://youtu.be/KpOluCbwejo" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Runner.png" alt="Runner Game" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="m12.9288 4.2939 3.7997 2.1929c.1366.077.1415.2905 0 .3675l-4.515 2.6076a.4192.4192 0 0 1-.4246 0L7.274 6.8543c-.139-.0745-.1415-.293 0-.3675l3.7972-2.193V0L1.3758 5.5977V16.793l3.7177-2.1456v-4.3858c-.0025-.1565.1813-.2682.318-.1838l4.5148 2.6076a.4252.4252 0 0 1 .2136.3676v5.2127c.0025.1565-.1813.2682-.3179.1838l-3.7996-2.1929-3.7178 2.1457L12 24l9.6954-5.5977-3.7178-2.1457-3.7996 2.1929c-.1341.082-.3229-.0248-.3179-.1838V13.053c0-.1565.087-.2956.2136-.3676l4.5149-2.6076c.134-.082.3228.0224.3179.1838v4.3858l3.7177 2.1456V5.5977L12.9288 0Z" />
+                        </svg>
+                        <h3>Runner Game</h3>
+                        <label>Made With Unity</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                    <a class="project-box" id="Uproject13" href="https://thebigday.mx/" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/thebigday.png" alt="TheBigDay" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="M24,1.61H14.06L12,5.16,9.94,1.61H0L12,22.39ZM12,14.08,5.16,2.23H9.59L12,6.41l2.41-4.18h4.43Z" />
+                        </svg>
+                        <h3>TheBigDay</h3>
+                        <label>Full Stack Developer @TechBoys</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                    <a class="project-box" id="Uproject2" href="https://urielnunez.github.io/SanValentinVirtual/" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Valentin.png" alt="Virtual Valentine's Invitation" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="m12.9288 4.2939 3.7997 2.1929c.1366.077.1415.2905 0 .3675l-4.515 2.6076a.4192.4192 0 0 1-.4246 0L7.274 6.8543c-.139-.0745-.1415-.293 0-.3675l3.7972-2.193V0L1.3758 5.5977V16.793l3.7177-2.1456v-4.3858c-.0025-.1565.1813-.2682.318-.1838l4.5148 2.6076a.4252.4252 0 0 1 .2136.3676v5.2127c.0025.1565-.1813.2682-.3179.1838l-3.7996-2.1929-3.7178 2.1457L12 24l9.6954-5.5977-3.7178-2.1457-3.7996 2.1929c-.1341.082-.3229-.0248-.3179-.1838V13.053c0-.1565.087-.2956.2136-.3676l4.5149-2.6076c.134-.082.3228.0224.3179.1838v4.3858l3.7177 2.1456V5.5977L12.9288 0Z" />
+                        </svg>
+                        <h3>Virtual Valentine's Invitation</h3>
+                        <label>Made With Unity</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                </div>
+
+                <div class="project-container3">
+                    <a class="project-box" id="Uproject3" href="https://youtube.com/shorts/CEwqDqrnpFY" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Tarjeta.PNG" alt="AR Experience Business Card" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="m12.9288 4.2939 3.7997 2.1929c.1366.077.1415.2905 0 .3675l-4.515 2.6076a.4192.4192 0 0 1-.4246 0L7.274 6.8543c-.139-.0745-.1415-.293 0-.3675l3.7972-2.193V0L1.3758 5.5977V16.793l3.7177-2.1456v-4.3858c-.0025-.1565.1813-.2682.318-.1838l4.5148 2.6076a.4252.4252 0 0 1 .2136.3676v5.2127c.0025.1565-.1813.2682-.3179.1838l-3.7996-2.1929-3.7178 2.1457L12 24l9.6954-5.5977-3.7178-2.1457-3.7996 2.1929c-.1341.082-.3229-.0248-.3179-.1838V13.053c0-.1565.087-.2956.2136-.3676l4.5149-2.6076c.134-.082.3228.0224.3179.1838v4.3858l3.7177 2.1456V5.5977L12.9288 0Z" />
+                        </svg>
+                        <h3>AR Experience Business Card</h3>
+                        <label>Made With Unity & Vuforia</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                    <a class="project-box" id="Uproject4" href="https://youtube.com/shorts/beJROF9HkgU" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/AR-MR.png" alt="AR / MR Experience Solar System" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="m12.9288 4.2939 3.7997 2.1929c.1366.077.1415.2905 0 .3675l-4.515 2.6076a.4192.4192 0 0 1-.4246 0L7.274 6.8543c-.139-.0745-.1415-.293 0-.3675l3.7972-2.193V0L1.3758 5.5977V16.793l3.7177-2.1456v-4.3858c-.0025-.1565.1813-.2682.318-.1838l4.5148 2.6076a.4252.4252 0 0 1 .2136.3676v5.2127c.0025.1565-.1813.2682-.3179.1838l-3.7996-2.1929-3.7178 2.1457L12 24l9.6954-5.5977-3.7178-2.1457-3.7996 2.1929c-.1341.082-.3229-.0248-.3179-.1838V13.053c0-.1565.087-.2956.2136-.3676l4.5149-2.6076c.134-.082.3228.0224.3179.1838v4.3858l3.7177 2.1456V5.5977L12.9288 0Z" />
+                        </svg>
+                        <h3>AR / MR Experience Solar System</h3>
+                        <label>Made With Unity & Vuforia</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                    <a class="project-box" id="Uproject5" href="https://youtu.be/bd2rsa_CbWY" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Abduction.png" alt="AR Experience Alien Abduction" loading="lazy" decoding="async"><div class="project-description">
+                        <img class="project-icon" src="../Assets/Images/AR.png" alt="Unity Icon">
+                        <h3>AR Experience Alien Abduction</h3>
+                        <label>Made With ARFoundation</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                </div>
+
+                <div class="project-container4">
+                    <a class="project-box" id="Uproject6" href="https://youtu.be/6TZvvxwwaMo" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/VuforiaC.png" alt="AR Experience Vuforia Components" loading="lazy" decoding="async"><div class="project-description">
+                        <img class="project-icon" src="../Assets/Images/VuforiaWhite.png" alt="Unity Icon">
+                        <h3>AR Experience Vuforia Components</h3>
+                        <label>Made With Vuforia</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                    <a class="project-box" id="Uproject7" href="https://youtu.be/P97FeD85Css" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Shooter.png" alt="AR Experience Shooter" loading="lazy" decoding="async"><div class="project-description">
+                        <img class="project-icon" src="../Assets/Images/VuforiaWhite.png">
+                        <h3>AR Experience Shooter</h3>
+                        <label>Made With Unity & Vuforia</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+
+
+                </div>
+
+                <div class="project-container5">
+                    <a class="project-box" id="Uproject9" href="https://youtu.be/AVCLFNbJQ58" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/VROXXO.png" alt="VR Experience In OXXO 3D Model" loading="lazy" decoding="async"><div class="project-description">
+                        <img class="project-icon" src="../Assets/Images/steamVR.png">
+                        <h3>VR Experience In OXXO 3D Model</h3>
+                        <label>Made With Unity & SteamVR</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                    <a class="project-box" id="Uproject10" href="https://youtu.be/J0kA1nhzyYY" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/VRCAR.png" alt="VR Experience Assembling A Car" loading="lazy" decoding="async"><div class="project-description">
+                        <img class="project-icon" src="../Assets/Images/steamVR.png">
+                        <h3>VR Experience Assembling A Car</h3>
+                        <label>Made With Unity & SteamVR</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                </div>
+
+                <button id="ver-mas-btn">Ver más</button>
+            </section>
+
+            <!-----------------------------SECTION Blender PROJECTS------------------------------------------>
+            <section class="section" id="blender">
+                <div class="top-header">
+                    <h1>Blender Projects</h1>
+                    <span>Explore the projects below. Select a card to open the full experience.</span>
+                </div>
+
+                <div class="project-container">
+                    <a class="project-box" id="project1" href="https://youtube.com/shorts/gSRnQISudSc" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Lego3D.png" alt="Lego 3D Model" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="M12.51 13.214c.046-.8.438-1.506 1.03-2.006a3.424 3.424 0 0 1 2.212-.79c.85 0 1.631.3 2.211.79.592.5.983 1.206 1.028 2.005.045.823-.285 1.586-.865 2.153a3.389 3.389 0 0 1-2.374.938 3.393 3.393 0 0 1-2.376-.938c-.58-.567-.91-1.33-.865-2.152M7.35 14.831c.006.314.106.922.256 1.398a7.372 7.372 0 0 0 1.593 2.757 8.227 8.227 0 0 0 2.787 2.001 8.947 8.947 0 0 0 3.66.76 8.964 8.964 0 0 0 3.657-.772 8.285 8.285 0 0 0 2.785-2.01 7.428 7.428 0 0 0 1.592-2.762 6.964 6.964 0 0 0 .25-3.074 7.123 7.123 0 0 0-1.016-2.779 7.764 7.764 0 0 0-1.852-2.043h.002L13.566 2.55l-.02-.015c-.492-.378-1.319-.376-1.86.002-.547.382-.609 1.015-.123 1.415l-.001.001 3.126 2.543-9.53.01h-.013c-.788.001-1.545.518-1.695 1.172-.154.665.38 1.217 1.2 1.22V8.9l4.83-.01-8.62 6.617-.034.025c-.813.622-1.075 1.658-.563 2.313.52.667 1.625.668 2.447.004L7.414 14s-.069.52-.063.831zm12.09 1.741c-.97.988-2.326 1.548-3.795 1.55-1.47.004-2.827-.552-3.797-1.538a4.51 4.51 0 0 1-1.036-1.622 4.282 4.282 0 0 1 .282-3.519 4.702 4.702 0 0 1 1.153-1.371c.942-.768 2.141-1.183 3.396-1.185 1.256-.002 2.455.41 3.398 1.175.48.391.87.854 1.152 1.367a4.28 4.28 0 0 1 .522 1.706 4.236 4.236 0 0 1-.239 1.811 4.54 4.54 0 0 1-1.035 1.626" />
+                        </svg>
+                        <h3>Lego 3D Model</h3>
+                        <label>Made With Blender</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+                    <a class="project-box" id="project2" href="https://youtube.com/shorts/illV7EX43V0" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/AlienIMG.jpg" alt="Alien 3D Model" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="M12.51 13.214c.046-.8.438-1.506 1.03-2.006a3.424 3.424 0 0 1 2.212-.79c.85 0 1.631.3 2.211.79.592.5.983 1.206 1.028 2.005.045.823-.285 1.586-.865 2.153a3.389 3.389 0 0 1-2.374.938 3.393 3.393 0 0 1-2.376-.938c-.58-.567-.91-1.33-.865-2.152M7.35 14.831c.006.314.106.922.256 1.398a7.372 7.372 0 0 0 1.593 2.757 8.227 8.227 0 0 0 2.787 2.001 8.947 8.947 0 0 0 3.66.76 8.964 8.964 0 0 0 3.657-.772 8.285 8.285 0 0 0 2.785-2.01 7.428 7.428 0 0 0 1.592-2.762 6.964 6.964 0 0 0 .25-3.074 7.123 7.123 0 0 0-1.016-2.779 7.764 7.764 0 0 0-1.852-2.043h.002L13.566 2.55l-.02-.015c-.492-.378-1.319-.376-1.86.002-.547.382-.609 1.015-.123 1.415l-.001.001 3.126 2.543-9.53.01h-.013c-.788.001-1.545.518-1.695 1.172-.154.665.38 1.217 1.2 1.22V8.9l4.83-.01-8.62 6.617-.034.025c-.813.622-1.075 1.658-.563 2.313.52.667 1.625.668 2.447.004L7.414 14s-.069.52-.063.831zm12.09 1.741c-.97.988-2.326 1.548-3.795 1.55-1.47.004-2.827-.552-3.797-1.538a4.51 4.51 0 0 1-1.036-1.622 4.282 4.282 0 0 1 .282-3.519 4.702 4.702 0 0 1 1.153-1.371c.942-.768 2.141-1.183 3.396-1.185 1.256-.002 2.455.41 3.398 1.175.48.391.87.854 1.152 1.367a4.28 4.28 0 0 1 .522 1.706 4.236 4.236 0 0 1-.239 1.811 4.54 4.54 0 0 1-1.035 1.626" />
+                        </svg>
+                        <h3>Alien 3D Model</h3>
+                        <label>Made With Blender</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+                    <a class="project-box" id="project3" href="https://youtube.com/shorts/VUm09i6QVnI" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/University.png" alt="University Mascot 3D Model" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="M12.51 13.214c.046-.8.438-1.506 1.03-2.006a3.424 3.424 0 0 1 2.212-.79c.85 0 1.631.3 2.211.79.592.5.983 1.206 1.028 2.005.045.823-.285 1.586-.865 2.153a3.389 3.389 0 0 1-2.374.938 3.393 3.393 0 0 1-2.376-.938c-.58-.567-.91-1.33-.865-2.152M7.35 14.831c.006.314.106.922.256 1.398a7.372 7.372 0 0 0 1.593 2.757 8.227 8.227 0 0 0 2.787 2.001 8.947 8.947 0 0 0 3.66.76 8.964 8.964 0 0 0 3.657-.772 8.285 8.285 0 0 0 2.785-2.01 7.428 7.428 0 0 0 1.592-2.762 6.964 6.964 0 0 0 .25-3.074 7.123 7.123 0 0 0-1.016-2.779 7.764 7.764 0 0 0-1.852-2.043h.002L13.566 2.55l-.02-.015c-.492-.378-1.319-.376-1.86.002-.547.382-.609 1.015-.123 1.415l-.001.001 3.126 2.543-9.53.01h-.013c-.788.001-1.545.518-1.695 1.172-.154.665.38 1.217 1.2 1.22V8.9l4.83-.01-8.62 6.617-.034.025c-.813.622-1.075 1.658-.563 2.313.52.667 1.625.668 2.447.004L7.414 14s-.069.52-.063.831zm12.09 1.741c-.97.988-2.326 1.548-3.795 1.55-1.47.004-2.827-.552-3.797-1.538a4.51 4.51 0 0 1-1.036-1.622 4.282 4.282 0 0 1 .282-3.519 4.702 4.702 0 0 1 1.153-1.371c.942-.768 2.141-1.183 3.396-1.185 1.256-.002 2.455.41 3.398 1.175.48.391.87.854 1.152 1.367a4.28 4.28 0 0 1 .522 1.706 4.236 4.236 0 0 1-.239 1.811 4.54 4.54 0 0 1-1.035 1.626" />
+                        </svg>
+                        <h3>University Mascot 3D Model</h3>
+                        <label>Made With Blender</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+                </div>
+
+                <div class="project-container2">
+                    <a class="project-box" id="project4" href="https://youtube.com/shorts/I-UzIeOrLEM" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/CarroLowPolly2.png" alt="LowPoly Car 3D Model" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="M12.51 13.214c.046-.8.438-1.506 1.03-2.006a3.424 3.424 0 0 1 2.212-.79c.85 0 1.631.3 2.211.79.592.5.983 1.206 1.028 2.005.045.823-.285 1.586-.865 2.153a3.389 3.389 0 0 1-2.374.938 3.393 3.393 0 0 1-2.376-.938c-.58-.567-.91-1.33-.865-2.152M7.35 14.831c.006.314.106.922.256 1.398a7.372 7.372 0 0 0 1.593 2.757 8.227 8.227 0 0 0 2.787 2.001 8.947 8.947 0 0 0 3.66.76 8.964 8.964 0 0 0 3.657-.772 8.285 8.285 0 0 0 2.785-2.01 7.428 7.428 0 0 0 1.592-2.762 6.964 6.964 0 0 0 .25-3.074 7.123 7.123 0 0 0-1.016-2.779 7.764 7.764 0 0 0-1.852-2.043h.002L13.566 2.55l-.02-.015c-.492-.378-1.319-.376-1.86.002-.547.382-.609 1.015-.123 1.415l-.001.001 3.126 2.543-9.53.01h-.013c-.788.001-1.545.518-1.695 1.172-.154.665.38 1.217 1.2 1.22V8.9l4.83-.01-8.62 6.617-.034.025c-.813.622-1.075 1.658-.563 2.313.52.667 1.625.668 2.447.004L7.414 14s-.069.52-.063.831zm12.09 1.741c-.97.988-2.326 1.548-3.795 1.55-1.47.004-2.827-.552-3.797-1.538a4.51 4.51 0 0 1-1.036-1.622 4.282 4.282 0 0 1 .282-3.519 4.702 4.702 0 0 1 1.153-1.371c.942-.768 2.141-1.183 3.396-1.185 1.256-.002 2.455.41 3.398 1.175.48.391.87.854 1.152 1.367a4.28 4.28 0 0 1 .522 1.706 4.236 4.236 0 0 1-.239 1.811 4.54 4.54 0 0 1-1.035 1.626" />
+                        </svg>
+                        <h3>LowPoly Car 3D Model</h3>
+                        <label>Made With Blender</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+                    <a class="project-box" id="project5" href="https://youtube.com/shorts/xccC4h1vJyc" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/AirPlane.png" alt="Lowpoly Airplane 3D model" loading="lazy" decoding="async"><div class="project-description">
+                        <svg class="project-icon" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="currentColor"
+                                d="M12.51 13.214c.046-.8.438-1.506 1.03-2.006a3.424 3.424 0 0 1 2.212-.79c.85 0 1.631.3 2.211.79.592.5.983 1.206 1.028 2.005.045.823-.285 1.586-.865 2.153a3.389 3.389 0 0 1-2.374.938 3.393 3.393 0 0 1-2.376-.938c-.58-.567-.91-1.33-.865-2.152M7.35 14.831c.006.314.106.922.256 1.398a7.372 7.372 0 0 0 1.593 2.757 8.227 8.227 0 0 0 2.787 2.001 8.947 8.947 0 0 0 3.66.76 8.964 8.964 0 0 0 3.657-.772 8.285 8.285 0 0 0 2.785-2.01 7.428 7.428 0 0 0 1.592-2.762 6.964 6.964 0 0 0 .25-3.074 7.123 7.123 0 0 0-1.016-2.779 7.764 7.764 0 0 0-1.852-2.043h.002L13.566 2.55l-.02-.015c-.492-.378-1.319-.376-1.86.002-.547.382-.609 1.015-.123 1.415l-.001.001 3.126 2.543-9.53.01h-.013c-.788.001-1.545.518-1.695 1.172-.154.665.38 1.217 1.2 1.22V8.9l4.83-.01-8.62 6.617-.034.025c-.813.622-1.075 1.658-.563 2.313.52.667 1.625.668 2.447.004L7.414 14s-.069.52-.063.831zm12.09 1.741c-.97.988-2.326 1.548-3.795 1.55-1.47.004-2.827-.552-3.797-1.538a4.51 4.51 0 0 1-1.036-1.622 4.282 4.282 0 0 1 .282-3.519 4.702 4.702 0 0 1 1.153-1.371c.942-.768 2.141-1.183 3.396-1.185 1.256-.002 2.455.41 3.398 1.175.48.391.87.854 1.152 1.367a4.28 4.28 0 0 1 .522 1.706 4.236 4.236 0 0 1-.239 1.811 4.54 4.54 0 0 1-1.035 1.626" />
+                        </svg>
+                        <h3>Lowpoly Airplane 3D model</h3>
+                        <label>Made With Blender</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+
+                </div>
+            </section>
+
+            <section class="section" id="Video">
+                <div class="top-header">
+                    <h1>Video Editing</h1>
+                    <span>Explore the projects below. Select a card to open the full experience.</span>
+                </div>
+
+                <div class="project-container">
+                    <a class="project-box" id="Uproject1-1" href="https://www.tiktok.com/@brandon_tavaresss" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Brandon.jpg" alt="@brandon_tavaresss" loading="lazy" decoding="async"><div class="project-description">
+                        <i class="uil uil-video"></i>
+                        <h3>@brandon_tavaresss</h3>
+                        <label>TikTok & Instagram</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+                    <a class="project-box" id="Uproject2-1" href="https://www.instagram.com/carmenbauza_saludybelleza/" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Carmen.jpg" alt="@Carmenbauza_saludybelleza" loading="lazy" decoding="async"><div class="project-description">
+                        <i class="uil uil-instagram"></i>
+                        <h3>@Carmenbauza_saludybelleza</h3>
+                        <label>Instagram Reels</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+                    <a class="project-box" id="Uproject3-1" href="https://www.youtube.com/@Quehubierapasadosioficial" target="_blank" rel="noopener noreferrer"><img class="project-cover" src="../Assets/Images/Quehubierapasadosi.jpg" alt="Que Hubiera Pasado Si" loading="lazy" decoding="async"><div class="project-description">
+                        <i class="uil uil-youtube"></i>
+                        <h3>Que Hubiera Pasado Si</h3>
+                        <label>YouTube</label>
+                    <span class="project-action">Explore project <i class="uil uil-arrow-up-right"></i></span></div></a>
+                </div>
+            </section>
+
+
+            <!-----------------------------SECTION CONTACT------------------------------------------>
+            <section class="section" id="contact">
+                <div class="top-header">
+                    <h1>Get in Touch</h1>
+                    <span>Do you have a project in your mind?, contact me here!</span>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="contact-info">
+                            <h2> Find Me <i class="uil uil-corner-right-down"></i></h2>
+                            <a href="mailto:floresnunezuriel@gmail.com"><i class="uil uil-envelope"></i> floresnunezuriel@gmail.com</a>
+                            <a href="tel:+524771263259"><i class="uil uil-phone"></i> +52 477 126 3259</a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="contact-invite"><span class="home-eyebrow">LET’S BUILD SOMETHING</span><h3>Your next idea<br>starts with a hello<span>.</span></h3><p>Web systems, immersive experiences or a creative collaboration — tell me what you have in mind.</p><a class="btn blue-btn" href="mailto:floresnunezuriel@gmail.com">Write to me <i class="uil uil-message"></i></a></div>
+                    </div>
+                </div>
+            </section>
+            <!-----------------------------FOOTER------------------------------------------>
+            <footer id="1">
+                <div class="top-footer">
+                    <p>Uriel Flores .</p>
+                </div>
+                <div class="middle-footer">
+                    <ul class="footer_menu">
+                        <li class="footer_menu_list">
+                            <a href="#home"> Home </a>
+                        </li>
+                        <li class="footer_menu_list">
+                            <a href="#about"> About </a>
+                        </li>
+                        <li class="footer_menu_list">
+                            <a href="#journey"> Journey </a>
+                        </li>
+                        <li class="footer_menu_list">
+                            <a href="#projects"> Projects </a>
+                        </li>
+                        <li class="footer_menu_list">
+                            <a href="#contact"> Contact </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-social-icons">
+                    <ul class="example-2">
+                        <li class="icon-content">
+                            <a href="https://www.linkedin.com/in/urielfloresdev/" aria-label="Linkedin"
+                                data-social="linkedin">
+                                <div class="filled"></div>
+                                <i class="uil uil-linkedin"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="example-2">
+                        <li class="icon-content">
+                            <a href="https://www.youtube.com/channel/UC_QY_geiGRC_5t9x_Ww9YIA" aria-label="YouTube"
+                                data-social="youtube">
+                                <div class="filled"></div>
+                                <i class="uil uil-youtube"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="example-2">
+                        <li class="icon-content">
+                            <a href="https://github.com/UrielNunez" aria-label="GitHub" data-social="github">
+                                <div class="filled"></div>
+                                <i class="uil uil-github-alt"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bottom-footer">
+                    <p> Copyright &copy; <a href="#home" style="text-decoration: none;">Uriel Flores</a> - All rights
+                        reserved</p>
+                </div>
+            </footer>
+        </main>
+    </div>
+    <!-----------------------------LEGO DOCK------------------------------------------>
+    <aside class="lego-dock" aria-label="Animated LEGO character">
+        <div class="lego-stage" id="legoStage">
+            <canvas class="lego-canvas" id="legoCanvas" aria-label="Animated LEGO character"></canvas>
+            <div class="lego-welcome" id="legoWelcome" role="status" aria-live="polite">
+                <span>Hello, I’m Uriel Flores. Welcome to my web portfolio. Here you can find information about my projects and my journey as a developer.</span>
             </div>
-        </section>
-        <section class="projects section" id="proyectos">
-            <div class="section-code">03 / PROYECTOS</div>
-            <header class="section-title reveal"><div><p class="kicker"><i></i> Selected worlds</p><h2>Experiencias que viven más allá de una pantalla estática.</h2></div><p>Una selección de proyectos web, Unity, realidad aumentada y mundos 3D.</p></header>
-            <div class="project-list">
-                <a class="project-card wide reveal" href="https://urielnunez.github.io/UnityPortfolio/" target="_blank" rel="noreferrer"><img src="../Assets/Images/PortfolioUnity.png" alt="Mundo 3D del portafolio Unity"><div class="project-overlay"><span>01 · UNITY / WEBGL / BLENDER</span><h3>Portfolio World</h3><p>Un portafolio que se recorre como mundo interactivo.</p><b>Explorar experiencia ↗</b></div></a>
-                <a class="project-card reveal" href="https://urielnunez.github.io/PortafolioWebAR/" target="_blank" rel="noreferrer"><img src="../Assets/Images/Tarjeta.PNG" alt="Tarjeta interactiva de realidad aumentada"><div class="project-overlay"><span>02 · WEBAR / MINDAR</span><h3>Business Card AR</h3><p>Una identidad impresa que abre una capa digital.</p><b>Abrir AR ↗</b></div></a>
-                <a class="project-card reveal" href="https://youtu.be/KpOluCbwejo" target="_blank" rel="noreferrer"><img src="../Assets/Images/Runner.png" alt="Videojuego Runner construido con Unity"><div class="project-overlay"><span>03 · UNITY / GAME DESIGN</span><h3>Runner Game</h3><p>Mecánicas, ritmo y experiencia construidas en Unity.</p><b>Ver gameplay ↗</b></div></a>
-                <a class="project-card wide reveal" href="https://thebigday.mx/" target="_blank" rel="noreferrer"><img src="../Assets/Images/thebigday.png" alt="Sitio web TheBigDay"><div class="project-overlay"><span>04 · FULL STACK / PRODUCT</span><h3>TheBigDay</h3><p>Desarrollo web en equipo, desde implementación hasta despliegue.</p><b>Visitar proyecto ↗</b></div></a>
+            <div class="lego-status" id="legoStatus" role="status" aria-label="Loading 3D character">
+                <span class="lego-loader" aria-hidden="true"><i></i><i></i><i></i></span>
             </div>
-        </section>
-        <section class="process section"><div class="section-code">04 / PROCESO</div><div class="process-grid reveal"><div><p class="kicker"><i></i> Cómo construyo</p><h2>No comienzo con código. Comienzo con una pregunta.</h2></div><ol><li><span>01</span><div><h3>Entender</h3><p>Escuchar, observar el contexto y definir el problema correcto.</p></div></li><li><span>02</span><div><h3>Dar forma</h3><p>Diagramar, prototipar y volver visible la idea antes de construir.</p></div></li><li><span>03</span><div><h3>Crear</h3><p>Conectar código, interacción y diseño en una experiencia coherente.</p></div></li><li><span>04</span><div><h3>Probar y evolucionar</h3><p>Validar con personas, documentar y mejorar a partir del uso real.</p></div></li></ol></div></section>
-        <section class="contact section" id="contacto"><div class="contact-light"></div><p class="kicker"><i></i> Nueva misión disponible</p><h2>Construyamos una idea que todavía no existe.</h2><div class="contact-actions"><a href="mailto:floresnunezuriel@gmail.com">floresnunezuriel@gmail.com <span>↗</span></a><div><a href="https://www.linkedin.com/in/urielfloresdev/" target="_blank">LinkedIn</a><a href="https://github.com/UrielNunez" target="_blank">GitHub</a><a href="https://www.youtube.com/channel/UC_QY_geiGRC_5t9x_Ww9YIA" target="_blank">YouTube</a></div></div></section>
-    </main>
-    <footer><span>Uriel Flores · Creative Developer</span><span>Software / Games / Immersive / 3D</span><span>© 2026</span></footer>
-    <aside class="mascot" aria-label="Mascota LEGO animada"><canvas id="mascot-canvas"></canvas><span id="mascot-status">Loading character…</span></aside>
-    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.1/build/three.module.js"}}</script>
-    <script src="./redesign.js"></script><script type="module" src="./experience.js"></script>
-</body></html>
+        </div>
+    </aside>
+    <!-----------------------------3D MODELS----------------------------------------->
+    <!-----------------------------3D INTRO / APP BOOTSTRAP------------------------------------------>
+    <script type="module" src="./intro.js?v=4"></script>
+</body>
+
+</html>

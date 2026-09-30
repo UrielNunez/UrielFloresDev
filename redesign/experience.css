@@ -1,0 +1,201 @@
+body.intro-pending{
+    overflow: hidden;
+}
+body.intro-pending > .Container{
+    visibility: visible;
+    transform: translate3d(0, var(--portfolio-intro-y, 108vh), 0);
+    will-change: transform;
+}
+body.intro-pending > .lego-dock{
+    visibility: hidden;
+}
+.spiderman-intro{
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: transparent;
+    --intro-backdrop-opacity: 1;
+    opacity: 1;
+    transition: opacity .7s ease, visibility .7s ease;
+}
+.spiderman-intro::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 44%, rgba(30, 159, 171, .14), transparent 35%),
+        var(--body-color);
+    opacity: var(--intro-backdrop-opacity);
+}
+.spiderman-intro.is-leaving{
+    opacity: 0;
+    visibility: hidden;
+}
+#spidermanIntroCanvas{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+.spiderman-intro__loading{
+    position: absolute;
+    bottom: clamp(28px, 6vh, 64px);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255,255,255,.72);
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    transition: opacity .3s ease;
+    z-index: 2;
+}
+.spiderman-intro__loading.is-hidden{ opacity: 0; }
+.spiderman-intro__mark{ display: flex; gap: 5px; }
+.spiderman-intro__mark i{
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: var(--tex-color-third);
+    animation: intro-pulse 1s ease-in-out infinite;
+}
+.spiderman-intro__mark i:nth-child(2){ animation-delay: .14s; background: var(--third-color); }
+.spiderman-intro__mark i:nth-child(3){ animation-delay: .28s; background: var(--first-color); }
+.spiderman-intro__skip{
+    position: absolute;
+    top: clamp(18px, 4vw, 36px);
+    right: clamp(18px, 4vw, 42px);
+    padding: 9px 15px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 999px;
+    color: rgba(255,255,255,.75);
+    background: rgba(20,20,20,.45);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 2;
+}
+.spiderman-intro__skip:hover{ color: white; border-color: rgba(30,159,171,.65); }
+@keyframes intro-pulse{
+    0%,100%{ transform: translateY(0); opacity: .45; }
+    50%{ transform: translateY(-6px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce){
+    .spiderman-intro__mark i{ animation: none; opacity: 1; }
+    .spiderman-intro{ transition-duration: .2s; }
+}
+.lego-dock{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 110;
+    width: 100%;
+    height: clamp(150px, 22vh, 220px);
+    pointer-events: none;
+}
+.lego-stage{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    background: transparent;
+}
+.lego-canvas{
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.lego-status{
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: calc(100% - 32px);
+    text-align: center;
+    color: var(--color-white);
+}
+.lego-status.is-hidden{
+    display: none;
+}
+.lego-welcome{
+    position: absolute;
+    left: 50%;
+    bottom: min(190px, 88%);
+    width: min(350px, calc(100% - 32px));
+    padding: 13px 16px;
+    border: 1px solid rgba(30, 159, 171, .42);
+    border-radius: 16px 16px 4px 16px;
+    background: rgba(27, 27, 27, .94);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .26);
+    color: var(--color-white);
+    font-size: clamp(12px, 1.1vw, 14px);
+    line-height: 1.42;
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(.98);
+    transform-origin: bottom center;
+    transition: opacity .35s ease, transform .35s ease;
+    z-index: 2;
+}
+.lego-welcome::after{
+    content: '';
+    position: absolute;
+    left: calc(50% - 8px);
+    bottom: -8px;
+    width: 15px;
+    height: 15px;
+    background: inherit;
+    border-right: inherit;
+    border-bottom: inherit;
+    transform: rotate(45deg);
+}
+.lego-welcome.is-visible{
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+}
+
+/* Small assembling bricks echo the character and portfolio accent colors. */
+.lego-loader{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 18px 22px;
+    border: 1px solid rgba(30, 159, 171, .25);
+    border-radius: 18px;
+    background: rgba(27, 27, 27, .88);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .18);
+}
+.lego-loader i{
+    position: relative;
+    display: block;
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    background: var(--tex-color-third);
+    animation: lego-build 1.2s ease-in-out infinite;
+}
+.lego-loader i::before{
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 3px;
+    top: -3px;
+    left: 3px;
+    border-radius: 2px 2px 0 0;
+    background: inherit;
+}
+.lego-loader i:nth-child(2){ background: var(--third-color); animation-delay: .15s; }
+.lego-loader i:nth-child(3){ background: var(--first-color); animation-delay: .3s; }
+@keyframes lego-build{
+    0%, 70%, 100%{ transform: translateY(0); opacity: .55; }
+    35%{ transform: translateY(-9px); opacity: 1; }
+}
+:root { --body-color: #08090d; --color-white: #fff; --tex-color-third: #2ad7e3; --third-color: #c0a631; --first-color: #7357ff; }
+@media(max-width:540px){.lego-dock{height:clamp(130px,18vh,150px)}.lego-welcome{bottom:125px;width:min(320px,calc(100% - 28px));font-size:12px}}
+@media(max-height:600px){.lego-dock{height:115px}}
