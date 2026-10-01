@@ -1,15 +1,39 @@
 /*---------------NAVIGATION BAR FUNCTION------------------*/
+document.querySelectorAll('[data-collection-toggle]').forEach(button => {
+    const grid = document.getElementById(button.dataset.collectionToggle);
+    if (!grid) return;
+    const extraCards = Array.from(grid.children).slice(3);
+    const label = button.querySelector('span');
+    button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') !== 'true';
+        extraCards.forEach(card => { card.hidden = !expanded; });
+        button.setAttribute('aria-expanded', String(expanded));
+        label.textContent = expanded ? 'Show less' : `Show more (${extraCards.length})`;
+        if (!expanded) button.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+        scrollActive();
+    });
+});
+
 const navMenu = document.getElementById('myNavMenu');
 const menuToggle = document.getElementById('menuToggle');
 const hamburgerIcon = document.getElementById('hamburgerIcon');
+const navBackdrop = document.getElementById('navBackdrop');
+const pageContent = document.querySelector('main');
+const pageFooter = document.querySelector('footer');
 
 function setMenuState(isOpen) {
     navMenu.classList.toggle('responsive', isOpen);
     menuToggle.setAttribute('aria-expanded', isOpen);
     menuToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
-    hamburgerIcon.className = isOpen ? 'uil uil-times' : 'uil uil-bars';
+    hamburgerIcon.className = 'menu-lines';
+    menuToggle.querySelector('.menu-toggle-label').textContent = isOpen ? 'Close' : 'Menu';
     document.body.classList.toggle('menu-open', isOpen);
+    navBackdrop.hidden = !isOpen;
+    pageContent.inert = isOpen;
+    pageFooter.inert = isOpen;
 }
+
+navBackdrop.addEventListener('click', () => { setMenuState(false); menuToggle.focus(); });
 
 menuToggle.addEventListener('click', () => {
     setMenuState(!navMenu.classList.contains('responsive'));
@@ -20,7 +44,15 @@ navMenu.querySelectorAll('.nav-link').forEach(link => {
 });
 
 document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') setMenuState(false);
+    if (event.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+        setMenuState(false); menuToggle.focus();
+    }
+    if (event.key === 'Tab' && menuToggle.getAttribute('aria-expanded') === 'true') {
+        const items = [...navMenu.querySelectorAll('a'), menuToggle];
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
 });
 
 window.addEventListener('resize', () => {
@@ -179,19 +211,21 @@ ScrollReveal().reveal('#model-box2', {
 const sections = document.querySelectorAll('section[id]');
 
 function scrollActive() {
-    const scrollY = window.scrollY;
-    sections.forEach(current => {
-        const sectionHeight = current.offsetHeight,
-            sectionTop = current.offsetTop - 50,
-            sectionId = current.getAttribute('id');
-        if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-            document.querySelector('.nav-menu a[href*="' + sectionId + '"]').classList.add('active-link');
-        } else {
-            document.querySelector('.nav-menu a[href*="' + sectionId + '"]').classList.remove('active-link');
-        }
+    const links = [...navMenu.querySelectorAll('.nav-link')];
+    let active = links[0];
+    links.forEach(link => {
+        const target = document.getElementById(link.hash.slice(1));
+        if (target && target.getBoundingClientRect().top <= 130) active = link;
+    });
+    links.forEach(link => {
+        link.classList.toggle('active-link', link === active);
+        if (link === active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
     });
 }
 window.addEventListener('scroll', scrollActive);
+window.addEventListener('resize', scrollActive);
+scrollActive();
 
 // Selecciona todos los elementos con el atributo data-title
 document.querySelectorAll('[data-title]').forEach(element => {
@@ -240,29 +274,6 @@ abrirEnNuevaPestaña('Uproject2-1', 'https://www.instagram.com/carmenbauza_salud
 abrirEnNuevaPestaña('Uproject3-1', 'https://www.youtube.com/@Quehubierapasadosioficial');
 
 
-
-document.getElementById('ver-mas-btn').addEventListener('click', function () {
-    // Mostrar los contenedores ocultos
-    document.querySelector('.project-container3').style.display = 'grid';
-    document.querySelector('.project-container4').style.display = 'grid';
-    document.querySelector('.project-container5').style.display = 'grid';
-
-    // Ocultar el botón "Ver más"
-    this.style.display = 'none';
-    /*---------------SECTION PROJECT------------------*/
-    ScrollReveal().reveal('.project-container3, .project-container5', {
-        origin: 'left',
-        distance: '24px',
-        duration: 700,
-        reset: false
-    });
-    ScrollReveal().reveal('.project-container4', {
-        origin: 'right',
-        distance: '24px',
-        duration: 700,
-        reset: false
-    });
-});
 
 document.querySelectorAll('.project-box').forEach(box => {
     box.addEventListener('touchstart', function() {
