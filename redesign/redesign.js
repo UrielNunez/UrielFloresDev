@@ -1,17 +1,87 @@
-/*---------------NAVIGATION BAR FUNCTION------------------*/
+// Reversible collection motion; observe stable card bounds, animate only their contents.
+const collectionMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const collectionMobile = window.matchMedia('(max-width: 600px)');
+const collectionAnimations = new Map();
+const collectionVisible = new WeakMap();
+function animateCollection(card, visible) {
+    if (collectionVisible.get(card) === visible) return;
+    collectionVisible.set(card, visible);
+    if (collectionMotion.matches) return;
+    const index = Array.from(card.parentElement.children).indexOf(card);
+    const columns = getComputedStyle(card.parentElement).gridTemplateColumns.split(' ').length;
+    const stagger = visible ? (index % Math.max(1, columns)) * 70 : 0;
+    const credential = card.classList.contains('credential-card');
+    const elements = credential
+        ? card.querySelectorAll('.credential-top, h3, a')
+        : card.children;
+    Array.from(elements).forEach((element, i) => {
+        if (!element.animate) return;
+        const previous = collectionAnimations.get(element);
+        const current = getComputedStyle(element);
+        const from = previous ? { opacity: current.opacity, transform: current.transform } : null;
+        previous?.cancel();
+        const offset = credential
+            ? 'translateY(8px)'
+            : card.closest('#blender') ? 'translateY(-10px)' : `translateX(${index % 2 ? 10 : -10}px)`;
+        const shown = { opacity: 1, transform: 'none' };
+        const hidden = { opacity: visible ? 0 : .35, transform: offset };
+        const animation = element.animate([from || (visible ? hidden : shown), visible ? shown : hidden], {
+            duration: visible ? 650 : 320,
+            delay: visible ? stagger : 0,
+            easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both'
+        });
+        collectionAnimations.set(element, animation);
+    });
+}
+const collectionObserver = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        const card = entry.target;
+        if (card.hidden) return;
+        if (entry.intersectionRatio >= .18) animateCollection(card, true);
+        else if (entry.intersectionRatio <= .05 && collectionVisible.get(card)) {
+            if (!card.contains(document.activeElement)) animateCollection(card, false);
+        }
+    });
+}, { threshold: [0, .05, .18], rootMargin: '-8% 0px -8% 0px' }) : null;
+document.querySelectorAll('#certifications .credential-card, #projects .gallery-card, #blender .gallery-card').forEach(card => {
+    collectionObserver?.observe(card);
+    card.addEventListener('focusin', () => animateCollection(card, true));
+});
+collectionMotion.addEventListener('change', () => {
+    collectionAnimations.forEach(animation => animation.cancel());
+    collectionAnimations.clear();
+});
+
+/*---------------COLLECTION BUTTONS------------------*/
 document.querySelectorAll('[data-collection-toggle]').forEach(button => {
     const grid = document.getElementById(button.dataset.collectionToggle);
     if (!grid) return;
-    const extraCards = Array.from(grid.children).slice(3);
+    const cards = Array.from(grid.children);
     const label = button.querySelector('span');
+    const update = () => {
+        const initialCount = collectionMobile.matches ? 3 : 6;
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        cards.forEach((card, index) => {
+            const hidden = !expanded && index >= initialCount;
+            if (card.hidden !== hidden) {
+                collectionObserver?.unobserve(card);
+                card.hidden = hidden;
+                collectionVisible.delete(card);
+                if (!hidden) collectionObserver?.observe(card);
+            }
+        });
+        label.textContent = expanded ? 'Show less' : `Show more (${Math.max(0, cards.length - initialCount)})`;
+        button.hidden = cards.length <= initialCount;
+    };
     button.addEventListener('click', () => {
         const expanded = button.getAttribute('aria-expanded') !== 'true';
-        extraCards.forEach(card => { card.hidden = !expanded; });
         button.setAttribute('aria-expanded', String(expanded));
-        label.textContent = expanded ? 'Show less' : `Show more (${extraCards.length})`;
+        update();
         if (!expanded) button.scrollIntoView({ block: 'nearest', behavior: 'instant' });
         scrollActive();
     });
+    collectionMobile.addEventListener('change', update);
+    update();
 });
 
 const navMenu = document.getElementById('myNavMenu');
@@ -141,72 +211,6 @@ srRight.reveal('.skills-info', {
 srRight.reveal('.form-control', {
     delay: 100
 });
-/*---------------SECTION Certification------------------*/
-ScrollReveal().reveal('.IMGCertification', {
-    origin: 'top',
-    distance: '100px',
-    duration: 700,
-    reset: false
-});
-ScrollReveal().reveal('.H3Certi, .SPANCerti, .ACerti', {
-    origin: 'bottom',
-    distance: '100px',
-    duration: 3000,
-    delay: 300,
-    reset: false
-});
-/*---------------SECTION PROJECT------------------*/
-ScrollReveal().reveal('.project-container', {
-    origin: 'left',
-    distance: '24px',
-    duration: 700,
-    reset: false
-});
-ScrollReveal().reveal('.project-container2', {
-    origin: 'right',
-    distance: '24px',
-    duration: 700,
-    reset: false
-});
-/*---------------SECTION 3D MODEL------------------*/
-ScrollReveal().reveal('#Model1', {
-    origin: 'top',
-    distance: '500px',
-    duration: 2500,
-    delay: 500,
-    reset: false
-});
-ScrollReveal().reveal('#Model2', {
-    origin: 'top',
-    distance: '500px',
-    duration: 2500,
-    delay: 400,
-    reset: false
-});
-ScrollReveal().reveal('#Model3', {
-    origin: 'top',
-    distance: '500px',
-    duration: 2500,
-    delay: 300,
-    reset: false
-});
-ScrollReveal().reveal('#model-box3', {
-    origin: 'top',
-    distance: '500px',
-    delay: 500,
-    duration: 2500,
-    reset: false
-});
-ScrollReveal().reveal('#model-box2', {
-    origin: 'top',
-    distance: '500px',
-    duration: 2500,
-    delay: 400,
-    reset: false
-});
-
-
-
 /* ----- CHANGE ACTIVE LINK ----- */
 const sections = document.querySelectorAll('section[id]');
 

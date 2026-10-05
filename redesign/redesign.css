@@ -210,21 +210,34 @@ footer { margin-top: 20px; padding: 50px 20px 170px; background: #171b18; border
 .collection-toggle i { font-size: 21px; transition: transform .2s ease; }
 .collection-toggle[aria-expanded="true"] i { transform: rotate(180deg); }
 @media(prefers-reduced-motion:reduce) { .collection-toggle i { transition: none; } }
-.credential-card { display: flex; flex-direction: column; height: 300px; border: 1px solid #ffffff16; border-radius: 20px; padding: 26px; background: linear-gradient(135deg,#2a302a,#222623); box-shadow: 0 8px 20px #00000012; transition: border-color .2s,transform .2s; }
+.credential-card { display: flex; flex-direction: column; height: 430px; border: 1px solid #ffffff16; border-radius: 20px; padding: 26px; background: radial-gradient(ellipse at top,#c6ae4910,transparent 65%),#242925; box-shadow: 0 8px 20px #00000012; transition: border-color .3s,transform .3s; text-align: center; position: relative; }
 .credential-card:hover { border-color: #c6ae4970; transform: translateY(-4px); }
-.credential-top { display: flex; align-items: center; gap: 13px; }
-.credential-logo { width: 55px; height: 55px; flex: 0 0 55px; border: 1px solid #ffffff16; border-radius: 15px; background: #ffffff08; display: grid; place-items: center; }
-.credential-logo img { width: 42px; height: 42px; object-fit: contain; }
-.credential-top>i { margin-left: auto; color: var(--third-color); font-size: 24px; }
+.credential-grid { grid-auto-rows: 1fr; }
+.credential-card { height: auto; min-height: 325px; padding: 20px; }
+.credential-top { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.credential-logo { width: 105px; height: 80px; flex: 0 0 80px; display: grid; place-items: center; }
+.credential-logo img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px #0003); transition: transform .45s; }
+.credential-card:hover .credential-logo img { transform: translateY(-4px) scale(1.04); }
+.credential-top>i { position: absolute; top: 20px; right: 20px; color: var(--third-color); font-size: 22px; opacity: .65; }
 .credential-top>div:nth-child(2) { min-width: 0; }
 .credential-issuer { display: block; color: #e5ece5; font-size: 13px; font-weight: 800; }
 .credential-date { display: block; font-size: 10px; color: #a3b0a8; margin-top: 3px; }
-.credential-card h3 { font-size: 19px; line-height: 1.45; margin: 24px 0 18px; }
+.credential-card h3 { font-size: 16px; line-height: 1.4; margin: 14px 0; }
 .credential-card>a { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 17px; border-top: 1px solid #ffffff16; text-decoration: none; font-size: 12px; font-weight: 800; color: var(--second-color); }
 .gallery-card { min-height: 0; height: 370px; }
 .project-visual { height: 195px; flex: 0 0 195px; position: relative; overflow: hidden; background: #202621; }
 .project-visual .project-cover { width: 100%; height: 100%; object-fit: cover; transition: transform .45s; }
 .gallery-card:hover .project-cover { transform: scale(1.045); }
+.gallery-card .project-visual::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 40%,#147c8270); transform: translateY(100%); transition: transform .55s cubic-bezier(.22,1,.36,1); pointer-events: none; }
+.gallery-card:is(:hover,:focus-visible) .project-visual::after { transform: translateY(0); }
+.gallery-card:is(:hover,:focus-visible) .project-cover { transform: scale(1.07) translateY(-3px); filter: none; }
+.gallery-card .project-action i { transition: transform .3s; }
+.gallery-card:is(:hover,:focus-visible) .project-action i { transform: translate(3px,-3px); filter: none; }
+.gallery-card:focus-visible,.credential-card a:focus-visible { outline: 2px solid var(--second-color); outline-offset: 4px; }
+@media(prefers-reduced-motion:reduce) {
+    .credential-card,.credential-logo img,.gallery-card,.gallery-card .project-cover,.gallery-card .project-visual::after,.gallery-card .project-action i { transition: none!important; }
+    .credential-card:hover,.credential-card:hover .credential-logo img,.gallery-card:is(:hover,:focus-visible),.gallery-card:is(:hover,:focus-visible) .project-cover,.gallery-card:is(:hover,:focus-visible) .project-action i { transform: none; }
+}
 .project-index { position: absolute; top: 13px; left: 13px; border-radius: 9px; background: #1b221bdd; border: 1px solid #ffffff25; padding: 6px 10px; color: #eaf4e7; font-size: 11px; font-weight: 800; }
 .project-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 10px; background: radial-gradient(circle,#32625550,transparent 70%),#202821; }
 .project-placeholder i { font-size: 48px; color: var(--third-color); }
@@ -280,7 +293,43 @@ nav.header.is-scrolled { height: 68px; }
     .nav-button { display: none; }
     .nav-menu { left: 12px!important; right: 12px; top: 86px!important; padding: 20px!important; max-height: calc(100dvh - 102px); }
     .credential-grid,.gallery-grid { grid-template-columns: 1fr; gap: 18px; }
-    .credential-card { height: 290px; padding: 24px; }
+    .credential-card { height: auto; min-height: 310px; padding: 20px; }
     .gallery-card { height: 375px; }
 }
 @media(max-height:560px) and (max-width:1100px) { .mobile-menu-intro { display: none; } .nav-menu .nav-link { min-height: 52px; } }
+
+/* Collection layout: bounded media, natural text height, compact section rhythm. */
+#certifications,#projects,#blender { padding-block: 64px; scroll-margin-top: 88px; }
+#certifications .top-header,#projects .top-header,#blender .top-header { text-align: left; margin-bottom: 28px; }
+#certifications .top-header h1,#projects .top-header h1,#blender .top-header h1 { font-size: clamp(28px,3vw,38px); margin-bottom: 14px; }
+#certifications .top-header h1::after,#projects .top-header h1::after,#blender .top-header h1::after { margin-left: 0; left: 0; transform: none; }
+#certifications .collection-count,#projects .collection-count,#blender .collection-count { margin: 0 0 0 12px; vertical-align: middle; }
+.credential-grid,.gallery-grid { gap: 18px; grid-auto-rows: auto; }
+.credential-card { min-height: 0; height: auto; padding: 20px; border-radius: 16px; text-align: left; gap: 16px; overflow: hidden; }
+.credential-top { display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 14px; align-items: center; min-height: 64px; }
+.credential-logo { width: 64px; height: 64px; min-width: 0; background: #ffffff06; border-radius: 12px; padding: 5px; }
+.credential-logo img { display: block; width: 54px; height: 54px; max-width: 100%; object-fit: contain; }
+.credential-top>i { display: none; }
+.credential-issuer { font-size: 13px; }
+.credential-date { font-size: 11px; line-height: 1.5; }
+.credential-card h3 { font-size: 16px; line-height: 1.5; margin: 0; min-height: 48px; overflow-wrap: anywhere; }
+.credential-card>a { min-height: 38px; padding-top: 12px; gap: 10px; }
+.gallery-card { display: flex; flex-direction: column; height: auto; min-height: 0; gap: 0; border-radius: 16px; overflow: hidden; }
+.gallery-card .project-visual { height: auto; aspect-ratio: 16 / 8; flex: none; width: 100%; isolation: isolate; }
+.gallery-card .project-cover { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gallery-card .project-description { padding: 18px; gap: 9px; min-height: 152px; flex: 1; }
+.gallery-card .project-description h3 { font-size: 17px; line-height: 1.4; margin: 0!important; }
+.gallery-card .project-tech { margin: 0; line-height: 1.5; font-size: 12px; }
+.gallery-card .project-action { padding-top: 12px; border-top: 1px solid #ffffff12; line-height: 1.5; gap: 8px; }
+.gallery-card .project-index { z-index: 2; }
+.gallery-card:hover img,.gallery-card:hover i { filter: none; }
+.collection-controls { margin-top: 22px; }
+@media(max-width:600px) {
+    #certifications,#projects,#blender { padding-block: 42px; }
+    #certifications .top-header,#projects .top-header,#blender .top-header { margin-bottom: 22px; }
+    #certifications .collection-count,#projects .collection-count,#blender .collection-count { display: table; margin: 12px 0 0; }
+    .credential-card { padding: 17px; gap: 13px; min-height: 0; }
+    .credential-card h3 { min-height: 0; }
+    .gallery-card .project-visual { aspect-ratio: 16 / 8; }
+    .gallery-card .project-description { min-height: 0; padding: 17px; }
+}
