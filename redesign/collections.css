@@ -117,45 +117,24 @@ a.gallery-card:focus-visible .project-cover { transform: none; }
     a.gallery-card.project-box:hover,a.gallery-card:hover .project-cover,a.gallery-card:hover .project-action i { transform: none; }
 }
 
-/* Let the real badges and project imagery carry the sections. */
-#certifications .credential-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
-#certifications .credential-card { min-height: 188px; border-radius: 13px; border-color: #d5c47a36; background: linear-gradient(130deg,#303027,#242826 65%); }
-#certifications .credential-card:nth-child(-n+2) { display: flex; flex-direction: column; min-height: 345px; align-items: center; text-align: center; background: radial-gradient(circle at 50% 32%,#d4c47529,transparent 48%),#252a27; border-color: #d5c47a55; }
-#certifications .credential-card:nth-child(-n+2) .credential-top { display: contents; }
-#certifications .credential-card:nth-child(-n+2) .credential-top > div:nth-child(2) { order: 2; }
-#certifications .credential-card:nth-child(-n+2) .credential-logo { width: 154px; height: 154px; margin: 2px 0 0; }
-#certifications .credential-card:nth-child(-n+2) .credential-logo img { width: 154px; height: 154px; object-fit: contain; filter: drop-shadow(0 14px 20px #0007); }
-#certifications .credential-card:nth-child(-n+2) h3 { order: 1; font-size: 21px; line-height: 1.28; }
-#certifications .credential-card:nth-child(-n+2) > a { order: 3; width: 100%; margin-top: auto; text-align: left; align-self: end; }
-#certifications .credential-card:nth-child(n+3) .credential-logo { width: 57px; height: 57px; }
-#certifications .credential-card:nth-child(n+3) .credential-logo img { width: 57px; height: 57px; }
-#certifications .credential-card:nth-child(n+3) h3 { font-size: 17px; }
-#projects .gallery-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 26px; }
-#projects .gallery-card .project-visual { aspect-ratio: 16 / 9; }
-#projects .gallery-card .project-description { padding: 22px 24px; }
-#projects .gallery-card .project-description h3 { font-size: 23px; }
-#blender .gallery-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
-#blender .gallery-card:first-child { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,.7fr); }
-#blender .gallery-card:first-child .project-visual { height: 100%; aspect-ratio: 16 / 8; }
-#blender .gallery-card:first-child .project-description { justify-content: center; padding: 30px; }
-#blender .gallery-card:first-child .project-description h3 { font-size: clamp(26px,3vw,40px); }
-#blender .gallery-card .project-cover { padding: 0; }
-#Video .gallery-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
-#Video .gallery-card .project-description { padding: 20px; }
-#Video .gallery-card .project-description h3 { font-size: 19px; }
-@media(max-width:900px) {
-    #Video .gallery-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-    #Video .gallery-card:last-child { grid-column: 1 / -1; }
+/* Original-inspired badge gallery: complete artwork, centered labels, equal columns. */
+#certifications .credential-grid,#projects .gallery-grid,#blender .gallery-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; }
+#certifications .credential-card { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; padding: 24px 20px 18px; border-radius: 16px; background: radial-gradient(ellipse at top,#c6ae4910,transparent 65%),#232825; }
+#certifications .credential-top { display: flex; flex-direction: column; gap: 14px; }
+#certifications .credential-logo { width: 100%; height: 140px; display: grid; place-items: center; }
+#certifications .credential-logo img { width: 180px; height: 140px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 8px 12px #0004); }
+#certifications .credential-card h3 { font-size: 17px; line-height: 1.4; margin: 0; }
+#certifications .credential-card > a { width: 100%; margin-top: auto; text-align: left; }
+#projects .gallery-card,#blender .gallery-card { border-radius: 16px; }
+#projects .gallery-card .project-visual,#blender .gallery-card .project-visual { aspect-ratio: 16 / 10; }
+#projects .gallery-card .project-description,#blender .gallery-card .project-description { padding: 19px; }
+#projects .gallery-card .project-description h3,#blender .gallery-card .project-description h3 { font-size: 19px; }
+#blender .gallery-card .project-cover { object-fit: contain; padding: 8px; }
+@media(max-width:1050px) {
+    #certifications .credential-grid,#projects .gallery-grid,#blender .gallery-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media(max-width:600px) {
-    #certifications .credential-grid,#projects .gallery-grid,#blender .gallery-grid,#Video .gallery-grid { grid-template-columns: 1fr; gap: 17px; }
-    #certifications .credential-card:nth-child(-n+2) { min-height: 300px; }
-    #certifications .credential-card:nth-child(-n+2) .credential-logo,#certifications .credential-card:nth-child(-n+2) .credential-logo img { width: 125px; height: 125px; }
-    #projects .gallery-card .project-description { padding: 18px; }
-    #projects .gallery-card .project-description h3 { font-size: 21px; }
-    #blender .gallery-card:first-child { grid-column: auto; display: flex; }
-    #blender .gallery-card:first-child .project-visual { height: auto; aspect-ratio: 4 / 3; }
-    #blender .gallery-card:first-child .project-description { padding: 18px; }
-    #blender .gallery-card:first-child .project-description h3 { font-size: 23px; }
-    #Video .gallery-card:last-child { grid-column: auto; }
+    #certifications .credential-grid,#projects .gallery-grid,#blender .gallery-grid { grid-template-columns: minmax(0,1fr); gap: 18px; }
+    #certifications .credential-card { padding: 20px 18px 14px; }
+    #certifications .credential-logo,#certifications .credential-logo img { height: 125px; }
 }

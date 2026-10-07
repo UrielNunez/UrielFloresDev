@@ -48,6 +48,8 @@ let dragStartX = 0;
 let dragStartY = 0;
 let heldZ = 0;
 let heldYaw = 0;
+let groundStageHeight = 0;
+const dock = stage.closest('.lego-dock');
 const manager = new THREE.LoadingManager();
 function showError() {
     failed = true;
@@ -74,7 +76,10 @@ function resizeRenderer() {
     if (!width || !height) return;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(width, height, false);
-    const halfWidth = 6.4 * width / height / 2;
+    if (!held && !falling) groundStageHeight = height;
+    const unitsPerPixel = 6.4 / (groundStageHeight || height);
+    const halfWidth = unitsPerPixel * width / 2;
+    camera.top = height * unitsPerPixel - 0.4;
     camera.left = -halfWidth;
     camera.right = halfWidth;
     camera.updateProjectionMatrix();
@@ -208,6 +213,7 @@ function draw(delta = 0) {
         if (heldY === 0) {
             falling = false;
             resumeRoute(heldX, heldYaw);
+            dock.classList.remove('is-interacting');
         }
     }
     const moving = ready && !greeting && !reducedMotion.matches && !held && !falling;
@@ -265,7 +271,7 @@ function updatePlayback() {
     }
 }
 handle.addEventListener('pointerdown', event => {
-    if (!ready) return;
+    if (!ready || held || (event.pointerType === 'mouse' && event.button !== 0)) return;
     event.preventDefault();
     handle.setPointerCapture(event.pointerId);
     pointerId = event.pointerId;
@@ -274,7 +280,7 @@ handle.addEventListener('pointerdown', event => {
     heldX = walker.position.x;
     heldY = walker.position.y;
     heldZ = walker.position.z;
-    heldYaw = routePose().yaw;
+    heldYaw = new THREE.Euler().setFromQuaternion(walker.quaternion, 'YXZ').y;
     dragOriginX = heldX;
     dragOriginY = heldY;
     dragStartX = event.clientX;
@@ -283,6 +289,8 @@ handle.addEventListener('pointerdown', event => {
     welcomeEndsAt = 0;
     welcome.classList.remove('is-visible');
     handle.classList.add('is-held');
+    dock.classList.add('is-interacting');
+    resizeRenderer();
     updatePlayback();
 });
 handle.addEventListener('pointermove', event => {
@@ -290,7 +298,7 @@ handle.addEventListener('pointermove', event => {
     event.preventDefault();
     const unitsPerPixel = (camera.top - camera.bottom) / stage.getBoundingClientRect().height;
     heldX = THREE.MathUtils.clamp(dragOriginX + (event.clientX - dragStartX) * unitsPerPixel, -travelLimit, travelLimit);
-    heldY = THREE.MathUtils.clamp(dragOriginY - (event.clientY - dragStartY) * unitsPerPixel, 0, 3.5);
+    heldY = THREE.MathUtils.clamp(dragOriginY - (event.clientY - dragStartY) * unitsPerPixel, 0, Math.max(0, camera.top - 5.2));
     draw();
 });
 function release(event) {
@@ -299,13 +307,33 @@ function release(event) {
     pointerId = null;
     falling = heldY > 0;
     dropVelocity = 0;
-    if (!falling) resumeRoute(heldX, heldYaw);
+    if (!falling) {
+        resumeRoute(heldX, heldYaw);
+        dock.classList.remove('is-interacting');
+    }
     handle.classList.remove('is-held');
     updatePlayback();
 }
 handle.addEventListener('pointerup', release);
 handle.addEventListener('pointercancel', release);
 handle.addEventListener('lostpointercapture', release);
+window.addEventListener('blur', () => { if (held) release({ pointerId }); });
+handle.addEventListener('keydown', event => {
+    if (!ready || ![' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Escape'].includes(event.key)) return;
+    event.preventDefault();
+    if (event.key === 'Escape' || (event.key === ' ' && held)) { if (held) release({ pointerId }); return; }
+    if (!held && event.key === ' ') {
+        held = true; falling = false; pointerId = 'keyboard';
+        heldX = walker.position.x; heldY = walker.position.y; heldZ = walker.position.z;
+        heldYaw = new THREE.Euler().setFromQuaternion(walker.quaternion, 'YXZ').y;
+        welcomeEndsAt = 0; elapsed = Math.max(elapsed, 3);
+        handle.classList.add('is-held'); dock.classList.add('is-interacting'); resizeRenderer();
+        heldY = Math.min(2, Math.max(0, camera.top - 5.2)); updatePlayback();
+    } else if (held && pointerId === 'keyboard') {
+        heldX = THREE.MathUtils.clamp(heldX + (event.key === 'ArrowRight' ? .5 : event.key === 'ArrowLeft' ? -.5 : 0), -travelLimit, travelLimit);
+        heldY = THREE.MathUtils.clamp(heldY + (event.key === 'ArrowUp' ? .5 : event.key === 'ArrowDown' ? -.5 : 0), 0, Math.max(0, camera.top - 5.2)); draw();
+    }
+});
 window.addEventListener('scroll', () => {
     if (window.scrollY > 100 && welcomeEndsAt) {
         welcomeEndsAt = 0;

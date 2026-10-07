@@ -13,12 +13,16 @@ window.addEventListener('scroll', () => {
 function animateItem(element, entering, delay = 0) {
     if (motionPreference.matches || !element.animate) return;
     element.getAnimations().forEach(animation => animation.cancel());
+    const offset = element.closest('#certifications')
+        ? `translateY(${element.classList.contains('credential-top') ? -20 : 16}px)`
+        : element.closest('#projects') ? `translateX(${24 * scrollDirection}px)`
+        : element.closest('#blender') ? 'translateY(-24px)' : `translateY(${14 * scrollDirection}px)`;
     const from = entering
-        ? { opacity: .18, transform: `translateY(${14 * scrollDirection}px)` }
+        ? { opacity: .18, transform: offset }
         : { opacity: 1, transform: 'translateY(0)' };
     const to = entering
         ? { opacity: 1, transform: 'translateY(0)' }
-        : { opacity: .18, transform: `translateY(${-10 * scrollDirection}px)` };
+        : { opacity: .35, transform: offset };
     const animation = element.animate([from, to], {
         duration: entering ? 480 : 320,
         delay: entering ? delay : 0,
@@ -28,7 +32,6 @@ function animateItem(element, entering, delay = 0) {
     animations.add(animation);
     animation.oncancel = () => animations.delete(animation);
     animation.onfinish = () => {
-        animations.delete(animation);
         if (entering) animation.cancel();
     };
 }
@@ -55,7 +58,7 @@ function observeMotion(item) {
         motionContents(item).forEach(child => child.getAnimations().forEach(animation => animation.cancel()));
     });
 }
-document.querySelectorAll('.gallery-card,.credential-card,.top-header,.about-info,.skills-info,.skill-group,.journey-card,.contact-info,.contact-invite,.featured-text,.featured-image').forEach(observeMotion);
+document.querySelectorAll('.gallery-card,.credential-card,.top-header,.about-info,.skill-group,.journey-card,.contact-info,.contact-invite,.featured-text,.featured-image').forEach(observeMotion);
 motionPreference.addEventListener('change', () => {
     animations.forEach(animation => animation.cancel());
     animations.clear();

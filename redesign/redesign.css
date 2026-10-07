@@ -304,6 +304,11 @@ nav.header.is-scrolled { height: 68px; }
 @media(max-height:560px) and (max-width:1100px) { .mobile-menu-intro { display: none; } .nav-menu .nav-link { min-height: 52px; } }
 
 /* Collection layout: bounded media, natural text height, compact section rhythm. */
+.lego-handle { position:absolute; z-index:4; width:70px; height:120px; left:50%; top:50%; padding:0; border:0; border-radius:20px; background:transparent; transform:translate(-50%,-50%); cursor:grab; touch-action:none; pointer-events:auto; visibility:hidden; user-select:none; -webkit-user-select:none; }
+.lego-handle.is-ready { visibility:visible; }
+.lego-handle.is-held { cursor:grabbing; }
+.lego-handle:focus-visible { outline:2px solid var(--second-color); outline-offset:3px; }
+.lego-dock.is-interacting { height:100dvh!important; z-index:150; }
 #certifications,#projects,#blender { padding-block: 64px; scroll-margin-top: 88px; }
 #certifications .top-header,#projects .top-header,#blender .top-header { text-align: left; margin-bottom: 28px; }
 #certifications .top-header h1,#projects .top-header h1,#blender .top-header h1 { font-size: clamp(28px,3vw,38px); margin-bottom: 14px; }
