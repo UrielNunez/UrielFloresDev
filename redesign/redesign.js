@@ -1,88 +1,86 @@
-// Reversible collection motion; observe stable card bounds, animate only their contents.
-const collectionMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const collectionMobile = window.matchMedia('(max-width: 600px)');
-const collectionAnimations = new Map();
-const collectionVisible = new WeakMap();
-function animateCollection(card, visible) {
-    if (collectionVisible.get(card) === visible) return;
-    collectionVisible.set(card, visible);
-    if (collectionMotion.matches) return;
-    const index = Array.from(card.parentElement.children).indexOf(card);
-    const columns = getComputedStyle(card.parentElement).gridTemplateColumns.split(' ').length;
-    const stagger = visible ? (index % Math.max(1, columns)) * 70 : 0;
-    const credential = card.classList.contains('credential-card');
-    const elements = credential
-        ? card.querySelectorAll('.credential-top, h3, a')
-        : card.children;
-    Array.from(elements).forEach((element, i) => {
-        if (!element.animate) return;
-        const previous = collectionAnimations.get(element);
-        const current = getComputedStyle(element);
-        const from = previous ? { opacity: current.opacity, transform: current.transform } : null;
-        previous?.cancel();
-        const offset = credential
-            ? 'translateY(8px)'
-            : card.closest('#blender') ? 'translateY(-10px)' : `translateX(${index % 2 ? 10 : -10}px)`;
-        const shown = { opacity: 1, transform: 'none' };
-        const hidden = { opacity: visible ? 0 : .35, transform: offset };
-        const animation = element.animate([from || (visible ? hidden : shown), visible ? shown : hidden], {
-            duration: visible ? 650 : 320,
-            delay: visible ? stagger : 0,
-            easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both'
-        });
-        collectionAnimations.set(element, animation);
+/* A single entrance / exit rhythm for sections and cards. */
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const animations = new Set();
+const visibleState = new WeakMap();
+let previousScrollY = window.scrollY;
+let scrollDirection = 1;
+window.addEventListener('scroll', () => {
+    const current = window.scrollY;
+    if (Math.abs(current - previousScrollY) > 3) scrollDirection = current > previousScrollY ? 1 : -1;
+    previousScrollY = current;
+}, { passive: true });
+
+function animateItem(element, entering, delay = 0) {
+    if (motionPreference.matches || !element.animate) return;
+    element.getAnimations().forEach(animation => animation.cancel());
+    const from = entering
+        ? { opacity: .18, transform: `translateY(${14 * scrollDirection}px)` }
+        : { opacity: 1, transform: 'translateY(0)' };
+    const to = entering
+        ? { opacity: 1, transform: 'translateY(0)' }
+        : { opacity: .18, transform: `translateY(${-10 * scrollDirection}px)` };
+    const animation = element.animate([from, to], {
+        duration: entering ? 480 : 320,
+        delay: entering ? delay : 0,
+        easing: 'cubic-bezier(.2,.7,.2,1)',
+        fill: 'forwards'
+    });
+    animations.add(animation);
+    animation.oncancel = () => animations.delete(animation);
+    animation.onfinish = () => {
+        animations.delete(animation);
+        if (entering) animation.cancel();
+    };
+}
+function motionContents(item) {
+    return item.matches('.gallery-card,.credential-card') ? [...item.children] : [item];
+}
+const motionObserver = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => entries.forEach(entry => {
+        const item = entry.target;
+        if (item.hidden) return;
+        const entering = entry.isIntersecting && entry.intersectionRatio >= .12;
+        const prior = visibleState.get(item);
+        if (prior === entering || (prior === undefined && !entering)) return;
+        visibleState.set(item, entering);
+        const group = [...item.parentElement.children].filter(child => !child.hidden);
+        const delay = Math.min(group.indexOf(item) % 3, 2) * 45;
+        motionContents(item).forEach(child => animateItem(child, entering, delay));
+    }), { threshold: [0, .02, .12], rootMargin: '-3% 0px -3% 0px' })
+    : null;
+function observeMotion(item) {
+    motionObserver?.observe(item);
+    item.addEventListener('focusin', () => {
+        visibleState.set(item, true);
+        motionContents(item).forEach(child => child.getAnimations().forEach(animation => animation.cancel()));
     });
 }
-const collectionObserver = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        const card = entry.target;
-        if (card.hidden) return;
-        if (entry.intersectionRatio >= .18) animateCollection(card, true);
-        else if (entry.intersectionRatio <= .05 && collectionVisible.get(card)) {
-            if (!card.contains(document.activeElement)) animateCollection(card, false);
-        }
-    });
-}, { threshold: [0, .05, .18], rootMargin: '-8% 0px -8% 0px' }) : null;
-document.querySelectorAll('#certifications .credential-card, #projects .gallery-card, #blender .gallery-card').forEach(card => {
-    collectionObserver?.observe(card);
-    card.addEventListener('focusin', () => animateCollection(card, true));
-});
-collectionMotion.addEventListener('change', () => {
-    collectionAnimations.forEach(animation => animation.cancel());
-    collectionAnimations.clear();
+document.querySelectorAll('.gallery-card,.credential-card,.top-header,.about-info,.skills-info,.skill-group,.journey-card,.contact-info,.contact-invite,.featured-text,.featured-image').forEach(observeMotion);
+motionPreference.addEventListener('change', () => {
+    animations.forEach(animation => animation.cancel());
+    animations.clear();
 });
 
-/*---------------COLLECTION BUTTONS------------------*/
-document.querySelectorAll('[data-collection-toggle]').forEach(button => {
-    const grid = document.getElementById(button.dataset.collectionToggle);
-    if (!grid) return;
-    const cards = Array.from(grid.children);
-    const label = button.querySelector('span');
-    const update = () => {
-        const initialCount = collectionMobile.matches ? 3 : 6;
-        const expanded = button.getAttribute('aria-expanded') === 'true';
-        cards.forEach((card, index) => {
-            const hidden = !expanded && index >= initialCount;
-            if (card.hidden !== hidden) {
-                collectionObserver?.unobserve(card);
-                card.hidden = hidden;
-                collectionVisible.delete(card);
-                if (!hidden) collectionObserver?.observe(card);
-            }
-        });
-        label.textContent = expanded ? 'Show less' : `Show more (${Math.max(0, cards.length - initialCount)})`;
-        button.hidden = cards.length <= initialCount;
-    };
-    button.addEventListener('click', () => {
-        const expanded = button.getAttribute('aria-expanded') !== 'true';
-        button.setAttribute('aria-expanded', String(expanded));
-        update();
-        if (!expanded) button.scrollIntoView({ block: 'nearest', behavior: 'instant' });
-        scrollActive();
-    });
-    collectionMobile.addEventListener('change', update);
-    update();
-});
+/* Each skill family remains visible in a single, scannable toolkit. */
+const toolkit = document.querySelector('#about .skills-info');
+toolkit.classList.add('is-expanded');
+
+/* A real counter, beginning when this version is published. Preview reads only. */
+const countContainer = document.getElementById('visitorCounter');
+const countValue = document.getElementById('visitorCount');
+const previewHost = location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(location.hostname);
+const countUrl = 'https://counterapi.com/api/urielnunez.github.io/view/UrielFloresDev?unique=true' + (previewHost ? '&readOnly=true' : '');
+fetch(countUrl, { cache: 'no-store' })
+    .then(response => {
+        if (!response.ok) throw new Error('Visitor count unavailable');
+        return response.json();
+    })
+    .then(data => {
+        if (!Number.isFinite(data.value)) return;
+        countValue.textContent = new Intl.NumberFormat(document.documentElement.lang || 'en').format(data.value);
+        countContainer.hidden = false;
+    })
+    .catch(() => { /* Keep the counter out of the layout when the service is offline. */ });
 
 const navMenu = document.getElementById('myNavMenu');
 const menuToggle = document.getElementById('menuToggle');
@@ -145,7 +143,7 @@ function headerShadow() {
 }
 
 /*---------------TYPING EFFECT------------------*/
-var typingEffect = new Typed(".typedText", {
+if (typeof window.Typed === 'function' && !motionPreference.matches) new window.Typed(".typedText", {
     strings: [" Unity Developer", " Video Game Developer", " AR Developer", " Video Editor", " Web Developer", " VR Developer", " 3D Modeler", " YouTuber"],
     loop: true,
     typeSpeed: 100,
@@ -153,64 +151,6 @@ var typingEffect = new Typed(".typedText", {
     backDelay: 2000
 });
 
-/*---------------SCROLL ANIMATION------------------*/
-const sr = ScrollReveal({
-    origin: 'top',
-    distance: '24px',
-    duration: 700,
-    reset: false
-});
-
-/*---------------HOME------------------*/
-sr.reveal('.featured-text-card', {});
-sr.reveal('.featured-name', {
-    delay: 100
-});
-sr.reveal('.featured-text-info', {
-    delay: 200
-});
-
-sr.reveal('.social_icons', {
-    delay: 200
-});
-sr.reveal('.featured-image', {
-    delay: 300
-});
-sr.reveal('.featured-text-btn', {
-    delay: 200
-});
-/*---------------HEADINGS------------------*/
-sr.reveal('.top-header', {});
-
-/*---------------ABOUT INFO & CONTACT INFO------------------*/
-const srLeft = ScrollReveal({
-    origin: 'left',
-    distance: '24px',
-    duration: 700,
-    reset: false
-});
-
-srLeft.reveal('.about-info', {
-    delay: 100
-});
-srLeft.reveal('.contact-info', {
-    delay: 100
-});
-
-/*---------------ABOUT SKILLS & FORM BOX------------------*/
-const srRight = ScrollReveal({
-    origin: 'right',
-    distance: '24px',
-    duration: 700,
-    reset: false
-});
-
-srRight.reveal('.skills-info', {
-    delay: 100
-});
-srRight.reveal('.form-control', {
-    delay: 100
-});
 /* ----- CHANGE ACTIVE LINK ----- */
 const sections = document.querySelectorAll('section[id]');
 
@@ -278,28 +218,6 @@ abrirEnNuevaPestaña('Uproject2-1', 'https://www.instagram.com/carmenbauza_salud
 abrirEnNuevaPestaña('Uproject3-1', 'https://www.youtube.com/@Quehubierapasadosioficial');
 
 
-
-document.querySelectorAll('.project-box').forEach(box => {
-    box.addEventListener('touchstart', function() {
-        // Removemos la clase 'touched' de todos los elementos
-        document.querySelectorAll('.project-box').forEach(box => {
-            box.classList.remove('touched');
-        });
-        // Añadimos la clase 'touched' solo al elemento que se tocó
-        this.classList.add('touched');
-    });
-});
-
-document.querySelectorAll('.image-container').forEach(box => {
-    box.addEventListener('touchstart', function() {
-        // Removemos la clase 'touched' de todos los elementos
-        document.querySelectorAll('.image-container').forEach(box => {
-            box.classList.remove('touched');
-        });
-        // Añadimos la clase 'touched' solo al elemento que se tocó
-        this.classList.add('touched');
-    });
-});
 
 /*---------------PROFESSIONAL JOURNEY ROUTE------------------*/
 const journeyMap = document.querySelector('.journey-map');

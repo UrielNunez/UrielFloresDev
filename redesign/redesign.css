@@ -138,6 +138,11 @@ nav.is-scrolled { height: 72px; line-height: normal; box-shadow: none; }
 .contact-invite h3 span { color: var(--third-color); }
 .contact-invite p { color: #aebbb1; font-size: 14px; line-height: 1.8; margin-bottom: 22px; }
 footer { margin-top: 20px; padding: 50px 20px 170px; background: #171b18; border-top: 1px solid var(--line); gap: 22px; }
+.visitor-counter { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 8px; color: #d6e2d8; font-size: 12px; }
+.visitor-counter[hidden]{display:none}
+.visitor-counter > span { color: var(--second-color); font-weight: 800; font-variant-numeric: tabular-nums; }
+.visitor-counter small { color: #a5b6a9; font-size: 11px; }
+.visitor-counter a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .footer-menu { flex-wrap: wrap; justify-content: center; gap: 14px; }
 .footer_menu_list a { font-size: 12px; padding: 8px; }
 @media(max-width:1100px) {

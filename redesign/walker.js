@@ -5,6 +5,7 @@ const stage = document.getElementById('legoStage');
 const canvas = document.getElementById('legoCanvas');
 const status = document.getElementById('legoStatus');
 const welcome = document.getElementById('legoWelcome');
+const handle = document.getElementById('legoHandle');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const scene = new THREE.Scene();
 // Parallel projection keeps the character size consistent across the screen.
@@ -35,6 +36,18 @@ let frame;
 let ready = false;
 let failed = false;
 let welcomeEndsAt = 0;
+let held = false;
+let falling = false;
+let pointerId = null;
+let heldX = 0;
+let heldY = 0;
+let dropVelocity = 0;
+let dragOriginX = 0;
+let dragOriginY = 0;
+let dragStartX = 0;
+let dragStartY = 0;
+let heldZ = 0;
+let heldYaw = 0;
 const manager = new THREE.LoadingManager();
 function showError() {
     failed = true;
@@ -46,6 +59,7 @@ manager.onError = showError;
 manager.onLoad = () => {
     if (failed || !walker.children.length) return;
     ready = true;
+    handle.classList.add('is-ready');
     elapsed = 0;
     distance = 0;
     gaitPhase = 0;
@@ -156,12 +170,47 @@ function routePose() {
     const angle = (position - 2 * straight) / radius;
     return { x: -straight - radius * Math.sin(angle), z: radius * Math.cos(angle), yaw: -Math.PI / 2 - angle, turning: true };
 }
+function resumeRoute(x, yaw) {
+    const radius = Math.min(0.85, travelLimit * 0.45);
+    const straight = Math.max(0, travelLimit - radius);
+    const perimeter = 4 * straight + 2 * Math.PI * radius;
+    if (!perimeter) { distance = 0; return; }
+    let nearest = 0;
+    let score = Infinity;
+    for (let i = 0; i < 160; i++) {
+        distance = perimeter * i / 160;
+        const pose = routePose();
+        const difference = Math.abs(pose.x - x) + (Math.sign(pose.yaw) === Math.sign(yaw) ? 0 : 0.35);
+        if (difference < score) { score = difference; nearest = distance; }
+    }
+    distance = nearest;
+}
 const heading = new THREE.Quaternion();
 const upAxis = new THREE.Vector3(0, 1, 0);
+const handlePoint = new THREE.Vector3();
+function positionHandle() {
+    if (!ready) return;
+    const bounds = stage.getBoundingClientRect();
+    handlePoint.set(walker.position.x, walker.position.y + 2.5, walker.position.z).project(camera);
+    const width = THREE.MathUtils.clamp(characterWidth / (camera.top - camera.bottom) * bounds.height * 1.15, 52, 150);
+    const height = THREE.MathUtils.clamp(5 / (camera.top - camera.bottom) * bounds.height * 1.12, 88, 190);
+    handle.style.width = `${width}px`;
+    handle.style.height = `${height}px`;
+    handle.style.left = `${(handlePoint.x + 1) * bounds.width / 2}px`;
+    handle.style.top = `${(1 - handlePoint.y) * bounds.height / 2}px`;
+}
 function draw(delta = 0) {
     const greeting = ready && performance.now() < welcomeEndsAt;
     if (ready && !greeting) welcome.classList.remove('is-visible');
-    const moving = ready && !greeting && !reducedMotion.matches;
+    if (falling && delta) {
+        dropVelocity -= 17 * delta;
+        heldY = Math.max(0, heldY + dropVelocity * delta);
+        if (heldY === 0) {
+            falling = false;
+            resumeRoute(heldX, heldYaw);
+        }
+    }
+    const moving = ready && !greeting && !reducedMotion.matches && !held && !falling;
     const pose = routePose();
     const departure = THREE.MathUtils.smootherstep(elapsed, 1.8, 3);
     const targetSpeed = moving && travelLimit > 0 ? departure * (pose.turning ? 0.8 : 1.25) : 0;
@@ -169,13 +218,13 @@ function draw(delta = 0) {
     distance += 1.25 * gaitWeight * delta;
     gaitPhase += 1.25 * gaitWeight * delta * Math.PI * 2 / 1.5;
     const current = routePose();
-    const yaw = moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
+    const yaw = held || falling ? heldYaw : moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
     heading.setFromAxisAngle(upAxis, yaw);
     walker.quaternion.slerp(heading, moving ? 1 - Math.exp(-8 * delta) : 1);
-    walker.position.set(moving ? current.x : 0, 0, moving ? current.z : 0);
+    walker.position.set(held || falling ? heldX : moving ? current.x : 0, 0, held || falling ? heldZ : moving ? current.z : 0);
     const weight = moving ? gaitWeight : 0;
     // Twice-per-cycle rise is smooth at foot contact, without abs()/max() snaps.
-    walker.position.y = (1 - Math.cos(2 * gaitPhase)) * 0.025 * weight;
+    walker.position.y = held || falling ? heldY : (1 - Math.cos(2 * gaitPhase)) * 0.025 * weight;
     for (const joint of joints) {
         const phase = gaitPhase + (joint.side === 1 ? 0 : Math.PI);
         const swing = Math.cos(phase);
@@ -198,22 +247,71 @@ function draw(delta = 0) {
     }
     walker.visible = ready;
     renderer.render(scene, camera);
+    positionHandle();
 }
 function render() {
     const delta = Math.min(clock.getDelta(), 0.05);
     elapsed += delta;
     draw(delta);
-    frame = requestAnimationFrame(render);
+    if (!reducedMotion.matches || held || falling) frame = requestAnimationFrame(render);
 }
 function updatePlayback() {
     cancelAnimationFrame(frame);
     clock.stop();
     draw();
-    if (ready && !document.hidden && !reducedMotion.matches) {
+    if (ready && !document.hidden && (!reducedMotion.matches || held || falling)) {
         clock.start();
         frame = requestAnimationFrame(render);
     }
 }
+handle.addEventListener('pointerdown', event => {
+    if (!ready) return;
+    event.preventDefault();
+    handle.setPointerCapture(event.pointerId);
+    pointerId = event.pointerId;
+    held = true;
+    falling = false;
+    heldX = walker.position.x;
+    heldY = walker.position.y;
+    heldZ = walker.position.z;
+    heldYaw = routePose().yaw;
+    dragOriginX = heldX;
+    dragOriginY = heldY;
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    elapsed = Math.max(elapsed, 3);
+    welcomeEndsAt = 0;
+    welcome.classList.remove('is-visible');
+    handle.classList.add('is-held');
+    updatePlayback();
+});
+handle.addEventListener('pointermove', event => {
+    if (!held || event.pointerId !== pointerId) return;
+    event.preventDefault();
+    const unitsPerPixel = (camera.top - camera.bottom) / stage.getBoundingClientRect().height;
+    heldX = THREE.MathUtils.clamp(dragOriginX + (event.clientX - dragStartX) * unitsPerPixel, -travelLimit, travelLimit);
+    heldY = THREE.MathUtils.clamp(dragOriginY - (event.clientY - dragStartY) * unitsPerPixel, 0, 3.5);
+    draw();
+});
+function release(event) {
+    if (!held || event.pointerId !== pointerId) return;
+    held = false;
+    pointerId = null;
+    falling = heldY > 0;
+    dropVelocity = 0;
+    if (!falling) resumeRoute(heldX, heldYaw);
+    handle.classList.remove('is-held');
+    updatePlayback();
+}
+handle.addEventListener('pointerup', release);
+handle.addEventListener('pointercancel', release);
+handle.addEventListener('lostpointercapture', release);
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 100 && welcomeEndsAt) {
+        welcomeEndsAt = 0;
+        welcome.classList.remove('is-visible');
+    }
+}, { passive: true });
 reducedMotion.addEventListener('change', updatePlayback);
 document.addEventListener('visibilitychange', updatePlayback);
 resizeRenderer();
