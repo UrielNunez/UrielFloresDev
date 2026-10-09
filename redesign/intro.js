@@ -155,13 +155,13 @@ function loadScript(src) {
 
 async function startPortfolio() {
     try {
-        await Promise.all([
+        await Promise.allSettled([
             loadScript('https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js'),
             loadScript('https://unpkg.com/scrollreveal')
         ]);
-        await loadScript('./redesign.js?v=4');
+        await loadScript('./redesign.js?v=9');
     } finally {
-        import('./walker.js');
+        import('./walker.js?v=3');
     }
 }
 

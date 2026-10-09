@@ -1,72 +1,209 @@
-/* A single entrance / exit rhythm for sections and cards. */
+/* Scroll motion uses ScrollReveal for broad content and native observation for
+   individual collection pieces. No section container retains opacity or transforms. */
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-const animations = new Set();
-const visibleState = new WeakMap();
-let previousScrollY = window.scrollY;
-let scrollDirection = 1;
-window.addEventListener('scroll', () => {
-    const current = window.scrollY;
-    if (Math.abs(current - previousScrollY) > 3) scrollDirection = current > previousScrollY ? 1 : -1;
-    previousScrollY = current;
-}, { passive: true });
+const activeMotion = new WeakMap();
+const enteredMotion = new WeakMap();
+const departingMotion = new WeakMap();
 
-function animateItem(element, entering, delay = 0) {
+function playMotion(element, keyframes, delay = 0, duration = 820, fill = 'backwards') {
     if (motionPreference.matches || !element.animate) return;
-    element.getAnimations().forEach(animation => animation.cancel());
-    const offset = element.closest('#certifications')
-        ? `translateY(${element.classList.contains('credential-top') ? -20 : 16}px)`
-        : element.closest('#projects') ? `translateX(${24 * scrollDirection}px)`
-        : element.closest('#blender') ? 'translateY(-24px)' : `translateY(${14 * scrollDirection}px)`;
-    const from = entering
-        ? { opacity: .18, transform: offset }
-        : { opacity: 1, transform: 'translateY(0)' };
-    const to = entering
-        ? { opacity: 1, transform: 'translateY(0)' }
-        : { opacity: .35, transform: offset };
-    const animation = element.animate([from, to], {
-        duration: entering ? 480 : 320,
-        delay: entering ? delay : 0,
-        easing: 'cubic-bezier(.2,.7,.2,1)',
-        fill: 'forwards'
+    activeMotion.get(element)?.cancel();
+    const animation = element.animate(keyframes, {
+        duration, delay, fill, easing: 'cubic-bezier(.25,.75,.25,1)'
     });
-    animations.add(animation);
-    animation.oncancel = () => animations.delete(animation);
-    animation.onfinish = () => {
-        if (entering) animation.cancel();
-    };
+    activeMotion.set(element, animation);
+    animation.addEventListener('finish', () => {
+        if (fill !== 'forwards' && activeMotion.get(element) === animation) activeMotion.delete(element);
+    }, { once: true });
+    animation.addEventListener('cancel', () => {
+        if (activeMotion.get(element) === animation) activeMotion.delete(element);
+    }, { once: true });
 }
-function motionContents(item) {
-    return item.matches('.gallery-card,.credential-card') ? [...item.children] : [item];
+
+function motionPieces(item) {
+    return item.classList.contains('credential-item')
+        ? [item.querySelector('.credential-badge'), ...item.querySelector('.credential-copy').children]
+        : item.classList.contains('gallery-card')
+            ? [item.querySelector('.project-visual'), item.querySelector('.project-description')]
+            : item.classList.contains('skill-group')
+                ? [item.querySelector('.skill-route-node'), item.querySelector('.skill-content')]
+            : [item];
 }
+
+function animateVisible(item, returning = false) {
+    const pieces = motionPieces(item);
+    const gallery = item.closest('#projects,#blender,#Video');
+    const skillGroup = item.classList.contains('skill-group');
+    const siblings = [...item.parentElement.children].filter(child => !child.hidden);
+    const stagger = returning ? 0 : Math.min(siblings.indexOf(item) % 3, 2) * (gallery ? 65 : 45);
+    pieces.filter(Boolean).forEach((piece, index) => {
+        const badge = piece.classList.contains('credential-badge');
+        const skillNode = piece.classList.contains('skill-route-node');
+        const credentialText = piece.closest('.credential-copy');
+        const visual = piece.classList.contains('project-visual');
+        const origin = badge ? 'translateY(-16px) rotate(-2deg) scale(.96)'
+            : skillNode ? 'translateX(-50%) scale(.78)'
+            : skillGroup ? `translateX(${item.classList.contains('skill-group--left') ? '-18px' : '18px'})`
+            : credentialText && piece.tagName === 'H3' ? 'translateX(12px)'
+            : credentialText ? 'translateY(12px)'
+            : visual && item.closest('#projects') ? 'translateX(-16px) scale(.98)'
+            : visual ? 'translateY(-16px) scale(.98)'
+            : 'translateY(10px)';
+        const current = returning ? getComputedStyle(piece) : null;
+        playMotion(piece, [
+            { opacity: returning ? current.opacity : badge ? .6 : skillGroup ? .52 : .7,
+              transform: returning ? current.transform : origin },
+            { opacity: 1, transform: skillNode ? 'translateX(-50%)' : 'none' }
+        ], stagger + index * (gallery ? 100 : 65), gallery ? 1120 : skillGroup ? 1020 : badge ? 950 : 820);
+    });
+}
+
+function animateDeparting(item) {
+    const gallery = item.closest('#projects,#blender,#Video');
+    motionPieces(item).filter(Boolean).forEach((piece, index) => {
+        const current = getComputedStyle(piece);
+        const skillNode = piece.classList.contains('skill-route-node');
+        playMotion(piece, [
+            { opacity: current.opacity, transform: current.transform },
+            { opacity: gallery ? .78 : item.classList.contains('skill-group') ? .82 : .72,
+              transform: skillNode ? 'translateX(-50%) scale(.92)' : 'translateY(-8px)' }
+        ], index * (gallery ? 70 : 35), gallery ? 900 : 760, 'forwards');
+    });
+}
+
 const motionObserver = 'IntersectionObserver' in window
     ? new IntersectionObserver(entries => entries.forEach(entry => {
         const item = entry.target;
         if (item.hidden) return;
-        const entering = entry.isIntersecting && entry.intersectionRatio >= .12;
-        const prior = visibleState.get(item);
-        if (prior === entering || (prior === undefined && !entering)) return;
-        visibleState.set(item, entering);
-        const group = [...item.parentElement.children].filter(child => !child.hidden);
-        const delay = Math.min(group.indexOf(item) % 3, 2) * 45;
-        motionContents(item).forEach(child => animateItem(child, entering, delay));
-    }), { threshold: [0, .02, .12], rootMargin: '-3% 0px -3% 0px' })
+        if (!entry.isIntersecting) {
+            motionPieces(item).filter(Boolean).forEach(piece => activeMotion.get(piece)?.cancel());
+            enteredMotion.set(item, false);
+            departingMotion.set(item, false);
+        } else if (entry.intersectionRatio >= .14) {
+            if (departingMotion.get(item)) {
+                departingMotion.set(item, false);
+                animateVisible(item, true);
+            } else if (!enteredMotion.get(item)) {
+                enteredMotion.set(item, true);
+                animateVisible(item);
+            }
+        } else if (enteredMotion.get(item) && !departingMotion.get(item)) {
+            departingMotion.set(item, true);
+            animateDeparting(item);
+        }
+    }), { threshold: [0, .14], rootMargin: '0px 0px 5% 0px' })
     : null;
-function observeMotion(item) {
+
+document.querySelectorAll('.credential-item,.gallery-card,#about .skill-group').forEach(item => {
     motionObserver?.observe(item);
     item.addEventListener('focusin', () => {
-        visibleState.set(item, true);
-        motionContents(item).forEach(child => child.getAnimations().forEach(animation => animation.cancel()));
+        motionPieces(item).filter(Boolean).forEach(piece => activeMotion.get(piece)?.cancel());
+        enteredMotion.set(item, true);
+        departingMotion.set(item, false);
     });
-}
-document.querySelectorAll('.gallery-card,.credential-card,.top-header,.about-info,.skill-group,.journey-card,.contact-info,.contact-invite,.featured-text,.featured-image').forEach(observeMotion);
+});
 motionPreference.addEventListener('change', () => {
-    animations.forEach(animation => animation.cancel());
-    animations.clear();
+    document.querySelectorAll('.credential-item,.gallery-card,#about .skill-group').forEach(item => {
+        [item, ...item.querySelectorAll('*')].forEach(child => activeMotion.get(child)?.cancel());
+    });
 });
 
-/* Each skill family remains visible in a single, scannable toolkit. */
-const toolkit = document.querySelector('#about .skills-info');
-toolkit.classList.add('is-expanded');
+/* The existing ScrollReveal library adds restrained motion to standalone content. */
+if (window.ScrollReveal && !motionPreference.matches) {
+    ScrollReveal().reveal('.about-info,.journey-card,.contact-info,.contact-invite,.featured-text,.featured-image', {
+        distance: '12px', duration: 850, interval: 55, opacity: .58,
+        easing: 'cubic-bezier(.25,.75,.25,1)', reset: true,
+        viewFactor: .08, mobile: true
+    });
+}
+
+/* Keep three entries on phones and two desktop rows, with a reversible reveal. */
+const compactCollections = window.matchMedia('(max-width: 600px)');
+document.querySelectorAll('[data-collection-toggle]').forEach(button => {
+    const grid = document.getElementById(button.dataset.collectionToggle);
+    const items = [...grid.children];
+    const noun = grid.id === 'certifications-grid' ? 'credentials' : 'projects';
+    function syncCollection() {
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        const limit = compactCollections.matches ? 3 : 6;
+        items.forEach((item, index) => {
+            item.hidden = !expanded && index >= limit;
+            if (item.hidden) {
+                motionPieces(item).filter(Boolean).forEach(piece => activeMotion.get(piece)?.cancel());
+                enteredMotion.set(item, false);
+                departingMotion.set(item, false);
+            }
+            if (!item.hidden) motionObserver?.observe(item);
+        });
+        button.hidden = items.length <= limit;
+        button.innerHTML = `${expanded ? 'Show fewer' : 'Show more'} ${noun} <i class="uil uil-angle-${expanded ? 'up' : 'down'}" aria-hidden="true"></i>`;
+    }
+    button.addEventListener('click', () => {
+        button.setAttribute('aria-expanded', String(button.getAttribute('aria-expanded') !== 'true'));
+        syncCollection();
+    });
+    compactCollections.addEventListener('change', syncCollection);
+    syncCollection();
+});
+
+/* Draw a route through the actual milestone positions, so wrapping and resizing
+   never leave the line detached from its nodes. */
+const skillsRoute = document.getElementById('skillsRoute');
+if (skillsRoute) {
+    const routeSvg = skillsRoute.querySelector('.skill-route-svg');
+    const track = skillsRoute.querySelector('.skill-route-track');
+    const progressLine = skillsRoute.querySelector('.skill-route-progress');
+    const nodes = [...skillsRoute.querySelectorAll('.skill-route-node')];
+    const compactRoute = window.matchMedia('(max-width: 900px)');
+    let routeLength = 0;
+    let routeFrame = 0;
+
+    function updateSkillsProgress() {
+        if (!routeLength) return;
+        const bounds = skillsRoute.getBoundingClientRect();
+        const start = window.innerHeight * .78;
+        const span = bounds.height + window.innerHeight * .12;
+        const progress = motionPreference.matches ? 1 : Math.min(1, Math.max(0, (start - bounds.top) / span));
+        progressLine.style.strokeDashoffset = String(routeLength * (1 - progress));
+    }
+    function requestSkillsProgress() {
+        if (routeFrame) return;
+        routeFrame = requestAnimationFrame(() => {
+            routeFrame = 0;
+            updateSkillsProgress();
+        });
+    }
+    function layoutSkillsRoute() {
+        const bounds = skillsRoute.getBoundingClientRect();
+        if (!bounds.width || !bounds.height) return;
+        const positions = nodes.map(node => {
+            const rect = node.getBoundingClientRect();
+            return { x: rect.left + rect.width / 2 - bounds.left,
+                y: rect.top + rect.height / 2 - bounds.top };
+        });
+        if (!positions.length) return;
+        let path = `M ${positions[0].x} 0 L ${positions[0].x} ${positions[0].y}`;
+        positions.slice(1).forEach((point, index) => {
+            const previous = positions[index];
+            const middle = (previous.y + point.y) / 2;
+            path += compactRoute.matches
+                ? ` L ${point.x} ${point.y}`
+                : ` C ${previous.x} ${middle} ${point.x} ${middle} ${point.x} ${point.y}`;
+        });
+        path += ` L ${positions.at(-1).x} ${bounds.height}`;
+        routeSvg.setAttribute('viewBox', `0 0 ${bounds.width} ${bounds.height}`);
+        track.setAttribute('d', path);
+        progressLine.setAttribute('d', path);
+        routeLength = progressLine.getTotalLength();
+        progressLine.style.strokeDasharray = String(routeLength);
+        updateSkillsProgress();
+    }
+    new ResizeObserver(layoutSkillsRoute).observe(skillsRoute);
+    window.addEventListener('scroll', requestSkillsProgress, { passive: true });
+    window.addEventListener('resize', layoutSkillsRoute, { passive: true });
+    motionPreference.addEventListener('change', updateSkillsProgress);
+    layoutSkillsRoute();
+}
 
 /* A real counter, beginning when this version is published. Preview reads only. */
 const countContainer = document.getElementById('visitorCounter');

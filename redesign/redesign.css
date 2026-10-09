@@ -137,7 +137,10 @@ nav.is-scrolled { height: 72px; line-height: normal; box-shadow: none; }
 .contact-invite h3 { font-size: 34px; margin: 10px 0 17px; line-height: 1.2; }
 .contact-invite h3 span { color: var(--third-color); }
 .contact-invite p { color: #aebbb1; font-size: 14px; line-height: 1.8; margin-bottom: 22px; }
-footer { margin-top: 20px; padding: 50px 20px 170px; background: #171b18; border-top: 1px solid var(--line); gap: 22px; }
+footer { margin-top: 20px; padding: 36px 20px 48px; background: #171b18; border-top: 1px solid var(--line); gap: 14px; }
+footer .top-footer p { font-size: 21px; line-height: 1.2; margin: 0; }
+footer .footer-social-icons { gap: 16px; }
+footer .bottom-footer { text-align: center; line-height: 1.5; }
 .visitor-counter { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 8px; color: #d6e2d8; font-size: 12px; }
 .visitor-counter[hidden]{display:none}
 .visitor-counter > span { color: var(--second-color); font-weight: 800; font-variant-numeric: tabular-nums; }
@@ -145,6 +148,7 @@ footer { margin-top: 20px; padding: 50px 20px 170px; background: #171b18; border
 .visitor-counter a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .footer-menu { flex-wrap: wrap; justify-content: center; gap: 14px; }
 .footer_menu_list a { font-size: 12px; padding: 8px; }
+@media(max-width:600px) { footer { padding: 34px 16px 52px; gap: 18px; } }
 @media(max-width:1100px) {
     .header { padding: 0 28px; }
     .nav-menu.responsive { top: 72px; background: #202520fa; backdrop-filter: blur(20px); height: calc(100dvh - 72px); overflow: auto; padding: 25px 0 100px; }
@@ -309,6 +313,7 @@ nav.header.is-scrolled { height: 68px; }
 .lego-handle.is-held { cursor:grabbing; }
 .lego-handle:focus-visible { outline:2px solid var(--second-color); outline-offset:3px; }
 .lego-dock.is-interacting { height:100dvh!important; z-index:150; }
+.lego-dock.is-on-route { height:100dvh!important; }
 #certifications,#projects,#blender { padding-block: 64px; scroll-margin-top: 88px; }
 #certifications .top-header,#projects .top-header,#blender .top-header { text-align: left; margin-bottom: 28px; }
 #certifications .top-header h1,#projects .top-header h1,#blender .top-header h1 { font-size: clamp(28px,3vw,38px); margin-bottom: 14px; }

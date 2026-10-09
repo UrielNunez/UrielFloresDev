@@ -138,3 +138,43 @@ a.gallery-card:focus-visible .project-cover { transform: none; }
     #certifications .credential-card { padding: 20px 18px 14px; }
     #certifications .credential-logo,#certifications .credential-logo img { height: 125px; }
 }
+
+/* Credentials are the artwork itself, without a surrounding card. */
+#certifications .credential-grid { gap: 34px 26px; align-items: start; }
+#certifications .credential-item {
+    min-width: 0; display: flex; flex-direction: column; align-items: center;
+    gap: 13px; text-align: center; background: none; border: 0;
+}
+#certifications .credential-item[hidden] { display: none!important; }
+#certifications .credential-badge {
+    display: grid; place-items: center; width: min(100%,220px); min-height: 172px;
+    padding: 8px; border-radius: 18px; text-decoration: none;
+    transition: transform 260ms var(--work-ease), background 260ms var(--work-ease);
+}
+#certifications .credential-badge img {
+    display: block; width: 100%; height: 158px; object-fit: contain;
+    filter: drop-shadow(0 12px 15px #0007);
+    transition: filter 260ms var(--work-ease);
+}
+#certifications .credential-badge:is(:hover,:focus-visible) {
+    transform: translateY(-5px) scale(1.035);
+    background: radial-gradient(circle,#d8c2761a,transparent 70%);
+}
+#certifications .credential-badge:is(:hover,:focus-visible) img { filter: drop-shadow(0 15px 20px #0009); }
+#certifications .credential-badge:focus-visible { outline: 2px solid #dac778; outline-offset: 3px; }
+#certifications .credential-copy { display: grid; justify-items: center; gap: 4px; max-width: 26ch; }
+#certifications .credential-copy .credential-issuer { font-size: 11px; color: #dac778; font-weight: 700; }
+#certifications .credential-copy h3 { margin: 0; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+#certifications .credential-copy .credential-date { margin: 0; font-size: 11px; color: var(--work-muted); }
+#certifications .collection-controls { margin-top: 34px; }
+.collection-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
+.collection-toggle i { font-size: 18px; }
+.collection-toggle:focus-visible { outline: 2px solid var(--collection-accent); outline-offset: 3px; }
+@media(max-width:600px) {
+    #certifications .credential-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px 12px; }
+    #certifications .credential-badge { min-height: 130px; width: min(100%,170px); }
+    #certifications .credential-badge img { height: 118px; }
+    #certifications .credential-copy h3 { font-size: 13px; }
+}
+@media(max-width:380px) { #certifications .credential-grid { grid-template-columns: minmax(0,1fr); } }
+@media(prefers-reduced-motion:reduce) { #certifications .credential-badge,#certifications .credential-badge img { transition: none; } }

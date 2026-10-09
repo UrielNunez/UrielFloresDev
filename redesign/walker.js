@@ -36,6 +36,8 @@ let frame;
 let ready = false;
 let failed = false;
 let welcomeEndsAt = 0;
+let hovering = false;
+let poseWeight = 0;
 let held = false;
 let falling = false;
 let pointerId = null;
@@ -50,6 +52,18 @@ let heldZ = 0;
 let heldYaw = 0;
 let groundStageHeight = 0;
 const dock = stage.closest('.lego-dock');
+const skillsMap = document.getElementById('skillsRoute');
+const skillsTrack = skillsMap?.querySelector('.skill-route-track');
+const journeyMap = document.querySelector('.journey-map');
+const journeyLine = journeyMap?.querySelector('.journey-route');
+let routeState = 'free';
+let routeX = 0;
+let routeY = 0;
+let routeYaw = 0;
+let routeFrame = 0;
+let bobOffset = 0;
+let lastRouteDocumentY = null;
+let scrollStride = 0;
 const manager = new THREE.LoadingManager();
 function showError() {
     failed = true;
@@ -69,6 +83,7 @@ manager.onLoad = () => {
     status.classList.add('is-hidden');
     welcome.classList.add('is-visible');
     welcomeEndsAt = performance.now() + 10000;
+    updateRouteTarget();
     updatePlayback();
 };
 function resizeRenderer() {
@@ -76,7 +91,7 @@ function resizeRenderer() {
     if (!width || !height) return;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(width, height, false);
-    if (!held && !falling) groundStageHeight = height;
+    if (!held && !falling && routeState === 'free') groundStageHeight = height;
     const unitsPerPixel = 6.4 / (groundStageHeight || height);
     const halfWidth = unitsPerPixel * width / 2;
     camera.top = height * unitsPerPixel - 0.4;
@@ -87,6 +102,93 @@ function resizeRenderer() {
     draw();
 }
 new ResizeObserver(resizeRenderer).observe(stage);
+// Follow the actual SVG route and the Journey line at the viewport's reading
+// position. Keeping the stage full-height only here preserves the original
+// LEGO scale and the bottom-screen walk elsewhere.
+function skillPointAt(documentY) {
+    const bounds = skillsMap.getBoundingClientRect();
+    const length = skillsTrack.getTotalLength();
+    const wantedY = THREE.MathUtils.clamp(documentY - window.scrollY - bounds.top, 0, bounds.height);
+    let low = 0;
+    let high = length;
+    for (let i = 0; i < 15; i++) {
+        const middle = (low + high) / 2;
+        if (skillsTrack.getPointAtLength(middle).y < wantedY) low = middle;
+        else high = middle;
+    }
+    const point = skillsTrack.getPointAtLength((low + high) / 2);
+    const before = skillsTrack.getPointAtLength(Math.max(0, low - 12));
+    const after = skillsTrack.getPointAtLength(Math.min(length, high + 12));
+    return { x: bounds.left + point.x, yaw: THREE.MathUtils.clamp((after.x - before.x) / Math.max(1, after.y - before.y) * .7, -.65, .65) };
+}
+function updateRouteTarget() {
+    if (!skillsMap || !skillsTrack?.getAttribute('d') || !journeyMap || !journeyLine) return;
+    const readingY = window.innerHeight * .55;
+    const documentY = window.scrollY + readingY;
+    const skills = skillsMap.getBoundingClientRect();
+    const journey = journeyMap.getBoundingClientRect();
+    const first = window.scrollY + skills.top;
+    const skillsEnd = window.scrollY + skills.bottom;
+    const journeyStart = window.scrollY + journey.top;
+    const last = window.scrollY + journey.bottom;
+    if (documentY < first || documentY > last) {
+        if (routeState === 'following') routeState = 'returning';
+        lastRouteDocumentY = null;
+        if (routeState === 'returning' && reducedMotion.matches && !held && !falling) {
+            routeState = 'free';
+            walker.position.y = 0;
+            dock.classList.remove('is-on-route');
+            resumeRoute(walker.position.x, 0);
+            resizeRenderer();
+        }
+        return;
+    }
+    if (routeState === 'free') {
+        routeState = 'following';
+        dock.classList.add('is-on-route');
+        resizeRenderer();
+    } else if (routeState === 'returning') routeState = 'following';
+    const line = journeyLine.getBoundingClientRect();
+    const journeyX = line.left + line.width / 2;
+    let screenX;
+    if (documentY <= skillsEnd) {
+        const point = skillPointAt(documentY);
+        screenX = point.x;
+        routeYaw = point.yaw;
+    } else if (documentY >= journeyStart) {
+        screenX = journeyX;
+        routeYaw = 0;
+    } else {
+        const end = skillPointAt(skillsEnd);
+        const t = THREE.MathUtils.smoothstep(documentY, skillsEnd, journeyStart);
+        screenX = THREE.MathUtils.lerp(end.x, journeyX, t);
+        routeYaw = THREE.MathUtils.clamp((journeyX - end.x) / Math.max(1, journeyStart - skillsEnd) * .7, -.65, .65);
+    }
+    const bounds = stage.getBoundingClientRect();
+    const unitsPerPixel = (camera.top - camera.bottom) / bounds.height;
+    if (lastRouteDocumentY !== null) {
+        scrollStride = Math.min(1.25, Math.abs(documentY - lastRouteDocumentY) * unitsPerPixel * 4);
+    }
+    lastRouteDocumentY = documentY;
+    // On narrow screens the route sits at the edge; keep the whole figure visible.
+    const halfFigure = characterWidth / unitsPerPixel / 2;
+    screenX = THREE.MathUtils.clamp(screenX, halfFigure + 5, bounds.width - halfFigure - 5);
+    routeX = (screenX - bounds.left - bounds.width / 2) * unitsPerPixel;
+    routeY = camera.bottom + (bounds.bottom - readingY) * unitsPerPixel;
+    if (welcomeEndsAt) { welcomeEndsAt = 0; welcome.classList.remove('is-visible'); }
+    if (reducedMotion.matches) draw();
+}
+function requestRouteTarget() {
+    if (routeFrame) return;
+    routeFrame = requestAnimationFrame(() => { routeFrame = 0; updateRouteTarget(); });
+}
+window.addEventListener('scroll', requestRouteTarget, { passive: true });
+window.addEventListener('resize', requestRouteTarget, { passive: true });
+if (skillsMap && journeyMap) {
+    const routeObserver = new ResizeObserver(requestRouteTarget);
+    routeObserver.observe(skillsMap);
+    routeObserver.observe(journeyMap);
+}
 const draco = new DRACOLoader(manager);
 draco.setDecoderPath('https://unpkg.com/three@0.160.1/examples/jsm/libs/draco/');
 const loader = new GLTFLoader(manager);
@@ -205,32 +307,64 @@ function positionHandle() {
     handle.style.top = `${(1 - handlePoint.y) * bounds.height / 2}px`;
 }
 function draw(delta = 0) {
+    walker.position.y -= bobOffset;
+    bobOffset = 0;
     const greeting = ready && performance.now() < welcomeEndsAt;
     if (ready && !greeting) welcome.classList.remove('is-visible');
     if (falling && delta) {
         dropVelocity -= 17 * delta;
-        heldY = Math.max(0, heldY + dropVelocity * delta);
-        if (heldY === 0) {
+        const floor = routeState === 'following' ? routeY : 0;
+        heldY = Math.max(floor, heldY + dropVelocity * delta);
+        if (heldY === floor) {
             falling = false;
-            resumeRoute(heldX, heldYaw);
+            if (routeState === 'free') resumeRoute(heldX, heldYaw);
             dock.classList.remove('is-interacting');
         }
     }
-    const moving = ready && !greeting && !reducedMotion.matches && !held && !falling;
+    const posing = ready && (hovering || held || falling);
+    poseWeight = reducedMotion.matches ? Number(posing) : THREE.MathUtils.damp(poseWeight, Number(posing), 5.5, delta);
+    const moving = ready && !greeting && !reducedMotion.matches && !posing;
     const pose = routePose();
     const departure = THREE.MathUtils.smootherstep(elapsed, 1.8, 3);
-    const targetSpeed = moving && travelLimit > 0 ? departure * (pose.turning ? 0.8 : 1.25) : 0;
+    const following = routeState === 'following';
+    const returning = routeState === 'returning';
+    const routeGap = following ? Math.hypot(routeX - walker.position.x, routeY - walker.position.y) : 0;
+    const targetSpeed = moving && travelLimit > 0
+        ? following ? Math.min(1.25, Math.max(routeGap * 1.8, scrollStride)) : returning ? 1 : departure * (pose.turning ? 0.8 : 1.25)
+        : 0;
+    scrollStride = THREE.MathUtils.damp(scrollStride, 0, 7, delta);
     gaitWeight = THREE.MathUtils.damp(gaitWeight, targetSpeed / 1.25, 5, delta);
-    distance += 1.25 * gaitWeight * delta;
-    gaitPhase += 1.25 * gaitWeight * delta * Math.PI * 2 / 1.5;
+    if (moving) {
+        if (!following && !returning) distance += 1.25 * gaitWeight * delta;
+        gaitPhase += 1.25 * gaitWeight * delta * Math.PI * 2 / 1.5;
+    }
     const current = routePose();
-    const yaw = held || falling ? heldYaw : moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
+    const yaw = posing ? 0 : following ? routeYaw : returning ? 0 : moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
     heading.setFromAxisAngle(upAxis, yaw);
-    walker.quaternion.slerp(heading, moving ? 1 - Math.exp(-8 * delta) : 1);
-    walker.position.set(held || falling ? heldX : moving ? current.x : 0, 0, held || falling ? heldZ : moving ? current.z : 0);
-    const weight = moving ? gaitWeight : 0;
+    walker.quaternion.slerp(heading, reducedMotion.matches ? 1 : 1 - Math.exp(-6 * delta));
+    const followRate = reducedMotion.matches ? 1 : 1 - Math.exp(-4.5 * delta);
+    if (held || falling) walker.position.set(heldX, heldY, heldZ);
+    else if (following) {
+        walker.position.x = THREE.MathUtils.lerp(walker.position.x, routeX, followRate);
+        walker.position.y = THREE.MathUtils.lerp(walker.position.y, routeY, followRate);
+        walker.position.z = THREE.MathUtils.lerp(walker.position.z, 0, followRate);
+    } else if (returning) {
+        walker.position.y = THREE.MathUtils.lerp(walker.position.y, 0, followRate);
+        walker.position.z = THREE.MathUtils.lerp(walker.position.z, 0, followRate);
+        if (Math.abs(walker.position.y) < .08 && !posing) {
+            walker.position.y = 0;
+            routeState = 'free';
+            dock.classList.remove('is-on-route');
+            resumeRoute(walker.position.x, yaw);
+            resizeRenderer();
+        }
+    } else if (!posing) walker.position.set(moving ? current.x : 0, 0, moving ? current.z : 0);
+    const weight = gaitWeight * (1 - poseWeight);
     // Twice-per-cycle rise is smooth at foot contact, without abs()/max() snaps.
-    walker.position.y = held || falling ? heldY : (1 - Math.cos(2 * gaitPhase)) * 0.025 * weight;
+    if (!held && !falling) {
+        bobOffset = (1 - Math.cos(2 * gaitPhase)) * 0.025 * weight;
+        walker.position.y += bobOffset;
+    }
     for (const joint of joints) {
         const phase = gaitPhase + (joint.side === 1 ? 0 : Math.PI);
         const swing = Math.cos(phase);
@@ -239,12 +373,12 @@ function draw(delta = 0) {
         if (joint.kind === 'UpLeg') angle = swing * 0.36;
         if (joint.kind === 'LowLeg') angle = -lift * 0.6;
         if (joint.kind === 'Foot') angle = -swing * 0.18 + lift * 0.22;
-        if (joint.kind === 'UpArm') angle = -swing * 0.3;
-        if (joint.kind === 'LowArm') angle = -0.12 - (1 - swing) * 0.09;
-        if (joint.kind === 'Hand') angle = Math.sin(phase - 0.35) * 0.035;
+        if (joint.kind === 'UpArm') angle = -swing * 0.3 * weight + (joint.side === -1 ? -0.95 : 0.04) * poseWeight;
+        if (joint.kind === 'LowArm') angle = (-0.12 - (1 - swing) * 0.09) * weight + (joint.side === -1 ? -0.38 : 0) * poseWeight;
+        if (joint.kind === 'Hand') angle = Math.sin(phase - 0.35) * 0.035 * weight + (joint.side === -1 ? 0.12 : 0) * poseWeight;
         if (joint.kind === 'Spine1') angle = 0.025 + Math.cos(2 * gaitPhase) * 0.015;
         if (joint.kind === 'Spine2') angle = -0.015;
-        joint.rotation.setFromAxisAngle(joint.axis, angle * weight);
+        joint.rotation.setFromAxisAngle(joint.axis, joint.kind.endsWith('Arm') || joint.kind === 'Hand' ? angle : angle * weight);
         joint.bone.quaternion.copy(joint.rest).premultiply(joint.rotation);
         if (joint.kind.startsWith('Spine')) {
             joint.rotation.setFromAxisAngle(joint.twistAxis, Math.sin(gaitPhase) * (joint.kind === 'Spine1' ? 0.035 : -0.065) * weight);
@@ -270,11 +404,21 @@ function updatePlayback() {
         frame = requestAnimationFrame(render);
     }
 }
+handle.addEventListener('pointerenter', event => {
+    if (!ready || held || falling || event.pointerType === 'touch') return;
+    hovering = true;
+    if (reducedMotion.matches) draw();
+});
+handle.addEventListener('pointerleave', () => {
+    hovering = false;
+    if (reducedMotion.matches) draw();
+});
 handle.addEventListener('pointerdown', event => {
     if (!ready || held || (event.pointerType === 'mouse' && event.button !== 0)) return;
     event.preventDefault();
     handle.setPointerCapture(event.pointerId);
     pointerId = event.pointerId;
+    hovering = false;
     held = true;
     falling = false;
     heldX = walker.position.x;
@@ -305,10 +449,10 @@ function release(event) {
     if (!held || event.pointerId !== pointerId) return;
     held = false;
     pointerId = null;
-    falling = heldY > 0;
+    falling = heldY > (routeState === 'following' ? routeY : 0) + .02;
     dropVelocity = 0;
     if (!falling) {
-        resumeRoute(heldX, heldYaw);
+        if (routeState === 'free') resumeRoute(heldX, heldYaw);
         dock.classList.remove('is-interacting');
     }
     handle.classList.remove('is-held');
@@ -323,7 +467,7 @@ handle.addEventListener('keydown', event => {
     event.preventDefault();
     if (event.key === 'Escape' || (event.key === ' ' && held)) { if (held) release({ pointerId }); return; }
     if (!held && event.key === ' ') {
-        held = true; falling = false; pointerId = 'keyboard';
+        hovering = false; held = true; falling = false; pointerId = 'keyboard';
         heldX = walker.position.x; heldY = walker.position.y; heldZ = walker.position.z;
         heldYaw = new THREE.Euler().setFromQuaternion(walker.quaternion, 'YXZ').y;
         welcomeEndsAt = 0; elapsed = Math.max(elapsed, 3);
