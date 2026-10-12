@@ -159,9 +159,9 @@ async function startPortfolio() {
             loadScript('https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js'),
             loadScript('https://unpkg.com/scrollreveal')
         ]);
-        await loadScript('./redesign.js?v=9');
+        await loadScript('./redesign.js?v=10');
     } finally {
-        import('./walker.js?v=3');
+        import('./walker.js?v=6');
     }
 }
 

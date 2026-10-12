@@ -155,24 +155,7 @@ if (skillsRoute) {
     const progressLine = skillsRoute.querySelector('.skill-route-progress');
     const nodes = [...skillsRoute.querySelectorAll('.skill-route-node')];
     const compactRoute = window.matchMedia('(max-width: 900px)');
-    let routeLength = 0;
-    let routeFrame = 0;
 
-    function updateSkillsProgress() {
-        if (!routeLength) return;
-        const bounds = skillsRoute.getBoundingClientRect();
-        const start = window.innerHeight * .78;
-        const span = bounds.height + window.innerHeight * .12;
-        const progress = motionPreference.matches ? 1 : Math.min(1, Math.max(0, (start - bounds.top) / span));
-        progressLine.style.strokeDashoffset = String(routeLength * (1 - progress));
-    }
-    function requestSkillsProgress() {
-        if (routeFrame) return;
-        routeFrame = requestAnimationFrame(() => {
-            routeFrame = 0;
-            updateSkillsProgress();
-        });
-    }
     function layoutSkillsRoute() {
         const bounds = skillsRoute.getBoundingClientRect();
         if (!bounds.width || !bounds.height) return;
@@ -194,14 +177,12 @@ if (skillsRoute) {
         routeSvg.setAttribute('viewBox', `0 0 ${bounds.width} ${bounds.height}`);
         track.setAttribute('d', path);
         progressLine.setAttribute('d', path);
-        routeLength = progressLine.getTotalLength();
+        const routeLength = progressLine.getTotalLength();
         progressLine.style.strokeDasharray = String(routeLength);
-        updateSkillsProgress();
+        window.dispatchEvent(new Event('portfolio-route-layout'));
     }
     new ResizeObserver(layoutSkillsRoute).observe(skillsRoute);
-    window.addEventListener('scroll', requestSkillsProgress, { passive: true });
     window.addEventListener('resize', layoutSkillsRoute, { passive: true });
-    motionPreference.addEventListener('change', updateSkillsProgress);
     layoutSkillsRoute();
 }
 
@@ -358,23 +339,5 @@ abrirEnNuevaPestaña('Uproject2-1', 'https://www.instagram.com/carmenbauza_salud
 abrirEnNuevaPestaña('Uproject3-1', 'https://www.youtube.com/@Quehubierapasadosioficial');
 
 
-
-/*---------------PROFESSIONAL JOURNEY ROUTE------------------*/
-const journeyMap = document.querySelector('.journey-map');
-
-function updateJourneyRoute() {
-    if (!journeyMap) return;
-    const bounds = journeyMap.getBoundingClientRect();
-    const start = window.innerHeight * .72;
-    const distance = bounds.height + window.innerHeight * .22;
-    const progress = Math.min(1, Math.max(0, (start - bounds.top) / distance));
-    journeyMap.style.setProperty('--journey-progress', progress.toFixed(3));
-}
-
-if (journeyMap) {
-    updateJourneyRoute();
-    window.addEventListener('scroll', updateJourneyRoute, { passive: true });
-    window.addEventListener('resize', updateJourneyRoute, { passive: true });
-}
 
 // Do not let the intro hide the proposal when a remote module is unavailable.

@@ -14,24 +14,31 @@ camera.position.set(0, 0, 20);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
-scene.add(new THREE.HemisphereLight(0xe8f2ff, 0x77716a, 1.8));
-const keyLight = new THREE.DirectionalLight(0xfff4e8, 1.5);
-keyLight.position.set(4, 7, 5);
+renderer.toneMappingExposure = 1.05;
+scene.add(new THREE.HemisphereLight(0xeaf6ff, 0x312d36, 2.1));
+const keyLight = new THREE.DirectionalLight(0xfff3e6, 2.2);
+keyLight.position.set(3, 4, 6);
 scene.add(keyLight);
-const fillLight = new THREE.DirectionalLight(0xdbeeff, 0.8);
-fillLight.position.set(-5, 3, 4);
-scene.add(fillLight);
+const rimLight = new THREE.DirectionalLight(0x2fc9e8, 1.5);
+rimLight.position.set(-4, 2, -4);
+scene.add(rimLight);
 const walker = new THREE.Group();
 scene.add(walker);
-const joints = [];
+const animatedNodes = [];
+const gestureJoints = [];
+let walkMixer;
+let walkDuration = 0;
 const clock = new THREE.Clock();
 let elapsed = 0;
 let distance = 0;
 let gaitPhase = 0;
 let gaitWeight = 0;
+let gaitDistance = 0;
+let gaitTargetDistance = 0;
+let lastScrollY = window.scrollY;
 let travelLimit = 0;
 let characterWidth = 3;
+let figureScale = 1;
 let frame;
 let ready = false;
 let failed = false;
@@ -62,8 +69,9 @@ let routeY = 0;
 let routeYaw = 0;
 let routeFrame = 0;
 let bobOffset = 0;
-let lastRouteDocumentY = null;
-let scrollStride = 0;
+let routeSection = 'none';
+const freeWalkSpeed = 1.15;
+const strideLength = 1.65;
 const manager = new THREE.LoadingManager();
 function showError() {
     failed = true;
@@ -80,6 +88,9 @@ manager.onLoad = () => {
     distance = 0;
     gaitPhase = 0;
     gaitWeight = 0;
+    gaitDistance = 0;
+    gaitTargetDistance = 0;
+    lastScrollY = window.scrollY;
     status.classList.add('is-hidden');
     welcome.classList.add('is-visible');
     welcomeEndsAt = performance.now() + 10000;
@@ -94,11 +105,13 @@ function resizeRenderer() {
     if (!held && !falling && routeState === 'free') groundStageHeight = height;
     const unitsPerPixel = 6.4 / (groundStageHeight || height);
     const halfWidth = unitsPerPixel * width / 2;
+    figureScale = width <= 600 ? .72 : 1;
+    walker.scale.setScalar(figureScale);
     camera.top = height * unitsPerPixel - 0.4;
     camera.left = -halfWidth;
     camera.right = halfWidth;
     camera.updateProjectionMatrix();
-    travelLimit = Math.max(0, halfWidth - characterWidth / 2 - 0.7);
+    travelLimit = Math.max(0, halfWidth - characterWidth * figureScale / 2 - 0.7);
     draw();
 }
 new ResizeObserver(resizeRenderer).observe(stage);
@@ -133,7 +146,14 @@ function updateRouteTarget() {
     const last = window.scrollY + journey.bottom;
     if (documentY < first || documentY > last) {
         if (routeState === 'following') routeState = 'returning';
-        lastRouteDocumentY = null;
+        if (routeState === 'gap') {
+            routeState = 'free';
+            routeSection = 'none';
+            dock.classList.remove('is-on-route', 'is-route-gap');
+            walker.position.y = 0;
+            resumeRoute(walker.position.x, 0);
+            resizeRenderer();
+        }
         if (routeState === 'returning' && reducedMotion.matches && !held && !falling) {
             routeState = 'free';
             walker.position.y = 0;
@@ -141,40 +161,45 @@ function updateRouteTarget() {
             resumeRoute(walker.position.x, 0);
             resizeRenderer();
         }
+        if (reducedMotion.matches) draw();
         return;
     }
+    const section = documentY <= skillsEnd ? 'skills' : documentY >= journeyStart ? 'journey' : 'gap';
     if (routeState === 'free') {
         routeState = 'following';
         dock.classList.add('is-on-route');
         resizeRenderer();
     } else if (routeState === 'returning') routeState = 'following';
+    if (section === 'gap') {
+        routeState = 'gap';
+        routeSection = 'gap';
+        dock.classList.add('is-route-gap');
+        if (reducedMotion.matches) draw();
+        return;
+    }
+    const restarting = routeState === 'gap' || (routeSection !== 'none' && routeSection !== section);
+    routeState = 'following';
+    routeSection = section;
+    dock.classList.remove('is-route-gap');
     const line = journeyLine.getBoundingClientRect();
     const journeyX = line.left + line.width / 2;
     let screenX;
-    if (documentY <= skillsEnd) {
+    if (section === 'skills') {
         const point = skillPointAt(documentY);
         screenX = point.x;
         routeYaw = point.yaw;
-    } else if (documentY >= journeyStart) {
+    } else {
         screenX = journeyX;
         routeYaw = 0;
-    } else {
-        const end = skillPointAt(skillsEnd);
-        const t = THREE.MathUtils.smoothstep(documentY, skillsEnd, journeyStart);
-        screenX = THREE.MathUtils.lerp(end.x, journeyX, t);
-        routeYaw = THREE.MathUtils.clamp((journeyX - end.x) / Math.max(1, journeyStart - skillsEnd) * .7, -.65, .65);
     }
     const bounds = stage.getBoundingClientRect();
     const unitsPerPixel = (camera.top - camera.bottom) / bounds.height;
-    if (lastRouteDocumentY !== null) {
-        scrollStride = Math.min(1.25, Math.abs(documentY - lastRouteDocumentY) * unitsPerPixel * 4);
-    }
-    lastRouteDocumentY = documentY;
     // On narrow screens the route sits at the edge; keep the whole figure visible.
-    const halfFigure = characterWidth / unitsPerPixel / 2;
+    const halfFigure = characterWidth * figureScale / unitsPerPixel / 2;
     screenX = THREE.MathUtils.clamp(screenX, halfFigure + 5, bounds.width - halfFigure - 5);
     routeX = (screenX - bounds.left - bounds.width / 2) * unitsPerPixel;
     routeY = camera.bottom + (bounds.bottom - readingY) * unitsPerPixel;
+    if (restarting && !held && !falling) walker.position.set(routeX, routeY, 0);
     if (welcomeEndsAt) { welcomeEndsAt = 0; welcome.classList.remove('is-visible'); }
     if (reducedMotion.matches) draw();
 }
@@ -193,8 +218,10 @@ const draco = new DRACOLoader(manager);
 draco.setDecoderPath('https://unpkg.com/three@0.160.1/examples/jsm/libs/draco/');
 const loader = new GLTFLoader(manager);
 loader.setDRACOLoader(draco);
-loader.load('../Assets/Models/lego-walker.glb?v=1', gltf => {
+// This GLB pairs the original run rig with the correct Spider-Man UV atlas.
+loader.load('../Assets/Models/spiderman-walk.glb?v=1', gltf => {
     const model = gltf.scene;
+    model.rotation.y = Math.PI;
     model.scale.setScalar(0.01);
     model.traverse(node => {
         if (node.isMesh && /^GEOFace/i.test(node.name)) {
@@ -211,22 +238,24 @@ loader.load('../Assets/Models/lego-walker.glb?v=1', gltf => {
             node.renderOrder = 2;
         } else if (node.isMesh) {
             const soften = source => {
-                const material = new THREE.MeshStandardMaterial({
-                    color: source.color, map: source.map, normalMap: source.normalMap,
-                    roughness: 0.72, metalness: 0,
-                    transparent: source.transparent, opacity: source.opacity, side: source.side
-                });
-                material.normalScale.setScalar(0.3);
+                const material = source.clone();
+                material.roughness = Math.max(material.roughness ?? 0.6, 0.55);
+                material.metalness = 0;
                 return material;
             };
             node.material = Array.isArray(node.material) ? node.material.map(soften) : soften(node.material);
         }
     });
-    // Sample the original idle pose before adding procedural steps.
+    // A relaxed frame becomes the idle pose; the source animation provides the gait.
     if (gltf.animations.length) {
-        const mixer = new THREE.AnimationMixer(model);
-        mixer.clipAction(gltf.animations[0]).play();
-        mixer.update(0);
+        walkMixer = new THREE.AnimationMixer(model);
+        walkDuration = gltf.animations[0].duration;
+        walkMixer.clipAction(gltf.animations[0]).play();
+        walkMixer.setTime(walkDuration * 0.25);
+        model.traverse(node => {
+            if (node === model) return;
+            animatedNodes.push({ node, position: node.position.clone(), rotation: node.quaternion.clone(), scale: node.scale.clone() });
+        });
     }
     model.updateMatrixWorld(true);
     const height = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3()).y;
@@ -242,20 +271,17 @@ loader.load('../Assets/Models/lego-walker.glb?v=1', gltf => {
     model.position.set(-center.x, -bounds.min.y, -center.z);
     walker.add(model);
     model.updateMatrixWorld(true);
-    // Accept both dotted Blender names and sanitized legacy names.
+    // Preserve the small greeting gesture when the visitor picks up the LEGO.
     model.traverse(bone => {
-        const match = /^(UpLeg|LowLeg|Foot|UpArm|LowArm|Hand)[._]?([LR])$/.exec(bone.name);
-        if (!bone.isBone || (!match && !/^Spine[12]$/.test(bone.name))) return;
+        if (!bone.isBone || !/^(UpArm|LowArm|Hand)\.R$/.test(bone.name)) return;
         const parentRotation = bone.parent.getWorldQuaternion(new THREE.Quaternion());
-        joints.push({ bone, kind: match ? match[1] : bone.name, side: match?.[2] === 'L' ? 1 : -1,
-            rest: bone.quaternion.clone(),
+        gestureJoints.push({ bone, kind: bone.name.split('.')[0],
             axis: new THREE.Vector3(1, 0, 0).applyQuaternion(parentRotation.invert()),
-            twistAxis: new THREE.Vector3(0, 1, 0).applyQuaternion(parentRotation),
             rotation: new THREE.Quaternion() });
     });
     resizeRenderer();
 }, undefined, error => {
-    console.error('Unable to load lego-walker.glb:', error);
+    console.error('Unable to load spiderman-walk.glb:', error);
     showError();
 });
 // A capsule-shaped route keeps each turnaround a continuous walking arc.
@@ -295,12 +321,53 @@ function resumeRoute(x, yaw) {
 const heading = new THREE.Quaternion();
 const upAxis = new THREE.Vector3(0, 1, 0);
 const handlePoint = new THREE.Vector3();
+const footPoint = new THREE.Vector3();
+let skillRouteLength = 0;
+function refreshRouteGeometry() {
+    skillRouteLength = skillsTrack?.getAttribute('d') ? skillsTrack.getTotalLength() : 0;
+    requestRouteTarget();
+}
+window.addEventListener('portfolio-route-layout', refreshRouteGeometry);
+refreshRouteGeometry();
+function footScreenY() {
+    const bounds = stage.getBoundingClientRect();
+    footPoint.set(walker.position.x, walker.position.y - bobOffset, walker.position.z).project(camera);
+    return bounds.top + (1 - footPoint.y) * bounds.height / 2;
+}
+function syncIlluminatedRoutes() {
+    if (!skillRouteLength || !skillsMap || !journeyMap) return;
+    const readingDocumentY = window.scrollY + window.innerHeight * .55;
+    const skillsBounds = skillsMap.getBoundingClientRect();
+    const journeyBounds = journeyMap.getBoundingClientRect();
+    const skillsEnd = window.scrollY + skillsBounds.bottom;
+    const journeyStart = window.scrollY + journeyBounds.top;
+    let skillsProgress = 0;
+    if (readingDocumentY > skillsEnd) skillsProgress = 1;
+    else if (routeSection === 'skills' && routeState === 'following') {
+        const wantedY = THREE.MathUtils.clamp(footScreenY() - skillsBounds.top, 0, skillsBounds.height);
+        let low = 0;
+        let high = skillRouteLength;
+        for (let i = 0; i < 15; i++) {
+            const middle = (low + high) / 2;
+            if (skillsTrack.getPointAtLength(middle).y < wantedY) low = middle;
+            else high = middle;
+        }
+        skillsProgress = (low + high) / (2 * skillRouteLength);
+    }
+    skillsMap.querySelector('.skill-route-progress').style.strokeDashoffset = String(skillRouteLength * (1 - skillsProgress));
+    let journeyProgress = 0;
+    if (readingDocumentY > window.scrollY + journeyBounds.bottom) journeyProgress = 1;
+    else if (readingDocumentY >= journeyStart && routeSection === 'journey' && routeState === 'following') {
+        journeyProgress = THREE.MathUtils.clamp((footScreenY() - journeyBounds.top) / journeyBounds.height, 0, 1);
+    }
+    journeyMap.style.setProperty('--journey-progress', journeyProgress.toFixed(4));
+}
 function positionHandle() {
     if (!ready) return;
     const bounds = stage.getBoundingClientRect();
-    handlePoint.set(walker.position.x, walker.position.y + 2.5, walker.position.z).project(camera);
-    const width = THREE.MathUtils.clamp(characterWidth / (camera.top - camera.bottom) * bounds.height * 1.15, 52, 150);
-    const height = THREE.MathUtils.clamp(5 / (camera.top - camera.bottom) * bounds.height * 1.12, 88, 190);
+    handlePoint.set(walker.position.x, walker.position.y + 2.5 * figureScale, walker.position.z).project(camera);
+    const width = THREE.MathUtils.clamp(characterWidth * figureScale / (camera.top - camera.bottom) * bounds.height * 1.15, 52, 150);
+    const height = THREE.MathUtils.clamp(5 * figureScale / (camera.top - camera.bottom) * bounds.height * 1.12, 70, 190);
     handle.style.width = `${width}px`;
     handle.style.height = `${height}px`;
     handle.style.left = `${(handlePoint.x + 1) * bounds.width / 2}px`;
@@ -323,31 +390,29 @@ function draw(delta = 0) {
     }
     const posing = ready && (hovering || held || falling);
     poseWeight = reducedMotion.matches ? Number(posing) : THREE.MathUtils.damp(poseWeight, Number(posing), 5.5, delta);
-    const moving = ready && !greeting && !reducedMotion.matches && !posing;
-    const pose = routePose();
+    const moving = ready && !greeting && !reducedMotion.matches && !posing && routeState !== 'gap';
     const departure = THREE.MathUtils.smootherstep(elapsed, 1.8, 3);
     const following = routeState === 'following';
     const returning = routeState === 'returning';
-    const routeGap = following ? Math.hypot(routeX - walker.position.x, routeY - walker.position.y) : 0;
-    const targetSpeed = moving && travelLimit > 0
-        ? following ? Math.min(1.25, Math.max(routeGap * 1.8, scrollStride)) : returning ? 1 : departure * (pose.turning ? 0.8 : 1.25)
-        : 0;
-    scrollStride = THREE.MathUtils.damp(scrollStride, 0, 7, delta);
-    gaitWeight = THREE.MathUtils.damp(gaitWeight, targetSpeed / 1.25, 5, delta);
-    if (moving) {
-        if (!following && !returning) distance += 1.25 * gaitWeight * delta;
-        gaitPhase += 1.25 * gaitWeight * delta * Math.PI * 2 / 1.5;
-    }
+    const previousX = walker.position.x;
+    const previousY = walker.position.y;
+    const previousZ = walker.position.z;
+    if (moving && !following && !returning) distance += freeWalkSpeed * departure * delta;
     const current = routePose();
     const yaw = posing ? 0 : following ? routeYaw : returning ? 0 : moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
     heading.setFromAxisAngle(upAxis, yaw);
     walker.quaternion.slerp(heading, reducedMotion.matches ? 1 : 1 - Math.exp(-6 * delta));
-    const followRate = reducedMotion.matches ? 1 : 1 - Math.exp(-4.5 * delta);
+    const followRate = reducedMotion.matches ? 1 : 1 - Math.exp(-6.5 * delta);
     if (held || falling) walker.position.set(heldX, heldY, heldZ);
     else if (following) {
-        walker.position.x = THREE.MathUtils.lerp(walker.position.x, routeX, followRate);
         walker.position.y = THREE.MathUtils.lerp(walker.position.y, routeY, followRate);
         walker.position.z = THREE.MathUtils.lerp(walker.position.z, 0, followRate);
+        if (routeSection === 'skills') {
+            const point = skillPointAt(window.scrollY + footScreenY());
+            const bounds = stage.getBoundingClientRect();
+            const unitsPerPixel = (camera.top - camera.bottom) / bounds.height;
+            walker.position.x = (point.x - bounds.left - bounds.width / 2) * unitsPerPixel;
+        } else walker.position.x = routeX;
     } else if (returning) {
         walker.position.y = THREE.MathUtils.lerp(walker.position.y, 0, followRate);
         walker.position.z = THREE.MathUtils.lerp(walker.position.z, 0, followRate);
@@ -358,36 +423,45 @@ function draw(delta = 0) {
             resumeRoute(walker.position.x, yaw);
             resizeRenderer();
         }
-    } else if (!posing) walker.position.set(moving ? current.x : 0, 0, moving ? current.z : 0);
+    } else if (!posing && routeState !== 'gap') walker.position.set(moving ? current.x : 0, 0, moving ? current.z : 0);
+    // In Journey the LEGO stays near the reading line while the document moves.
+    // Count that scroll as travelled distance, then ease the animation toward it.
+    const scrollDelta = delta ? Math.abs(window.scrollY - lastScrollY) : 0;
+    if (delta) lastScrollY = window.scrollY;
+    const unitsPerPixel = (camera.top - camera.bottom) / Math.max(1, stage.getBoundingClientRect().height);
+    const worldStep = Math.hypot(walker.position.x - previousX, walker.position.y - previousY, walker.position.z - previousZ);
+    if (moving) gaitTargetDistance += following
+        ? Math.max(routeSection === 'journey' ? 0.72 * delta : 0, Math.min(0.9, Math.max(worldStep, scrollDelta * unitsPerPixel)))
+        : Math.min(worldStep, 0.2);
+    else gaitTargetDistance = gaitDistance;
+    const previousGaitDistance = gaitDistance;
+    gaitDistance = THREE.MathUtils.damp(gaitDistance, gaitTargetDistance, 12, delta);
+    const walkSpeed = delta ? (gaitDistance - previousGaitDistance) / delta : 0;
+    gaitWeight = reducedMotion.matches ? 0 : THREE.MathUtils.damp(gaitWeight, Math.min(1, walkSpeed / 0.7), 8, delta);
+    gaitPhase = gaitDistance * Math.PI * 2 / strideLength;
     const weight = gaitWeight * (1 - poseWeight);
-    // Twice-per-cycle rise is smooth at foot contact, without abs()/max() snaps.
+    // The original footfalls supply the motion; only a slight body lift is added.
     if (!held && !falling) {
-        bobOffset = (1 - Math.cos(2 * gaitPhase)) * 0.025 * weight;
+        bobOffset = (1 - Math.cos(2 * gaitPhase)) * 0.006 * weight;
         walker.position.y += bobOffset;
     }
-    for (const joint of joints) {
-        const phase = gaitPhase + (joint.side === 1 ? 0 : Math.PI);
-        const swing = Math.cos(phase);
-        const lift = Math.pow((1 + Math.sin(phase)) / 2, 3);
-        let angle = 0;
-        if (joint.kind === 'UpLeg') angle = swing * 0.36;
-        if (joint.kind === 'LowLeg') angle = -lift * 0.6;
-        if (joint.kind === 'Foot') angle = -swing * 0.18 + lift * 0.22;
-        if (joint.kind === 'UpArm') angle = -swing * 0.3 * weight + (joint.side === -1 ? -0.95 : 0.04) * poseWeight;
-        if (joint.kind === 'LowArm') angle = (-0.12 - (1 - swing) * 0.09) * weight + (joint.side === -1 ? -0.38 : 0) * poseWeight;
-        if (joint.kind === 'Hand') angle = Math.sin(phase - 0.35) * 0.035 * weight + (joint.side === -1 ? 0.12 : 0) * poseWeight;
-        if (joint.kind === 'Spine1') angle = 0.025 + Math.cos(2 * gaitPhase) * 0.015;
-        if (joint.kind === 'Spine2') angle = -0.015;
-        joint.rotation.setFromAxisAngle(joint.axis, joint.kind.endsWith('Arm') || joint.kind === 'Hand' ? angle : angle * weight);
-        joint.bone.quaternion.copy(joint.rest).premultiply(joint.rotation);
-        if (joint.kind.startsWith('Spine')) {
-            joint.rotation.setFromAxisAngle(joint.twistAxis, Math.sin(gaitPhase) * (joint.kind === 'Spine1' ? 0.035 : -0.065) * weight);
-            joint.bone.quaternion.premultiply(joint.rotation);
+    if (walkMixer && walkDuration) {
+        walkMixer.setTime((gaitPhase / (Math.PI * 2) + 0.25) * walkDuration);
+        for (const { node, position, rotation, scale } of animatedNodes) {
+            node.position.lerp(position, 1 - weight);
+            node.quaternion.slerp(rotation, 1 - weight);
+            node.scale.lerp(scale, 1 - weight);
         }
+    }
+    for (const joint of gestureJoints) {
+        const angle = (joint.kind === 'UpArm' ? -0.7 : joint.kind === 'LowArm' ? -0.35 : 0.1) * poseWeight;
+        joint.rotation.setFromAxisAngle(joint.axis, angle);
+        joint.bone.quaternion.premultiply(joint.rotation);
     }
     walker.visible = ready;
     renderer.render(scene, camera);
     positionHandle();
+    syncIlluminatedRoutes();
 }
 function render() {
     const delta = Math.min(clock.getDelta(), 0.05);
@@ -442,7 +516,7 @@ handle.addEventListener('pointermove', event => {
     event.preventDefault();
     const unitsPerPixel = (camera.top - camera.bottom) / stage.getBoundingClientRect().height;
     heldX = THREE.MathUtils.clamp(dragOriginX + (event.clientX - dragStartX) * unitsPerPixel, -travelLimit, travelLimit);
-    heldY = THREE.MathUtils.clamp(dragOriginY - (event.clientY - dragStartY) * unitsPerPixel, 0, Math.max(0, camera.top - 5.2));
+    heldY = THREE.MathUtils.clamp(dragOriginY - (event.clientY - dragStartY) * unitsPerPixel, 0, Math.max(0, camera.top - 5.2 * figureScale));
     draw();
 });
 function release(event) {
@@ -472,10 +546,10 @@ handle.addEventListener('keydown', event => {
         heldYaw = new THREE.Euler().setFromQuaternion(walker.quaternion, 'YXZ').y;
         welcomeEndsAt = 0; elapsed = Math.max(elapsed, 3);
         handle.classList.add('is-held'); dock.classList.add('is-interacting'); resizeRenderer();
-        heldY = Math.min(2, Math.max(0, camera.top - 5.2)); updatePlayback();
+        heldY = Math.min(2, Math.max(0, camera.top - 5.2 * figureScale)); updatePlayback();
     } else if (held && pointerId === 'keyboard') {
         heldX = THREE.MathUtils.clamp(heldX + (event.key === 'ArrowRight' ? .5 : event.key === 'ArrowLeft' ? -.5 : 0), -travelLimit, travelLimit);
-        heldY = THREE.MathUtils.clamp(heldY + (event.key === 'ArrowUp' ? .5 : event.key === 'ArrowDown' ? -.5 : 0), 0, Math.max(0, camera.top - 5.2)); draw();
+        heldY = THREE.MathUtils.clamp(heldY + (event.key === 'ArrowUp' ? .5 : event.key === 'ArrowDown' ? -.5 : 0), 0, Math.max(0, camera.top - 5.2 * figureScale)); draw();
     }
 });
 window.addEventListener('scroll', () => {
