@@ -108,14 +108,29 @@ motionPreference.addEventListener('change', () => {
     });
 });
 
-/* The existing ScrollReveal library adds restrained motion to standalone content. */
-if (window.ScrollReveal && !motionPreference.matches) {
-    ScrollReveal().reveal('.about-info,.journey-card,.contact-info,.contact-invite,.featured-text,.featured-image', {
-        distance: '12px', duration: 850, interval: 55, opacity: .58,
-        easing: 'cubic-bezier(.25,.75,.25,1)', reset: true,
-        viewFactor: .08, mobile: true
-    });
+/* Optional libraries initialize after the essential mobile UI is ready. */
+let revealStarted = false;
+let typingStarted = false;
+function startOptionalEffects() {
+    if (motionPreference.matches) return;
+    if (!revealStarted && window.ScrollReveal) {
+        revealStarted = true;
+        ScrollReveal().reveal('.about-info,.journey-card,.contact-info,.contact-invite,.featured-text,.featured-image', {
+            distance: '12px', duration: 850, interval: 55, opacity: .58,
+            easing: 'cubic-bezier(.25,.75,.25,1)', reset: true,
+            viewFactor: .08, mobile: true
+        });
+    }
+    if (!typingStarted && typeof window.Typed === 'function') {
+        typingStarted = true;
+        new window.Typed('.typedText', {
+            strings: [' Unity Developer', ' Video Game Developer', ' AR Developer', ' Video Editor', ' Web Developer', ' VR Developer', ' 3D Modeler', ' YouTuber'],
+            loop: true, typeSpeed: 100, backSpeed: 80, backDelay: 2000
+        });
+    }
 }
+window.addEventListener('portfolio-extras-ready', startOptionalEffects);
+startOptionalEffects();
 
 /* Keep three entries on phones and two desktop rows, with a reversible reveal. */
 const compactCollections = window.matchMedia('(max-width: 600px)');
@@ -262,15 +277,6 @@ function headerShadow() {
         navHeader.classList.remove('is-scrolled');
     }
 }
-
-/*---------------TYPING EFFECT------------------*/
-if (typeof window.Typed === 'function' && !motionPreference.matches) new window.Typed(".typedText", {
-    strings: [" Unity Developer", " Video Game Developer", " AR Developer", " Video Editor", " Web Developer", " VR Developer", " 3D Modeler", " YouTuber"],
-    loop: true,
-    typeSpeed: 100,
-    backSpeed: 80,
-    backDelay: 2000
-});
 
 /* ----- CHANGE ACTIVE LINK ----- */
 const sections = document.querySelectorAll('section[id]');

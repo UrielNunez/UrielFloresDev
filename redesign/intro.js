@@ -153,16 +153,13 @@ function loadScript(src) {
     });
 }
 
-async function startPortfolio() {
-    try {
-        await Promise.allSettled([
-            loadScript('https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js'),
-            loadScript('https://unpkg.com/scrollreveal')
-        ]);
-        await loadScript('./redesign.js?v=10');
-    } finally {
-        import('./walker.js?v=6');
-    }
+function startPortfolio() {
+    // Navigation, collections and route layout are loaded by the page itself.
+    // Only the LEGO and decorative effects depend on these extra downloads.
+    import('./walker.js?v=18').catch(error => console.error('Unable to start LEGO character:', error));
+    const ready = () => window.dispatchEvent(new Event('portfolio-extras-ready'));
+    loadScript('https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js').then(ready, ready);
+    loadScript('https://unpkg.com/scrollreveal').then(ready, ready);
 }
 
 function finishIntro() {
@@ -192,6 +189,7 @@ draco.setDecoderPath('https://unpkg.com/three@0.160.1/examples/jsm/libs/draco/')
 const loader = new GLTFLoader();
 loader.setDRACOLoader(draco);
 loader.load('../Assets/Models/spiderman-intro.glb?v=2', gltf => {
+    if (window.__portfolioEmergency) { finishIntro(); return; }
     model = gltf.scene;
     // The Blender camera looked at the character's front from the opposite
     // side. Rotate the exported asset so visitors see that same front view.

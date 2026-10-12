@@ -18,7 +18,7 @@
     <title>UrielDEV — Portfolio / New proposal</title>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preload" href="../Assets/Models/spiderman-intro.glb?v=2" as="fetch" crossorigin fetchpriority="high">
-    <link rel="preload" href="../Assets/Models/lego-walker.glb?v=1" as="fetch" crossorigin fetchpriority="high">
+    <link rel="preload" href="../Assets/Models/spiderman-walk.glb?v=1" as="fetch" crossorigin fetchpriority="high">
     <script type="importmap">
         {
             "imports": {
@@ -26,8 +26,8 @@
             }
         }
     </script>
-    <link rel="modulepreload" href="./intro.js?v=10">
-    <link rel="modulepreload" href="./walker.js?v=6">
+    <link rel="modulepreload" href="./intro.js?v=18">
+    <link rel="modulepreload" href="./walker.js?v=18">
 </head>
 
 <body class="intro-pending">
@@ -508,7 +508,7 @@
     <aside class="lego-dock" aria-label="Animated LEGO character">
         <div class="lego-stage" id="legoStage">
             <canvas class="lego-canvas" id="legoCanvas" aria-label="Animated LEGO character"></canvas>
-            <button class="lego-handle" id="legoHandle" type="button" aria-label="Drag LEGO character. Hold and move to pick up, release to drop. Keyboard: Space to pick up or drop, arrows to move." title="Hold and drag me, then release!"></button>
+            <button class="lego-handle" id="legoHandle" type="button" aria-label="Tap LEGO to wave, or hold and drag to pick up and release to drop. Keyboard: Space to pick up or drop, arrows to move." title="Tap to wave or hold and drag me!"></button>
             <div class="lego-welcome" id="legoWelcome" role="status" aria-live="polite">
                 <span>Hello, I’m Uriel Flores. Welcome to my web portfolio. Here you can find information about my projects and my journey as a developer.</span>
             </div>
@@ -519,7 +519,23 @@
     </aside>
     <!-----------------------------3D MODELS----------------------------------------->
     <!-----------------------------3D INTRO / APP BOOTSTRAP------------------------------------------>
-    <script type="module" src="./intro.js?v=10"></script>
+    <script src="./redesign.js?v=11"></script>
+    <script>
+        // A failed or stalled 3D import must never hide the portfolio forever.
+        window.openPortfolioFallback = () => {
+            if (!document.body.classList.contains('intro-pending')) return;
+            window.__portfolioEmergency = true;
+            document.body.classList.remove('intro-pending');
+            document.body.classList.add('portfolio-ready');
+            document.getElementById('spidermanIntro')?.remove();
+            window.scrollTo(0, 0);
+        };
+        document.addEventListener('error', event => {
+            if (event.target?.id === 'introModule') window.openPortfolioFallback();
+        }, true);
+        setTimeout(window.openPortfolioFallback, 16000);
+    </script>
+    <script type="module" id="introModule" src="./intro.js?v=18"></script>
 </body>
 
 </html>

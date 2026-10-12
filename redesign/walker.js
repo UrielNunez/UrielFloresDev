@@ -33,9 +33,10 @@ let elapsed = 0;
 let distance = 0;
 let gaitPhase = 0;
 let gaitWeight = 0;
-let gaitDistance = 0;
-let gaitTargetDistance = 0;
+let gaitSpeed = 0;
 let lastScrollY = window.scrollY;
+let routeDirection = 1;
+let routeScrollSpeed = 0;
 let travelLimit = 0;
 let characterWidth = 3;
 let figureScale = 1;
@@ -45,9 +46,15 @@ let failed = false;
 let welcomeEndsAt = 0;
 let hovering = false;
 let poseWeight = 0;
+let armReachAngle = 0;
+let waveWeight = 0;
 let held = false;
 let falling = false;
 let pointerId = null;
+let heldPointerType = '';
+let touchStartedAt = 0;
+let touchMoved = false;
+let touchGreetingTimer = 0;
 let heldX = 0;
 let heldY = 0;
 let dropVelocity = 0;
@@ -61,6 +68,7 @@ let groundStageHeight = 0;
 const dock = stage.closest('.lego-dock');
 const skillsMap = document.getElementById('skillsRoute');
 const skillsTrack = skillsMap?.querySelector('.skill-route-track');
+const skillsSection = skillsMap?.closest('.skills-info');
 const journeyMap = document.querySelector('.journey-map');
 const journeyLine = journeyMap?.querySelector('.journey-route');
 let routeState = 'free';
@@ -70,9 +78,80 @@ let routeYaw = 0;
 let routeFrame = 0;
 let bobOffset = 0;
 let routeSection = 'none';
+let approachingSkills = false;
 const freeWalkSpeed = 1.15;
-const strideLength = 1.65;
+const strideLength = 1.25;
 const manager = new THREE.LoadingManager();
+// GLTFLoader removes dots from glTF node names (Hand.R becomes HandR).
+const rigName = name => name.replace(/[^a-z0-9]/gi, '');
+// The exported cycle closes with a duplicate of its first pose. Rebuild its
+// repeating motion from a few Fourier harmonics so the pose and its velocity
+// stay continuous everywhere, including where the animation loops.
+function seamlessWalkClip(source) {
+    const start = Math.min(...source.tracks.map(track => track.times[0]));
+    const end = Math.max(...source.tracks.map(track => track.times[track.times.length - 1]));
+    const duration = end - start;
+    const tracks = source.tracks.map(track => {
+        if (track.times.length <= 2 || track.getInterpolation() === THREE.InterpolateDiscrete) {
+            const copy = track.clone();
+            copy.shift(-start);
+            return copy;
+        }
+        const width = track.getValueSize();
+        const quaternion = track instanceof THREE.QuaternionKeyframeTrack;
+        const keyCount = track.times.length - 1;
+        const samples = keyCount * 12;
+        const times = new Float32Array(samples + 1);
+        const values = new Float32Array((samples + 1) * width);
+        const dot = (a, b) => a.reduce((sum, value, index) => sum + value * b[index], 0);
+        const keyframes = Array.from({ length: keyCount }, (_, index) =>
+            Array.from(track.values.subarray(index * width, (index + 1) * width)));
+        // q and -q are the same rotation. Unwrap Blender's sign flips before
+        // fitting a spline, or its derivatives would reverse at those frames.
+        if (quaternion) {
+            for (let i = 1; i < keyCount; i++) {
+                if (dot(keyframes[i - 1], keyframes[i]) < 0) {
+                    keyframes[i] = keyframes[i].map(value => -value);
+                }
+            }
+        }
+        // The stride and its second harmonic retain alternating footfalls
+        // without reproducing the sharp changes in the exported keyframes.
+        const harmonics = Math.min(2, Math.floor((keyCount - 1) / 2));
+        const coefficients = Array.from({ length: width }, (_, component) => {
+            const mean = keyframes.reduce((sum, pose) => sum + pose[component], 0) / keyCount;
+            const waves = Array.from({ length: harmonics }, (_, index) => {
+                const harmonic = index + 1;
+                let cosine = 0;
+                let sine = 0;
+                for (let key = 0; key < keyCount; key++) {
+                    const angle = 2 * Math.PI * harmonic * key / keyCount;
+                    cosine += keyframes[key][component] * Math.cos(angle);
+                    sine += keyframes[key][component] * Math.sin(angle);
+                }
+                return [2 * cosine / keyCount, 2 * sine / keyCount];
+            });
+            return { mean, waves };
+        });
+        for (let i = 0; i < samples; i++) {
+            const phase = 2 * Math.PI * i / samples;
+            const pose = coefficients.map(({ mean, waves }) => waves.reduce((sum, [cosine, sine], index) => {
+                const angle = (index + 1) * phase;
+                return sum + cosine * Math.cos(angle) + sine * Math.sin(angle);
+            }, mean));
+            if (quaternion) {
+                const length = Math.hypot(...pose) || 1;
+                pose.forEach((value, index) => { pose[index] = value / length; });
+            }
+            times[i] = i * duration / samples;
+            values.set(pose, i * width);
+        }
+        times[samples] = duration;
+        values.set(values.subarray(0, width), samples * width);
+        return new track.constructor(track.name, times, values, THREE.InterpolateLinear);
+    });
+    return new THREE.AnimationClip(source.name, duration, tracks);
+}
 function showError() {
     failed = true;
     status.classList.remove('is-hidden');
@@ -88,12 +167,19 @@ manager.onLoad = () => {
     distance = 0;
     gaitPhase = 0;
     gaitWeight = 0;
-    gaitDistance = 0;
-    gaitTargetDistance = 0;
+    gaitSpeed = 0;
     lastScrollY = window.scrollY;
+    routeDirection = 1;
+    routeScrollSpeed = 0;
     status.classList.add('is-hidden');
-    welcome.classList.add('is-visible');
-    welcomeEndsAt = performance.now() + 10000;
+    if (window.scrollY <= 100) {
+        welcome.classList.add('is-visible');
+        welcomeEndsAt = performance.now() + 10000;
+    } else {
+        welcome.classList.remove('is-visible');
+        welcomeEndsAt = 0;
+        elapsed = 3;
+    }
     updateRouteTarget();
     updatePlayback();
 };
@@ -139,13 +225,20 @@ function updateRouteTarget() {
     const readingY = window.innerHeight * .55;
     const documentY = window.scrollY + readingY;
     const skills = skillsMap.getBoundingClientRect();
+    const skillsEntrance = skillsSection?.getBoundingClientRect();
     const journey = journeyMap.getBoundingClientRect();
     const first = window.scrollY + skills.top;
     const skillsEnd = window.scrollY + skills.bottom;
     const journeyStart = window.scrollY + journey.top;
     const last = window.scrollY + journey.bottom;
-    if (documentY < first || documentY > last) {
-        if (routeState === 'following') routeState = 'returning';
+    const enteringSkills = documentY < first && skillsEntrance &&
+        skillsEntrance.top < window.innerHeight - 24 && skillsEntrance.bottom > 0;
+    if ((documentY < first && !enteringSkills) || documentY > last) {
+        approachingSkills = false;
+        if (routeState === 'following') {
+            routeState = 'returning';
+            hovering = false;
+        }
         if (routeState === 'gap') {
             routeState = 'free';
             routeSection = 'none';
@@ -156,17 +249,22 @@ function updateRouteTarget() {
         }
         if (routeState === 'returning' && reducedMotion.matches && !held && !falling) {
             routeState = 'free';
+            routeSection = 'none';
+            hovering = false;
             walker.position.y = 0;
-            dock.classList.remove('is-on-route');
+            dock.classList.remove('is-on-route', 'is-route-gap');
             resumeRoute(walker.position.x, 0);
             resizeRenderer();
         }
         if (reducedMotion.matches) draw();
         return;
     }
-    const section = documentY <= skillsEnd ? 'skills' : documentY >= journeyStart ? 'journey' : 'gap';
+    const section = enteringSkills || documentY <= skillsEnd ? 'skills' : documentY >= journeyStart ? 'journey' : 'gap';
+    approachingSkills = Boolean(enteringSkills);
     if (routeState === 'free') {
         routeState = 'following';
+        routeX = walker.position.x;
+        routeY = walker.position.y;
         dock.classList.add('is-on-route');
         resizeRenderer();
     } else if (routeState === 'returning') routeState = 'following';
@@ -183,9 +281,12 @@ function updateRouteTarget() {
     dock.classList.remove('is-route-gap');
     const line = journeyLine.getBoundingClientRect();
     const journeyX = line.left + line.width / 2;
+    const targetScreenY = approachingSkills
+        ? THREE.MathUtils.clamp(skills.top + 18, readingY, window.innerHeight - 12)
+        : readingY;
     let screenX;
     if (section === 'skills') {
-        const point = skillPointAt(documentY);
+        const point = skillPointAt(window.scrollY + targetScreenY);
         screenX = point.x;
         routeYaw = point.yaw;
     } else {
@@ -198,7 +299,7 @@ function updateRouteTarget() {
     const halfFigure = characterWidth * figureScale / unitsPerPixel / 2;
     screenX = THREE.MathUtils.clamp(screenX, halfFigure + 5, bounds.width - halfFigure - 5);
     routeX = (screenX - bounds.left - bounds.width / 2) * unitsPerPixel;
-    routeY = camera.bottom + (bounds.bottom - readingY) * unitsPerPixel;
+    routeY = camera.bottom + (bounds.bottom - targetScreenY) * unitsPerPixel;
     if (restarting && !held && !falling) walker.position.set(routeX, routeY, 0);
     if (welcomeEndsAt) { welcomeEndsAt = 0; welcome.classList.remove('is-visible'); }
     if (reducedMotion.matches) draw();
@@ -248,13 +349,16 @@ loader.load('../Assets/Models/spiderman-walk.glb?v=1', gltf => {
     });
     // A relaxed frame becomes the idle pose; the source animation provides the gait.
     if (gltf.animations.length) {
+        const walkClip = seamlessWalkClip(gltf.animations[0]);
         walkMixer = new THREE.AnimationMixer(model);
-        walkDuration = gltf.animations[0].duration;
-        walkMixer.clipAction(gltf.animations[0]).play();
+        walkDuration = walkClip.duration;
+        walkMixer.clipAction(walkClip).setLoop(THREE.LoopRepeat, Infinity).play();
         walkMixer.setTime(walkDuration * 0.25);
         model.traverse(node => {
             if (node === model) return;
-            animatedNodes.push({ node, position: node.position.clone(), rotation: node.quaternion.clone(), scale: node.scale.clone() });
+            const strength = /^(UpArm|LowArm|Hand)(?:CO)?[LR]$/.test(rigName(node.name)) ? .62
+                : /^(UpLeg|LowLeg|Foot|Toe)/.test(node.name) ? .86 : 1;
+            animatedNodes.push({ node, position: node.position.clone(), rotation: node.quaternion.clone(), scale: node.scale.clone(), strength });
         });
     }
     model.updateMatrixWorld(true);
@@ -271,13 +375,20 @@ loader.load('../Assets/Models/spiderman-walk.glb?v=1', gltf => {
     model.position.set(-center.x, -bounds.min.y, -center.z);
     walker.add(model);
     model.updateMatrixWorld(true);
-    // Preserve the small greeting gesture when the visitor picks up the LEGO.
+    // Swing the shoulder forward. This rig faces +Z after its half-turn, so
+    // a negative world-X rotation reaches toward the visitor without opening
+    // the arm sideways. Keep the rigid LEGO elbow in its original alignment.
     model.traverse(bone => {
-        if (!bone.isBone || !/^(UpArm|LowArm|Hand)\.R$/.test(bone.name)) return;
+        if (!bone.isBone) return;
+        const part = /^(UpArm|Hand)(?:CO)?R$/.exec(rigName(bone.name));
+        if (!part) return;
+        const kind = part[1];
         const parentRotation = bone.parent.getWorldQuaternion(new THREE.Quaternion());
-        gestureJoints.push({ bone, kind: bone.name.split('.')[0],
-            axis: new THREE.Vector3(1, 0, 0).applyQuaternion(parentRotation.invert()),
-            rotation: new THREE.Quaternion() });
+        const inverseParentRotation = parentRotation.invert();
+        gestureJoints.push({ bone, kind,
+            liftAxis: new THREE.Vector3(1, 0, 0).applyQuaternion(inverseParentRotation),
+            waveAxis: new THREE.Vector3(0, 1, 0),
+            liftRotation: new THREE.Quaternion(), waveRotation: new THREE.Quaternion() });
     });
     resizeRenderer();
 }, undefined, error => {
@@ -389,7 +500,10 @@ function draw(delta = 0) {
         }
     }
     const posing = ready && (hovering || held || falling);
-    poseWeight = reducedMotion.matches ? Number(posing) : THREE.MathUtils.damp(poseWeight, Number(posing), 5.5, delta);
+    poseWeight = reducedMotion.matches ? Number(posing) : THREE.MathUtils.damp(poseWeight, Number(posing), 10, delta);
+    const targetArmReach = held || falling ? -2 : hovering ? -1.55 : 0;
+    armReachAngle = reducedMotion.matches ? targetArmReach : THREE.MathUtils.damp(armReachAngle, targetArmReach, 10, delta);
+    waveWeight = reducedMotion.matches || held || falling ? 0 : THREE.MathUtils.damp(waveWeight, Number(hovering), 12, delta);
     const moving = ready && !greeting && !reducedMotion.matches && !posing && routeState !== 'gap';
     const departure = THREE.MathUtils.smootherstep(elapsed, 1.8, 3);
     const following = routeState === 'following';
@@ -397,48 +511,61 @@ function draw(delta = 0) {
     const previousX = walker.position.x;
     const previousY = walker.position.y;
     const previousZ = walker.position.z;
+    const scrollMovement = delta ? window.scrollY - lastScrollY : 0;
+    const scrollDelta = Math.abs(scrollMovement);
+    if (following && scrollDelta > 1) routeDirection = Math.sign(scrollMovement);
+    if (delta) lastScrollY = window.scrollY;
     if (moving && !following && !returning) distance += freeWalkSpeed * departure * delta;
     const current = routePose();
-    const yaw = posing ? 0 : following ? routeYaw : returning ? 0 : moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
+    const approachOffset = routeX - walker.position.x;
+    const approachDistance = approachingSkills ? Math.hypot(approachOffset, routeY - walker.position.y) : 0;
+    const routeHeading = approachingSkills && Math.abs(approachOffset) > .25
+        ? Math.sign(approachOffset) * Math.PI / 2
+        : routeYaw + (routeDirection < 0 ? Math.PI : 0);
+    const yaw = posing ? 0 : following ? routeHeading : returning ? 0 : moving ? current.yaw * THREE.MathUtils.smootherstep(elapsed, 1, 1.8) : 0;
     heading.setFromAxisAngle(upAxis, yaw);
     walker.quaternion.slerp(heading, reducedMotion.matches ? 1 : 1 - Math.exp(-6 * delta));
-    const followRate = reducedMotion.matches ? 1 : 1 - Math.exp(-6.5 * delta);
+    const followRate = reducedMotion.matches ? 1 : 1 - Math.exp(-(approachingSkills ? 11 : 6.5) * delta);
     if (held || falling) walker.position.set(heldX, heldY, heldZ);
     else if (following) {
         walker.position.y = THREE.MathUtils.lerp(walker.position.y, routeY, followRate);
         walker.position.z = THREE.MathUtils.lerp(walker.position.z, 0, followRate);
-        if (routeSection === 'skills') {
+        if (routeSection === 'skills' && !approachingSkills) {
             const point = skillPointAt(window.scrollY + footScreenY());
             const bounds = stage.getBoundingClientRect();
             const unitsPerPixel = (camera.top - camera.bottom) / bounds.height;
-            walker.position.x = (point.x - bounds.left - bounds.width / 2) * unitsPerPixel;
-        } else walker.position.x = routeX;
+            const halfFigure = characterWidth * figureScale / unitsPerPixel / 2;
+            const screenX = THREE.MathUtils.clamp(point.x, halfFigure + 5, bounds.width - halfFigure - 5);
+            const targetX = (screenX - bounds.left - bounds.width / 2) * unitsPerPixel;
+            walker.position.x = THREE.MathUtils.lerp(walker.position.x, targetX, followRate);
+        } else walker.position.x = THREE.MathUtils.lerp(walker.position.x, routeX, followRate);
     } else if (returning) {
         walker.position.y = THREE.MathUtils.lerp(walker.position.y, 0, followRate);
         walker.position.z = THREE.MathUtils.lerp(walker.position.z, 0, followRate);
-        if (Math.abs(walker.position.y) < .08 && !posing) {
+        if (Math.abs(walker.position.y) < .08 && !held && !falling) {
             walker.position.y = 0;
             routeState = 'free';
-            dock.classList.remove('is-on-route');
+            routeSection = 'none';
+            hovering = false;
+            dock.classList.remove('is-on-route', 'is-route-gap');
             resumeRoute(walker.position.x, yaw);
             resizeRenderer();
         }
     } else if (!posing && routeState !== 'gap') walker.position.set(moving ? current.x : 0, 0, moving ? current.z : 0);
     // In Journey the LEGO stays near the reading line while the document moves.
-    // Count that scroll as travelled distance, then ease the animation toward it.
-    const scrollDelta = delta ? Math.abs(window.scrollY - lastScrollY) : 0;
-    if (delta) lastScrollY = window.scrollY;
+    // Ease the step speed instead of jumping the clip ahead after a large scroll.
     const unitsPerPixel = (camera.top - camera.bottom) / Math.max(1, stage.getBoundingClientRect().height);
     const worldStep = Math.hypot(walker.position.x - previousX, walker.position.y - previousY, walker.position.z - previousZ);
-    if (moving) gaitTargetDistance += following
-        ? Math.max(routeSection === 'journey' ? 0.72 * delta : 0, Math.min(0.9, Math.max(worldStep, scrollDelta * unitsPerPixel)))
-        : Math.min(worldStep, 0.2);
-    else gaitTargetDistance = gaitDistance;
-    const previousGaitDistance = gaitDistance;
-    gaitDistance = THREE.MathUtils.damp(gaitDistance, gaitTargetDistance, 12, delta);
-    const walkSpeed = delta ? (gaitDistance - previousGaitDistance) / delta : 0;
-    gaitWeight = reducedMotion.matches ? 0 : THREE.MathUtils.damp(gaitWeight, Math.min(1, walkSpeed / 0.7), 8, delta);
-    gaitPhase = gaitDistance * Math.PI * 2 / strideLength;
+    const worldSpeed = delta ? worldStep / delta : 0;
+    if (following) routeScrollSpeed = Math.min(1.8, routeScrollSpeed + scrollDelta * unitsPerPixel * .4);
+    else routeScrollSpeed = 0;
+    const desiredSpeed = moving ? Math.min(approachingSkills ? 3.6 : 1.8,
+        following ? Math.max(worldSpeed, routeScrollSpeed, approachDistance > .12 ? 2.4 : 0)
+            : returning ? worldSpeed : freeWalkSpeed * departure) : 0;
+    routeScrollSpeed = THREE.MathUtils.damp(routeScrollSpeed, 0, 3, delta);
+    gaitSpeed = THREE.MathUtils.damp(gaitSpeed, desiredSpeed, moving ? (approachingSkills ? 14 : 7) : 9, delta);
+    gaitWeight = reducedMotion.matches ? 0 : THREE.MathUtils.damp(gaitWeight, Math.min(1, Math.abs(gaitSpeed) / 0.7), 8, delta);
+    gaitPhase = ((gaitPhase + gaitSpeed * delta * Math.PI * 2 / strideLength) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
     const weight = gaitWeight * (1 - poseWeight);
     // The original footfalls supply the motion; only a slight body lift is added.
     if (!held && !falling) {
@@ -447,16 +574,22 @@ function draw(delta = 0) {
     }
     if (walkMixer && walkDuration) {
         walkMixer.setTime((gaitPhase / (Math.PI * 2) + 0.25) * walkDuration);
-        for (const { node, position, rotation, scale } of animatedNodes) {
-            node.position.lerp(position, 1 - weight);
-            node.quaternion.slerp(rotation, 1 - weight);
-            node.scale.lerp(scale, 1 - weight);
+        for (const { node, position, rotation, scale, strength } of animatedNodes) {
+            const idleBlend = 1 - weight * strength;
+            node.position.lerp(position, idleBlend);
+            node.quaternion.slerp(rotation, idleBlend);
+            node.scale.lerp(scale, idleBlend);
         }
     }
     for (const joint of gestureJoints) {
-        const angle = (joint.kind === 'UpArm' ? -0.7 : joint.kind === 'LowArm' ? -0.35 : 0.1) * poseWeight;
-        joint.rotation.setFromAxisAngle(joint.axis, angle);
-        joint.bone.quaternion.premultiply(joint.rotation);
+        joint.liftRotation.setFromAxisAngle(joint.liftAxis, joint.kind === 'UpArm' ? armReachAngle : 0);
+        joint.bone.quaternion.premultiply(joint.liftRotation);
+        if (joint.kind === 'Hand') {
+            // Twist the hand about its own bone axis; the arm remains still.
+            const wave = Math.sin(elapsed * Math.PI * 3.2) * 0.62 * waveWeight * poseWeight;
+            joint.waveRotation.setFromAxisAngle(joint.waveAxis, wave);
+            joint.bone.quaternion.premultiply(joint.waveRotation);
+        }
     }
     walker.visible = ready;
     renderer.render(scene, camera);
@@ -483,15 +616,20 @@ handle.addEventListener('pointerenter', event => {
     hovering = true;
     if (reducedMotion.matches) draw();
 });
-handle.addEventListener('pointerleave', () => {
+handle.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'touch') return;
     hovering = false;
     if (reducedMotion.matches) draw();
 });
 handle.addEventListener('pointerdown', event => {
     if (!ready || held || (event.pointerType === 'mouse' && event.button !== 0)) return;
     event.preventDefault();
+    clearTimeout(touchGreetingTimer);
     handle.setPointerCapture(event.pointerId);
     pointerId = event.pointerId;
+    heldPointerType = event.pointerType;
+    touchStartedAt = performance.now();
+    touchMoved = false;
     hovering = false;
     held = true;
     falling = false;
@@ -514,6 +652,7 @@ handle.addEventListener('pointerdown', event => {
 handle.addEventListener('pointermove', event => {
     if (!held || event.pointerId !== pointerId) return;
     event.preventDefault();
+    if (Math.hypot(event.clientX - dragStartX, event.clientY - dragStartY) > 12) touchMoved = true;
     const unitsPerPixel = (camera.top - camera.bottom) / stage.getBoundingClientRect().height;
     heldX = THREE.MathUtils.clamp(dragOriginX + (event.clientX - dragStartX) * unitsPerPixel, -travelLimit, travelLimit);
     heldY = THREE.MathUtils.clamp(dragOriginY - (event.clientY - dragStartY) * unitsPerPixel, 0, Math.max(0, camera.top - 5.2 * figureScale));
@@ -521,8 +660,11 @@ handle.addEventListener('pointermove', event => {
 });
 function release(event) {
     if (!held || event.pointerId !== pointerId) return;
+    const tapped = heldPointerType === 'touch' && event.type === 'pointerup' &&
+        !touchMoved && performance.now() - touchStartedAt < 550;
     held = false;
     pointerId = null;
+    heldPointerType = '';
     falling = heldY > (routeState === 'following' ? routeY : 0) + .02;
     dropVelocity = 0;
     if (!falling) {
@@ -530,6 +672,14 @@ function release(event) {
         dock.classList.remove('is-interacting');
     }
     handle.classList.remove('is-held');
+    if (tapped) {
+        // Touchscreens have no hover state: a short tap gives the same wave.
+        hovering = true;
+        touchGreetingTimer = setTimeout(() => {
+            hovering = false;
+            if (reducedMotion.matches) draw();
+        }, 1800);
+    }
     updatePlayback();
 }
 handle.addEventListener('pointerup', release);
