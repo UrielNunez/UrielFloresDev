@@ -81,6 +81,7 @@
         stage.style.setProperty('--send-start-x', `${rect.left + rect.width / 2 - innerWidth / 2}px`);
         stage.style.setProperty('--send-start-y', `${rect.top + rect.height / 2 - innerHeight / 2}px`);
         stage.hidden = false;
+        stage.style.setProperty('--send-start-scale', String(rect.width / flightArt.getBoundingClientRect().width));
         stage.classList.add('is-active');
         button.classList.add('is-launching');
         if (lottieReady) {

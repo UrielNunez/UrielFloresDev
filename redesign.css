@@ -157,10 +157,12 @@ nav.is-scrolled { height: 72px; line-height: normal; box-shadow: none; }
 .send-button.lottie-ready .send-fallback { display: none; }
 .send-button.is-launching .send-motion { visibility: hidden; }
 .send-flight-stage[hidden] { display: none; }
-.send-flight-stage { position: fixed; inset: 0; z-index: 10001; overflow: hidden; pointer-events: none; background: #0e1b1dcc; backdrop-filter: blur(5px); animation: send-stage-in .35s ease-out both; }
-.send-flight-stage.is-closing { animation: send-stage-out .45s ease-in both; }
+.send-flight-stage { position: fixed; inset: 0; z-index: 10001; overflow: hidden; pointer-events: none; }
+.send-flight-stage::before { content: ''; position: absolute; inset: 0; background: #0e1b1dcc; backdrop-filter: blur(5px); animation: send-stage-in .35s ease-out both; }
+.send-flight-stage.is-closing::before { animation: send-stage-out .45s ease-in both; }
 .send-flight-art { position: absolute; top: 50%; left: 50%; width: min(70vmin,560px); aspect-ratio: 1; transform: translate(-50%,-50%); filter: drop-shadow(0 15px 38px #0006); }
-.send-flight-stage.is-active .send-flight-art { animation: send-screen-flight 4s cubic-bezier(.35,.05,.25,1) both; }
+.send-flight-stage.is-active .send-flight-art { animation: send-screen-flight 4s cubic-bezier(.42,0,.58,1) both; }
+.send-flight-stage.is-closing .send-flight-art,.send-flight-stage.is-closing .send-flight-fallback-check { opacity: 0; transition: opacity .45s ease-in; }
 .send-flight-art > .send-lottie { width: 100%; height: 100%; }
 .send-flight-fallback { display: none; width: 100%; height: 100%; place-items: center; color: #70d9ed; font-size: clamp(68px,16vmin,150px); }
 .send-flight-fallback-check { display: none; position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: min(43vmin,300px); aspect-ratio: 1; place-items: center; border: 8px solid #87ead6; border-radius: 50%; box-shadow: 0 0 70px #21cad555; color: #c6fff0; font: 800 clamp(85px,23vmin,190px)/1 'Nunito Sans',sans-serif; }
@@ -168,15 +170,12 @@ nav.is-scrolled { height: 72px; line-height: normal; box-shadow: none; }
 .send-flight-stage.is-fallback.is-complete .send-flight-art { display: none; }
 .send-flight-stage.is-fallback.is-complete .send-flight-fallback-check { display: grid; }
 @keyframes send-screen-flight {
-    0% { transform: translate(calc(-50% + var(--send-start-x)),calc(-50% + var(--send-start-y))) scale(.12); }
-    29% { transform: translate(calc(-50% - 24vw),calc(-50% - 24vh)) scale(.58) rotate(-13deg); }
-    60% { transform: translate(calc(-50% + 23vw),calc(-50% - 18vh)) scale(.82) rotate(9deg); }
-    82% { transform: translate(calc(-50% - 9vw),calc(-50% + 9vh)) scale(.94) rotate(-3deg); }
-    100% { transform: translate(-50%,-50%) scale(1); }
+    0% { transform: translate(calc(-50% + var(--send-start-x)),calc(-50% + var(--send-start-y))) scale(var(--send-start-scale)); }
+    62%,100% { transform: translate(-50%,-50%) scale(1); }
 }
 @keyframes send-stage-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes send-stage-out { from { opacity: 1; } to { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .send-flight-stage,.send-flight-stage.is-closing,.send-flight-stage.is-active .send-flight-art { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .send-flight-stage::before,.send-flight-stage.is-closing::before,.send-flight-stage.is-active .send-flight-art { animation: none; } }
 .contact-invite .contact-form-status { margin: 0; flex: 1; min-width: 180px; line-height: 1.5; }
 .contact-form-status[data-state=success] { color: #a7e8c4; }
 .contact-form-status[data-state=error] { color: #ffb4ac; }
