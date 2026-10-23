@@ -13,7 +13,6 @@ Este directorio conserva el portafolio que ocupaba la raíz antes de promover el
 | `portafolio-anterior/Assets/JS/` | Scripts de la página anterior y de las pruebas de autenticación; no los carga el sitio nuevo. |
 | `portafolio-anterior/Assets/Images/` | Todas las imágenes e iconos originales. Los que necesita el sitio nuevo también están copiados en la carpeta `Assets/Images/` de la raíz. |
 | `portafolio-anterior/Assets/Models/` | Modelos y texturas originales. Los dos modelos Draco usados por el diseño nuevo también están copiados en `Assets/Models/`. |
-| `portafolio-anterior/Assets/CV.pdf` | CV del portafolio anterior; el sitio nuevo usa una copia del mismo PDF. |
 | `animacion-blender/` | Archivos `.blend`, scripts de Blender, capturas, GIF y datos de revisión usados para preparar y corregir la animación del LEGO. Son fuentes de trabajo, no archivos web. |
 | `archivos-no-publicados/experience.css` | Hoja de estilos auxiliar de una versión previa de la experiencia 3D; no estaba enlazada por el diseño final. |
 | `archivos-no-publicados/experience.js` | Entrada auxiliar de una prueba anterior; el diseño final carga directamente `intro.js`. |

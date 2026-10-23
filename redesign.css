@@ -128,9 +128,10 @@ nav.is-scrolled { height: 72px; line-height: normal; box-shadow: none; }
 #ver-mas-btn { background: #30372f; color: white; border: 1px solid #c6ae4960; box-shadow: none; width: auto; padding: 14px 28px; }
 #contact>.row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
 #contact .col { width: 100%; }
-.contact-info { background: #1f777d; border-radius: 22px; box-shadow: none; padding: 35px; min-height: 270px; align-items: flex-start; justify-content: center; gap: 18px; }
+.contact-info { background: #1f777d; border-radius: 22px; box-shadow: none; padding: 35px; min-height: 250px; align-items: flex-start; justify-content: center; gap: 14px; }
 .contact-info::after { display: none; }
-.contact-info h2 { font-size: 30px; margin-bottom: 10px; }
+.contact-info h2 { font-size: 30px; margin-bottom: 4px; }
+.contact-info p { display: block; margin: 0; max-width: 34ch; line-height: 1.6; font-size: 14px; color: #e2f5ef; }
 .contact-info a { text-decoration: none; font-size: 14px; overflow-wrap: anywhere; position: relative; z-index: 1; }
 .contact-info a i { margin-right: 10px; }
 .contact-invite { padding: 30px; }
@@ -181,7 +182,7 @@ footer .bottom-footer { text-align: center; line-height: 1.5; }
     .about-info { padding: 26px; }
     #certifications,.project-container,.project-container2,.project-container3,.project-container4,.project-container5 { grid-template-columns: repeat(2,minmax(0,1fr)); }
     #contact>.row { grid-template-columns: 1fr; }
-    .contact-info { min-height: 230px; padding: 26px; }
+    .contact-info { min-height: 210px; padding: 26px; }
     .contact-invite { padding: 25px 10px; }
     .journey-manifesto { padding: 22px; }
     .journey-card { padding: 23px; }
