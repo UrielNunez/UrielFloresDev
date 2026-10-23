@@ -4,6 +4,38 @@
 
     const button = form.querySelector('button[type="submit"]');
     const status = document.getElementById('contactFormStatus');
+    const motion = document.getElementById('sendMotion');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let sendAnimation;
+    let lottieReady = false;
+
+    const initializeLottie = () => {
+        if (!window.lottie || sendAnimation) return;
+        sendAnimation = window.lottie.loadAnimation({
+            container: document.getElementById('sendLottie'),
+            renderer: 'svg',
+            loop: false,
+            autoplay: false,
+            path: './Send.json'
+        });
+        sendAnimation.addEventListener('DOMLoaded', () => {
+            lottieReady = true;
+            sendAnimation.goToAndStop(0, true);
+            if (!button.classList.contains('is-launching')) button.classList.add('lottie-ready');
+        });
+    };
+
+    if (window.lottie) initializeLottie();
+    else document.getElementById('sendLottiePlayer')?.addEventListener('load', initializeLottie, { once: true });
+
+    motion.addEventListener('animationend', event => {
+        if (event.animationName !== 'send-flight') return;
+        button.classList.remove('is-launching');
+        if (lottieReady) {
+            sendAnimation.goToAndStop(0, true);
+            button.classList.add('lottie-ready');
+        }
+    });
 
     form.addEventListener('submit', async event => {
         event.preventDefault();
@@ -13,6 +45,15 @@
         button.disabled = true;
         status.dataset.state = '';
         status.textContent = 'Sending your message…';
+        if (!reduceMotion.matches) {
+            button.classList.remove('is-launching');
+            void button.offsetWidth;
+            button.classList.add('is-launching');
+            if (lottieReady) {
+                sendAnimation.goToAndStop(0, true);
+                sendAnimation.play();
+            }
+        }
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 15000);

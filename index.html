@@ -470,7 +470,7 @@
                                 </div>
                                 <label for="contactMessage">Your message<textarea id="contactMessage" name="message" rows="5" minlength="10" maxlength="3000" required placeholder="Tell me about your project..."></textarea></label>
                                 <div class="contact-form-actions">
-                                    <button class="btn blue-btn" type="submit">Send message <i class="uil uil-message" aria-hidden="true"></i></button>
+                                    <button class="btn blue-btn send-button" type="submit"><span>Send message</span><span class="send-motion" id="sendMotion" aria-hidden="true"><i class="uil uil-message send-fallback"></i><span class="send-lottie" id="sendLottie"></span></span></button>
                                     <p id="contactFormStatus" class="contact-form-status" role="status" aria-live="polite"></p>
                                 </div>
                             </form>
@@ -555,6 +555,7 @@
     <!-----------------------------3D MODELS----------------------------------------->
     <!-----------------------------3D INTRO / APP BOOTSTRAP------------------------------------------>
     <script src="./redesign.js?v=11"></script>
+    <script id="sendLottiePlayer" src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.13.0/lottie_light.min.js" async></script>
     <script src="./contact.js" defer></script>
     <script>
         // A failed or stalled 3D import must never hide the portfolio forever.
