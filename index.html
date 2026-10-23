@@ -445,18 +445,37 @@
             <section class="section" id="contact">
                 <div class="top-header">
                     <h1>Get in Touch</h1>
-                    <span>Have a project in mind? Send me an email.</span>
+                    <span>Have a project in mind? Write to me right here.</span>
                 </div>
                 <div class="row">
                     <div class="col">
                         <div class="contact-info">
                             <h2> Find Me <i class="uil uil-corner-right-down"></i></h2>
-                            <p>Email is the best way to reach me. I’d be glad to hear about your project.</p>
+                            <p>Tell me about your idea using the form, or reach me directly by email.</p>
                             <a href="mailto:floresnunezuriel@gmail.com?subject=Portfolio%20inquiry"><i class="uil uil-envelope"></i> floresnunezuriel@gmail.com</a>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="contact-invite"><span class="home-eyebrow">LET’S BUILD SOMETHING</span><h3>Your next idea<br>starts with a hello<span>.</span></h3><p>Web systems, immersive experiences or a creative collaboration — tell me what you have in mind.</p><a class="btn blue-btn" href="mailto:floresnunezuriel@gmail.com?subject=Portfolio%20inquiry">Send an email <i class="uil uil-envelope"></i></a></div>
+                        <div class="contact-invite">
+                            <span class="home-eyebrow">LET’S BUILD SOMETHING</span>
+                            <h3>Your next idea<br>starts with a hello<span>.</span></h3>
+                            <p>Web systems, immersive experiences or a creative collaboration — tell me what you have in mind.</p>
+                            <form id="contactForm" class="contact-form" action="https://formsubmit.co/floresnunezuriel@gmail.com" method="POST">
+                                <input type="hidden" name="_subject" value="New message from my portfolio">
+                                <input type="hidden" name="_url" value="https://urielnunez.github.io/UrielFloresDev/#contact">
+                                <div class="contact-form-trap" aria-hidden="true"><input type="text" name="_honey" tabindex="-1" autocomplete="off"></div>
+                                <div class="contact-form-row">
+                                    <label for="contactName">Your name<input id="contactName" name="name" type="text" autocomplete="name" maxlength="100" required placeholder="How should I call you?"></label>
+                                    <label for="contactEmail">Your email<input id="contactEmail" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"></label>
+                                </div>
+                                <label for="contactMessage">Your message<textarea id="contactMessage" name="message" rows="5" minlength="10" maxlength="3000" required placeholder="Tell me about your project..."></textarea></label>
+                                <div class="contact-form-actions">
+                                    <button class="btn blue-btn" type="submit">Send message <i class="uil uil-message" aria-hidden="true"></i></button>
+                                    <p id="contactFormStatus" class="contact-form-status" role="status" aria-live="polite"></p>
+                                </div>
+                            </form>
+                            <p class="contact-form-note">Messages are processed by <a href="https://formsubmit.co/" target="_blank" rel="noopener noreferrer">FormSubmit</a>.</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -536,6 +555,7 @@
     <!-----------------------------3D MODELS----------------------------------------->
     <!-----------------------------3D INTRO / APP BOOTSTRAP------------------------------------------>
     <script src="./redesign.js?v=11"></script>
+    <script src="./contact.js" defer></script>
     <script>
         // A failed or stalled 3D import must never hide the portfolio forever.
         window.openPortfolioFallback = () => {

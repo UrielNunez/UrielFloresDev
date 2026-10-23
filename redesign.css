@@ -138,6 +138,22 @@ nav.is-scrolled { height: 72px; line-height: normal; box-shadow: none; }
 .contact-invite h3 { font-size: 34px; margin: 10px 0 17px; line-height: 1.2; }
 .contact-invite h3 span { color: var(--third-color); }
 .contact-invite p { color: #aebbb1; font-size: 14px; line-height: 1.8; margin-bottom: 22px; }
+.contact-form { display: grid; gap: 18px; }
+.contact-form-row { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.contact-form label { display: grid; gap: 8px; color: #e3eee5; font-size: 12px; font-weight: 800; letter-spacing: .02em; }
+.contact-form input:not([type=hidden]),.contact-form textarea { width: 100%; min-width: 0; border: 1px solid #ffffff24; border-radius: 12px; background: #ffffff08; color: #f4f8f4; padding: 13px 15px; font: 600 14px/1.5 'Nunito Sans',sans-serif; transition: border-color .2s,background .2s,box-shadow .2s; }
+.contact-form input::placeholder,.contact-form textarea::placeholder { color: #9aaca0; font-weight: 400; }
+.contact-form textarea { resize: vertical; min-height: 132px; }
+.contact-form input:focus-visible,.contact-form textarea:focus-visible { outline: none; border-color: var(--second-color); background: #ffffff0d; box-shadow: 0 0 0 3px #22b5bd30; }
+.contact-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.contact-form-actions .btn { cursor: pointer; min-height: 45px; }
+.contact-form-actions .btn:disabled { cursor: wait; opacity: .65; }
+.contact-invite .contact-form-status { margin: 0; flex: 1; min-width: 180px; line-height: 1.5; }
+.contact-form-status[data-state=success] { color: #a7e8c4; }
+.contact-form-status[data-state=error] { color: #ffb4ac; }
+.contact-invite .contact-form-note { margin: 12px 0 0; font-size: 11px; color: #91a096; }
+.contact-form-note a { color: #a9dedb; text-underline-offset: 3px; }
+.contact-form-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 footer { margin-top: 20px; padding: 36px 20px 48px; background: #171b18; border-top: 1px solid var(--line); gap: 14px; }
 footer .top-footer p { font-size: 21px; line-height: 1.2; margin: 0; }
 footer .footer-social-icons { gap: 16px; }
@@ -184,6 +200,7 @@ footer .bottom-footer { text-align: center; line-height: 1.5; }
     #contact>.row { grid-template-columns: 1fr; }
     .contact-info { min-height: 210px; padding: 26px; }
     .contact-invite { padding: 25px 10px; }
+    .contact-form-row { grid-template-columns: 1fr; }
     .journey-manifesto { padding: 22px; }
     .journey-card { padding: 23px; }
     .journey-card header { flex-wrap: wrap; }
