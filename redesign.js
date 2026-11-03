@@ -110,7 +110,7 @@ motionPreference.addEventListener('change', () => {
 
 /* Optional libraries initialize after the essential mobile UI is ready. */
 let revealStarted = false;
-let typingStarted = false;
+let typingAnimation;
 function startOptionalEffects() {
     if (motionPreference.matches) return;
     if (!revealStarted && window.ScrollReveal) {
@@ -121,14 +121,24 @@ function startOptionalEffects() {
             viewFactor: .08, mobile: true
         });
     }
-    if (!typingStarted && typeof window.Typed === 'function') {
-        typingStarted = true;
-        new window.Typed('.typedText', {
-            strings: [' Unity Developer', ' Video Game Developer', ' AR Developer', ' Video Editor', ' Web Developer', ' VR Developer', ' 3D Modeler', ' YouTuber'],
+    if (!typingAnimation) {
+        const heroRole = document.querySelector('.typedText');
+        const inSpanish = document.documentElement.lang === 'es';
+        heroRole.textContent = inSpanish ? 'Desarrollador web' : 'Web Developer';
+        if (typeof window.Typed !== 'function') return;
+        typingAnimation = new window.Typed(heroRole, {
+            strings: inSpanish
+                ? ['Desarrollador de Unity', 'Desarrollador de videojuegos', 'Desarrollador de RA', 'Editor de video', 'Desarrollador web', 'Desarrollador de RV', 'Modelador 3D', 'YouTuber']
+                : [' Unity Developer', ' Video Game Developer', ' AR Developer', ' Video Editor', ' Web Developer', ' VR Developer', ' 3D Modeler', ' YouTuber'],
             loop: true, typeSpeed: 100, backSpeed: 80, backDelay: 2000
         });
     }
 }
+window.addEventListener('portfolio-language-change', () => {
+    typingAnimation?.destroy();
+    typingAnimation = undefined;
+    startOptionalEffects();
+});
 window.addEventListener('portfolio-extras-ready', startOptionalEffects);
 startOptionalEffects();
 

@@ -16,7 +16,7 @@
     <!-----------------------------CSS------------------------------------------>
     <link rel="stylesheet" href="./Assets/CSS/Style.css">
     <link href="https://fonts.googleapis.com/css2?family=Madimi+One&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./redesign.css?v=12">
+    <link rel="stylesheet" href="./redesign.css?v=17">
     <link rel="stylesheet" href="./collections.css">
     <link rel="stylesheet" href="./about.css?v=3">
     <!-----------------------------FAVICON------------------------------------------>
@@ -119,6 +119,10 @@
 
             <div class="nav-button" id="nav-button">
                 <a class="btn" href="#contact">Let's talk <i class="uil uil-envelope"></i></a>
+            </div>
+            <div id="portfolio-language" class="portfolio-language" role="group" aria-label="Language / Idioma">
+                <button type="button" value="es" lang="es" aria-label="Español" aria-pressed="true">ES</button>
+                <button type="button" value="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
             </div>
             <div class="nav-menu-btn">
                 <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu"
@@ -411,8 +415,27 @@
 </section>
 
             <!-----------------------------SECTION Unity PROJECTS------------------------------------------>
-            <section class="section" id="projects"><div class="top-header collection-heading"><div class="collection-heading-main"><span class="section-eyebrow"><span aria-hidden="true">02</span> BUILT TO BE EXPERIENCED</span><h1>Projects</h1><p>From websites to interactive worlds. Try an experience or watch it in action.</p></div><small class="collection-count">14 projects</small></div><div class="gallery-grid" id="projects-grid"><a class="project-box gallery-card" id="Uproject14" href="https://urielnunez.github.io/PortafolioWebAR/" target="_blank" rel="noopener noreferrer"><div class="project-visual"><img class="project-cover" src="./Assets/Images/Tarjeta.PNG" alt="" loading="lazy" decoding="async"><span class="project-index">01</span></div><div class="project-description"><span class="project-category">Augmented reality</span><h3>Business Card WebAR</h3><p class="project-tech">Made With MindAR.js</p><span class="project-action">Try experience<i class="uil uil-arrow-up-right" aria-hidden="true"></i></span></div></a>
-<article class="project-box gallery-card" id="Uproject12"><div class="project-visual"><div class="project-placeholder"><i class="uil uil-game-structure" aria-hidden="true"></i><span>GatoLobo Studio</span></div><span class="project-index">02</span></div><div class="project-description"><span class="project-category">Game development</span><h3>Commercial game targeting mature audiences</h3><p class="project-tech">Unity Developer @GatoLobo Estudio</p><span class="project-action">Studio work · Private project<i class="uil uil-lock-alt" aria-hidden="true"></i></span></div></article>
+            <section class="section" id="projects"><div class="top-header collection-heading"><div class="collection-heading-main"><span class="section-eyebrow"><span aria-hidden="true">02</span> BUILT TO BE EXPERIENCED</span><h1>Projects</h1><p>From websites to interactive worlds. Try an experience or watch it in action.</p></div><small class="collection-count">16 projects</small></div><div class="gallery-grid" id="projects-grid">
+<article role="button" tabindex="0" aria-haspopup="dialog" data-case="unitscan-case" class="project-box gallery-card studio-card" id="unitscan">
+    <div class="project-visual"><img class="project-cover project-brand" src="./Assets/Images/transportes-cepsa.png" alt="CEPSA Logistics" loading="lazy" decoding="async"></div>
+    <div class="project-description">
+        <span class="project-category">Fleet operations · Full stack</span>
+        <h3>UnitScan | Fleet Inspections</h3>
+        <p class="project-tech">I redesigned and rebuilt CEPSA’s truck and trailer inspection module for staff working from their phones.</p>
+        <span class="project-action">View case study <i class="uil uil-arrow-up-right" aria-hidden="true"></i></span>
+    </div>
+</article>
+<article role="button" tabindex="0" aria-haspopup="dialog" data-case="taller-case" class="project-box gallery-card studio-card" id="taller">
+    <div class="project-visual"><img class="project-cover project-brand" src="./Assets/Images/transportes-cepsa.png" alt="CEPSA Logistics" loading="lazy" decoding="async"></div>
+    <div class="project-description">
+        <span class="project-category">Fleet operations · Full stack</span>
+        <h3>Workshop | Service Orders</h3>
+        <p class="project-tech">I built a workshop workflow that connects service orders with technician activity, working hours and productivity reporting.</p>
+        <span class="project-action">View case study <i class="uil uil-arrow-up-right" aria-hidden="true"></i></span>
+    </div>
+</article>
+<article role="button" tabindex="0" aria-haspopup="dialog" data-case="gatolobo-case" class="project-box gallery-card studio-card" id="Uproject12"><div class="project-visual"><div class="project-placeholder"><i class="uil uil-game-structure" aria-hidden="true"></i><span>GatoLobo Studio</span></div><span class="project-index">02</span></div><div class="project-description"><span class="project-category">Game development</span><h3>Commercial game targeting mature audiences</h3><p class="project-tech">Unity Developer @GatoLobo Estudio</p><span class="project-action">View case study<i class="uil uil-arrow-up-right" aria-hidden="true"></i></span></div></article>
+<a class="project-box gallery-card" id="Uproject14" href="https://urielnunez.github.io/PortafolioWebAR/" target="_blank" rel="noopener noreferrer"><div class="project-visual"><img class="project-cover" src="./Assets/Images/Tarjeta.PNG" alt="" loading="lazy" decoding="async"><span class="project-index">01</span></div><div class="project-description"><span class="project-category">Augmented reality</span><h3>Business Card WebAR</h3><p class="project-tech">Made With MindAR.js</p><span class="project-action">Try experience<i class="uil uil-arrow-up-right" aria-hidden="true"></i></span></div></a>
 <a class="project-box gallery-card" id="Uproject11" href="https://urielnunez.github.io/UnityPortfolio/" target="_blank" rel="noopener noreferrer"><div class="project-visual"><img class="project-cover" src="./Assets/Images/PortfolioUnity.png" alt="" loading="lazy" decoding="async"><span class="project-index">03</span></div><div class="project-description"><span class="project-category">Interactive portfolio</span><h3>Unity Portfolio</h3><p class="project-tech">Made With Unity/WebGL & Blender</p><span class="project-action">Try experience<i class="uil uil-arrow-up-right" aria-hidden="true"></i></span></div></a>
 <a class="project-box gallery-card" hidden id="Uproject1" href="https://youtu.be/KpOluCbwejo" target="_blank" rel="noopener noreferrer"><div class="project-visual"><img class="project-cover" src="./Assets/Images/Runner.png" alt="" loading="lazy" decoding="async"><span class="project-index">04</span></div><div class="project-description"><span class="project-category">Game development</span><h3>Runner Game</h3><p class="project-tech">Made With Unity</p><span class="project-action">Watch demo<i class="uil uil-arrow-up-right" aria-hidden="true"></i></span></div></a>
 <a class="project-box gallery-card" hidden id="Uproject13" href="https://thebigday.mx/" target="_blank" rel="noopener noreferrer"><div class="project-visual"><img class="project-cover" src="./Assets/Images/thebigday.png" alt="" loading="lazy" decoding="async"><span class="project-index">05</span></div><div class="project-description"><span class="project-category">Web development</span><h3>TheBigDay</h3><p class="project-tech">Full Stack Developer @TechBoys</p><span class="project-action">Visit website<i class="uil uil-arrow-up-right" aria-hidden="true"></i></span></div></a>
@@ -560,7 +583,7 @@
     </div>
     <!-----------------------------3D MODELS----------------------------------------->
     <!-----------------------------3D INTRO / APP BOOTSTRAP------------------------------------------>
-    <script src="./redesign.js?v=11"></script>
+    <script src="./redesign.js?v=12"></script>
     <script id="sendLottiePlayer" src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.13.0/lottie_light.min.js" async></script>
     <script src="./contact.js?v=2" defer></script>
     <script>
@@ -579,6 +602,20 @@
         setTimeout(window.openPortfolioFallback, 16000);
     </script>
     <script type="module" id="introModule" src="./intro.js?v=21"></script>
-</body>
+<dialog id="unitscan-case" class="project-case" aria-labelledby="unitscan-case-title">
+    <form method="dialog"><button type="submit" autofocus>Close <span aria-hidden="true">×</span></button></form>
+    <p class="project-category">CEPSA · INTERNAL PROJECT</p>
+    <h2 id="unitscan-case-title">UnitScan | Fleet Inspections</h2>
+    <p>I redesigned and rebuilt an existing reporting module around the field inspection itself. The new workflow connects the inspection of trucks and trailers (cargo boxes), evidence capture and report review.</p>
+    <div class="case-sections"><section><h3>01 · Find the vehicle and inspect it</h3>
+    <p>Staff search for a vehicle, then switch between illustrated views of the tractor and trailer. Tappable hotspots open the controls for each inspection point. Staff can review points individually or mark all points in one action and record exceptions separately.</p>
+    </section><section><h3>02 · Capture evidence on a phone</h3>
+    <p>Inspectors can attach photos and comments to findings. The mobile form supports camera capture and image uploads, resizes photos in the browser before submission, and requests access to the device location. The person recording the inspection and the operator can both sign on screen.</p>
+    </section><section><h3>03 · Review and export the report</h3>
+    <p>The administration module lets staff filter inspections, open a report to review findings and photo evidence, and generate a PDF for printing.</p>
+    </section><section><h3>04 · How it was built</h3>
+    <p>JavaScript updates the hotspots as the vehicle view changes and collects inspection statuses, evidence and signatures. The PHP controller associates the report with the signed-in user, delegates storage to the model and records the action in the audit log. Bootstrap supports the responsive layout and jsPDF generates printable reports.</p>
+</section></div></dialog>
+<dialog id="taller-case" class="project-case" aria-labelledby="taller-case-title"><form method="dialog"><button autofocus>Close ×</button></form><h2 id="taller-case-title">CEPSA | Workshop service orders</h2><p>I built a workflow connecting service orders created in the internal RDP system with the work performed by technicians and mechanics.</p><div class="case-sections"><section><h3>From assignment to execution</h3><p>Technicians access their assigned work from a workstation, start the service order and record when it is completed. Pausing work requires authorization, keeping interruptions explicit in the workflow.</p></section><section><h3>Working hours and productivity</h3><p>The system tracks time spent on orders and supports defining work shifts. This provides a basis for reviewing individual technician productivity and the performance of the workshop as a whole.</p></section><section><h3>Operational visibility</h3><p>The modules cover pending orders, a workshop map, technician shifts and productivity reporting, connecting day-to-day execution with administrative review.</p></section><section><h3>Implementation</h3><p>PHP views, JavaScript and CSS support the interface. JavaScript requests productivity data from the application endpoints and updates the reports. Users can search by technician, filter by position and date, and consult detailed work comments. My contribution connected order execution, shift management and administrative reporting in one workflow.</p></section></div></dialog><dialog id="gatolobo-case" class="project-case" aria-labelledby="gatolobo-case-title"><form method="dialog"><button autofocus>Close ×</button></form><h2 id="gatolobo-case-title">GatoLobo | Unity development</h2><p>As a Unity Developer at GatoLobo, I worked on gameplay events, missions, interfaces and tutorials for a commercial game targeting mature audiences.</p><p>I collaborated through Unity Version Control, prepared builds, tested complete gameplay flows and iterated from team feedback.</p><p>Unity · C# · Unity Version Control</p></dialog><script src="./project-cases.js" defer></script><script src="./translations.js" defer></script><script src="./language.js?v=4" defer></script></body>
 
 </html>
