@@ -124,12 +124,32 @@ function startOptionalEffects() {
     if (!typingAnimation) {
         const heroRole = document.querySelector('.typedText');
         const inSpanish = document.documentElement.lang === 'es';
-        heroRole.textContent = inSpanish ? 'Desarrollador web' : 'Web Developer';
+        const roles = inSpanish
+            ? [
+                'Desarrollador Full Stack',
+                'Desarrollador web',
+                'Desarrollador de Unity',
+                'Desarrollador de videojuegos',
+                'Desarrollador de realidad aumentada',
+                'Desarrollador de realidad virtual',
+                'Modelador 3D',
+                'Editor de video'
+            ]
+            : [
+                'Full Stack Developer',
+                'Web Developer',
+                'Unity Developer',
+                'Video Game Developer',
+                'Augmented Reality Developer',
+                'Virtual Reality Developer',
+                '3D Modeler',
+                'Video Editor'
+            ];
+        heroRole.textContent = roles[0];
         if (typeof window.Typed !== 'function') return;
         typingAnimation = new window.Typed(heroRole, {
-            strings: inSpanish
-                ? ['Desarrollador de Unity', 'Desarrollador de videojuegos', 'Desarrollador de RA', 'Editor de video', 'Desarrollador web', 'Desarrollador de RV', 'Modelador 3D', 'YouTuber']
-                : [' Unity Developer', ' Video Game Developer', ' AR Developer', ' Video Editor', ' Web Developer', ' VR Developer', ' 3D Modeler', ' YouTuber'],
+            strings: roles,
+            smartBackspace: false,
             loop: true, typeSpeed: 100, backSpeed: 80, backDelay: 2000
         });
     }

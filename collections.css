@@ -182,17 +182,15 @@ a.gallery-card:focus-visible .project-cover { transform: none; }
 .case-trigger { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; }
 .gallery-card .case-trigger:is(:hover, :focus-visible) { color: #75dedb; }
 .case-trigger:hover i { transform: translate(2px, -2px); }
-.project-case { width: min(620px, calc(100% - 32px)); max-height: 85dvh; padding: clamp(20px, 5vw, 36px); border: 1px solid #75dedb55; border-radius: 20px; background: #202626; color: #e3e9e5; overflow: auto; overscroll-behavior: contain; }
+.project-case { width: min(800px, calc(100% - 32px)); max-height: 85dvh; padding: 0; border: 1px solid #75dedb55; border-radius: 20px; background: #202626; color: #e3e9e5; overflow: hidden; }
 .project-case::backdrop { background: #101414dc; }
 .project-case form { display: flex; justify-content: flex-end; }
 .project-case button { background: #303c3c; color: inherit; border: 1px solid #75dedb55; border-radius: 8px; padding: 8px 14px; min-height: 44px; cursor: pointer; }
-.project-case h2 { margin-block: 8px 14px; }
+.project-case h2 { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .project-case h3 { margin-block: 22px 6px; color: #75dedb; }
 .project-case p { line-height: 1.6; }
-.project-case[open] { inset: 0; margin: auto; box-sizing: border-box; }
+.project-case[open] { display: flex; flex-direction: column; inset: 0; margin: auto; box-sizing: border-box; }
 
-.project-case { width: min(800px, calc(100% - 32px)); }
-.project-case form { position: sticky; top: 0; z-index: 1; }
 .case-sections { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
 .case-sections section { padding: 16px; border: 1px solid #75dedb30; border-radius: 12px; background: #ffffff05; }
 .case-sections h3 { margin-block: 0 8px; }
@@ -211,5 +209,20 @@ article.gallery-card[data-case] .project-action { color: #e3e9e5; font-weight: 7
     article.gallery-card[data-case]:hover .project-cover { transform: scale(1.025); }
 }
 html:has(.project-case[open]) { overflow: hidden; }
-.project-case { scrollbar-gutter: stable; }
-.project-case form { background: #202626; padding-bottom: 8px; }
+.project-case-header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px clamp(16px, 4vw, 36px);
+    border-bottom: 1px solid #75dedb30;
+}
+.project-case-header form { flex: 0 0 auto; margin: 0; }
+.project-case-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(16px, 4vw, 36px);
+}
+.project-case-body > :first-child { margin-top: 0; }

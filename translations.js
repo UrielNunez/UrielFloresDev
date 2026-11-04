@@ -246,3 +246,103 @@ Object.assign(spanish, {
     'Unable to load 3D character': 'No se pudo cargar el personaje 3D',
     'Unable to load the 3D character.': 'No se pudo cargar el personaje 3D.'
 });
+
+Object.assign(spanish, {
+    "I am a Full Stack Developer at CEPSA, where I build internal web tools. I work from understanding what teams need to designing interfaces, implementing business logic and improving existing systems. My background also includes Unity, games and interactive 3D experiences.": "Soy desarrollador Full Stack en CEPSA, donde creo herramientas web internas. Mi trabajo abarca desde entender las necesidades de los equipos hasta diseñar interfaces, implementar la lógica de negocio y mejorar sistemas existentes. También tengo experiencia con Unity, videojuegos y experiencias 3D interactivas.",
+    "Unity Developer at GatoLobo Studio · Available on Steam": "Desarrollador de Unity en GatoLobo Studio · Disponible en Steam",
+    "01 · From the ERP to the workshop": "01 · Del ERP al taller",
+    "Service orders and their individual labor tasks are created in the internal ERP. Once assigned a job, the technician signs in to the workshop system, finds the corresponding task in the list, selects the bay where the unit or equipment will be repaired and starts the timer.": "En el ERP interno se crean las órdenes de servicio y sus manos de obra. Una vez asignado el trabajo, el técnico inicia sesión en el sistema de taller, busca la mano de obra correspondiente, ubica la unidad o el equipo en el mapa e inicia el registro de tiempo.",
+    "02 · Shared work and time tracking": "02 · Trabajo compartido y registro de tiempo",
+    "Technicians can complete a labor task or share it with another technician. The system preserves the first technician’s recorded time and splits the time worked together equally. When the task is completed, the recorded time is saved for productivity and efficiency calculations.": "El técnico puede finalizar una mano de obra o compartirla con otro técnico. El sistema conserva el tiempo ya trabajado por el primer técnico y reparte equitativamente el tiempo compartido. Al finalizar, guarda el tiempo registrado para calcular la productividad y la eficiencia.",
+    "03 · Weekly shifts and meal breaks": "03 · Turnos semanales y horarios de comida",
+    "The workshop manager assigns weekly shifts and meal breaks in a dedicated module. A stored procedure pauses active labor tasks during the meal break defined for each technician.": "El encargado de taller asigna turnos semanales y horarios de comida en un módulo dedicado. Un procedimiento almacenado pausa las manos de obra activas durante el horario de comida registrado para cada técnico.",
+    "04 · Live map and reporting": "04 · Mapa en tiempo real y reportes",
+    "The workshop map is available for viewing within the internal system. It shows what each technician is working on and whether the task is active or paused. The workshop manager can review technician performance and productivity, generate reports and export them to Excel.": "El mapa de taller está disponible para consulta dentro del sistema interno. Muestra en tiempo real qué está haciendo cada técnico y si su mano de obra está activa o en pausa. El encargado puede consultar el rendimiento y la productividad, generar reportes y exportarlos a Excel.",
+    "I developed an internal workshop system that connects ERP service orders with technician assignments, bay occupancy and performance reporting.": "Desarrollé un sistema interno de taller que conecta las órdenes de servicio del ERP con las asignaciones de técnicos, la ocupación de los espacios y los reportes de rendimiento.",
+    "I worked as a Unity Developer at GatoLobo Studio on Peach Hills Division, a commercial 3D narrative adventure for mature audiences released on Steam, a digital storefront for video games.": "Trabajé como desarrollador de Unity en GatoLobo Studio en Peach Hills Division, una aventura narrativa 3D comercial para público adulto publicada en Steam, una tienda digital de videojuegos.",
+    "Gameplay and player experience": "Jugabilidad y experiencia del jugador",
+    "I implemented gameplay events, missions, user interfaces and tutorial sequences, connecting narrative progression with player interactions in Unity and C#.": "Implementé eventos de juego, misiones, interfaces y secuencias de tutorial. Usé Unity y C# para conectar el avance narrativo con las interacciones del jugador.",
+    "Builds, testing and collaboration": "Compilaciones, pruebas y colaboración",
+    "I collaborated with a multidisciplinary team using Unity Version Control, prepared builds, tested complete gameplay flows and iterated based on team feedback.": "Colaboré con un equipo multidisciplinario mediante Unity Version Control, preparé compilaciones, probé flujos completos de juego y apliqué los comentarios del equipo.",
+    "View on Steam (18+)": "Ver en Steam (18+)"
+});
+
+Object.assign(spanish, {
+    "Unity 3D Developer · Ultra Magic / GatoLobo Studio": "Desarrollador Unity 3D · Ultra Magic / GatoLobo Estudio",
+    "Ultra Magic · GatoLobo Studio": "Ultra Magic · GatoLobo Estudio",
+    "Unity 3D Developer · Ultra Magic / GatoLobo Studio · January–June 2025": "Desarrollador Unity 3D · Ultra Magic / GatoLobo Estudio · Enero–junio de 2025",
+    "I worked for Ultra Magic at GatoLobo Studio on Peach Hills Division, a 3D narrative adventure for mature audiences. I helped prepare, integrate and validate features for its April 2025 Early Access launch on Steam.": "Trabajé para Ultra Magic en GatoLobo Estudio en Peach Hills Division, una aventura narrativa 3D para público adulto. Participé en la preparación, integración y validación de funcionalidades para su lanzamiento en acceso anticipado en Steam en abril de 2025.",
+    "Narrative events and missions": "Eventos narrativos y misiones",
+    "I turned the narrative team’s guidelines into playable sequences in Unity, including character appearances, mission triggers, event chains and scene transitions. I also integrated and verified narrative and gameplay content.": "Convertí los lineamientos del equipo narrativo en secuencias jugables en Unity, como apariciones de personajes, activación de misiones, cadenas de eventos y transiciones entre escenas. También integré y verifiqué contenido narrativo y funcional dentro del juego.",
+    "Interface and interactive tutorials": "Interfaz y tutoriales interactivos",
+    "I designed and implemented the user interface, integrated it with the narrative and gameplay flow, and built interactive tutorials to teach players how to use it.": "Diseñé e implementé la interfaz de usuario y la integré con la narrativa y el flujo de juego. También desarrollé tutoriales interactivos para enseñar a los jugadores a usar la interfaz.",
+    "Version control and collaboration": "Control de versiones y colaboración",
+    "I set up Unity Version Control for the project so the team could collaborate, track changes and keep development stable.": "Implementé Unity Version Control en el proyecto para facilitar la colaboración del equipo, dar seguimiento a los cambios y mantener la estabilidad del desarrollo.",
+    "Internal builds and functional testing": "Compilaciones internas y pruebas funcionales",
+    "I coordinated and delivered builds for internal testing. I tested new features across different gameplay scenarios and validated their behavior before final integration.": "Coordiné y entregué compilaciones para pruebas internas. Probé nuevas funcionalidades en distintos escenarios de juego y validé su comportamiento antes de la integración definitiva."
+});
+
+Object.assign(spanish, {
+    "17 projects": "17 proyectos",
+    "Module Update Announcements": "Gestor de Novedades",
+    "Internal communications · Full stack": "Comunicación interna · Full stack",
+    "I built a tool for publishing targeted notices that show what changed in each internal module, who can see the update and when it appears.": "Desarrollé una herramienta para publicar avisos que explican qué cambió en cada módulo interno, quién puede ver la novedad y cuándo aparece.",
+    "I developed an internal publishing module at CEPSA to communicate fixes and improvements where users work. Each notice explains the previous behavior or issue, what changed and which part of the workflow is affected.": "Desarrollé un módulo interno de publicación en CEPSA para comunicar correcciones y mejoras en el lugar donde trabaja cada usuario. Cada aviso explica cómo funcionaba antes el módulo o qué error presentaba, qué se corrigió y qué parte del flujo cambia.",
+    "01 · Write and preview": "01 · Redacción y vista previa",
+    "An administrator selects the destination system and module, then writes one or more before-and-after comparisons. Each comparison can include screenshots of the previous and updated interface. The editor supports previewing the notice and saving a local draft.": "El administrador elige el sistema y el módulo de destino y redacta una o varias comparaciones de «Antes» y «Ahora». Cada comparación puede incluir capturas de la interfaz anterior y de la actualizada. El editor permite previsualizar el aviso y guardar un borrador local.",
+    "02 · Schedule and manage visibility": "02 · Programación y gestión de visibilidad",
+    "The administrator sets the start and end date and time. The notice appears only within that window and expires even for users who have not opened the module.": "El administrador define la fecha y hora de inicio y fin. El aviso solo aparece durante ese periodo y deja de mostrarse al vencer, incluso para quienes aún no han abierto el módulo.",
+    "03 · Deliver in context": "03 · Avisos según permisos",
+    "When a user opens the target module, the system checks their current access by company, system and module and retrieves active notices they have not marked as read. It records each reading so the same notice does not appear again for that user.": "Al abrir el módulo de destino, el sistema verifica los permisos vigentes del usuario por empresa, sistema y módulo y recupera los avisos activos pendientes de lectura. El registro de lectura evita que el mismo aviso vuelva a aparecer para ese usuario.",
+    "04 · Implementation": "04 · Implementación",
+    "I built the editor and preview with JavaScript, Bootstrap 5 and CSS. PHP controllers and PDO models handle destination validation, publication and read records. The interface accepts schedules in Mexico City time, and the server checks visibility against UTC timestamps.": "Implementé el editor y la vista previa con JavaScript, Bootstrap 5 y CSS. Los controladores PHP y los modelos con PDO validan el destino y gestionan la publicación y los registros de lectura. La interfaz recibe horarios de Ciudad de México y el servidor comprueba la vigencia con fechas en UTC."
+});
+
+Object.assign(spanish, {
+    "18 projects": "18 proyectos",
+    "Commercial | Trip Management": "Comercial | Gestión de viajes",
+    "Commercial operations · Full stack": "Operación comercial · Full stack",
+    "I built a shared trip register for sales and billing, with status tracking, documents and a history of changes for each trip.": "Desarrollé un registro compartido de viajes para Comercial y Facturación, con seguimiento de estados, documentos y un historial de cambios por viaje.",
+    "At CEPSA, trip details were scattered across WhatsApp and email, making it difficult for Billing to gather the information it needed. I developed the Commercial module to give authorized teams a shared record of each trip and its supporting documents.": "En CEPSA, la información de los viajes estaba dispersa entre WhatsApp y correo, lo que dificultaba que Facturación reuniera los datos necesarios. Desarrollé el módulo de Comercial para que los equipos autorizados tuvieran un registro común de cada viaje y sus documentos.",
+    "01 · Trip and sale registration": "01 · Registro de viajes y ventas",
+    "Commercial staff create the trip record with the customer, route and service details. I implemented business rules, validations and automatic totals to simplify data entry, including amounts and currency for international trips.": "El equipo de Comercial da de alta el viaje con los datos del cliente, la ruta y el servicio. Implementé reglas de negocio, validaciones y sumatorias automáticas para agilizar la captura, incluidos los importes y la moneda de los viajes internacionales.",
+    "02 · Handoff to Scheduling": "02 · Enlace con Programación",
+    "The original workflow let Scheduling assign the truck and trailer in the same module. Today, Commercial registers the trips and Scheduling receives them in Trip Management, a separate module developed outside my scope, where its team manages statuses, timings and arrivals.": "En el flujo original, Programación asignaba la unidad y la caja desde el mismo módulo. Hoy Comercial registra los viajes y Programación los recibe en Relación de Viaje, un módulo independiente que no desarrollé, donde su equipo actualiza estados, tiempos y llegadas.",
+    "03 · Documents and billing": "03 · Documentación y facturación",
+    "Billing staff with the appropriate permissions attach invoices to the trip record. Authorized users can filter the trip list, identify delays, check the current status and consult attached documents from the same record.": "El equipo de Facturación adjunta las facturas al expediente del viaje con el permiso correspondiente. Los usuarios autorizados pueden filtrar la lista, detectar retrasos, consultar el estado y revisar los documentos adjuntos desde el mismo registro.",
+    "04 · Audit trail and implementation": "04 · Bitácora e implementación",
+    "I built the interface with JavaScript and CSS and used PHP controllers and PDO models to handle trip records and related data. The per-trip audit trail shows what changed, who made the change and when it happened.": "Desarrollé la interfaz con JavaScript y CSS, y usé controladores PHP y modelos con PDO para gestionar los registros y sus datos relacionados. La bitácora de cada viaje muestra qué cambió, quién hizo el cambio y en qué fecha y hora."
+});
+
+Object.assign(spanish, {
+    "19 projects": "19 proyectos",
+    "Operations Catalog Management": "Administración de Catálogos",
+    "Fleet operations · UX and functionality": "Operación de flota · UX y funcionalidad",
+    "I redesigned operational catalogs and separated tanker and box trailer workflows for driver rest days, fleet assignments, customers and affiliates.": "Rediseñé los catálogos operativos y separé los flujos de Hidrocarburos y Cajas para descansos, armado de unidades, clientes y afiliados.",
+    "I improved an existing CEPSA module that maintains reference data for trip planning. I reorganized the interface into subtabs for Hydrocarbons and Box Trailers so each team could work with its own records and permissions.": "Mejoré un módulo existente de CEPSA que administra datos de referencia para la programación de viajes. Reorganicé la interfaz en subpestañas de Hidrocarburos y Cajas para que cada equipo trabaje con sus propios registros y permisos.",
+    "01 · Driver rest calendar": "01 · Calendario de descansos",
+    "I updated the calendar to record driver rest days for both operations. Each area has its own view so authorized staff can manage the records relevant to their operation and consult them when planning trips.": "Actualicé el calendario para registrar los descansos de operadores de ambas áreas. Cada una tiene su propia vista para que el personal autorizado administre los registros que le corresponden y los consulte al programar viajes.",
+    "02 · Fleet assignments": "02 · Armado de unidades",
+    "I built the Box Trailers subtab and improved the existing Hydrocarbons interface. These views let staff pair a truck with a driver and the appropriate equipment: a box trailer for Box Trailers or a tanker for Hydrocarbons.": "Implementé la subpestaña de Armado de Unidades para Cajas y mejoré la interfaz existente de Hidrocarburos. Estas vistas permiten asociar una unidad con un operador y el equipo correspondiente: una caja o un tanque, según el área.",
+    "03 · Customers and affiliates": "03 · Clientes y afiliados",
+    "I reorganized the existing customer and affiliate records into two subtabs so each area can find its own information without sorting through records from the other operation.": "Organicé los registros existentes de clientes y afiliados en dos subpestañas para que cada área encuentre su información sin tener que revisar los registros de la otra operación.",
+    "04 · How the catalogs support trip planning": "04 · Cómo alimentan la programación",
+    "These catalogs provide reference data for Trip Management in both operations and for the Load Scheduling module I developed. I used JavaScript and CSS for the interface and PHP controllers and PDO models for catalog data.": "Estos catálogos aportan datos de referencia a Relación de Viajes en ambas áreas y a Carga Programación, módulo que también desarrollé. Usé JavaScript y CSS para la interfaz, y controladores PHP y modelos con PDO para gestionar los datos."
+});
+
+Object.assign(spanish, {
+    "20 projects": "20 proyectos",
+    "Trip Schedule Import": "Carga de Programación",
+    "Transport operations · Full stack": "Operación de transporte · Full stack",
+    "I improved an existing Excel importer so Operations could review and validate trip schedules before handing them off to Monitoring.": "Mejoré un importador de Excel existente para que Operaciones pudiera revisar y validar la programación de viajes antes de enviarla a Monitoreo.",
+    "I completed and improved the existing CEPSA module that imports an already prepared trip schedule. My work connected file validation, catalog checks and a preview with the workflow that makes trips available to Monitoring.": "Completé y mejoré el módulo existente de CEPSA que importa la programación de viajes ya preparada. Mi trabajo conectó la validación del archivo, la consulta de catálogos y la vista previa con el flujo que deja los viajes disponibles para Monitoreo.",
+    "01 · Excel template validation": "01 · Validación de la plantilla de Excel",
+    "The import reads Excel files using the expected template and checks the required headers before processing the rows. It flags repeated purchase orders so staff can identify them before confirming the import.": "La carga lee archivos de Excel con la estructura esperada y comprueba los encabezados requeridos antes de procesar las filas. Identifica las órdenes de compra duplicadas para que el personal pueda revisarlas antes de confirmar la importación.",
+    "02 · Catalog checks and preview": "02 · Consulta de catálogos y vista previa",
+    "Before confirming the upload, staff can review the trips in a preview. The module consults operational catalogs to check the assigned vehicle, driver and related information against the records used for scheduling.": "Antes de confirmar la carga, el personal puede revisar los viajes en una vista previa. El módulo consulta los catálogos operativos para validar la unidad, el operador y los datos relacionados contra los registros que se usan para programar.",
+    "03 · Handoff to Monitoring": "03 · Entrega a Monitoreo",
+    "Once imported, the schedule is available in Relación Viajes Mobil. Monitoring uses that separate module to follow trips, update their status and record operational times.": "Una vez importada, la programación queda disponible en Relación Viajes Mobil. Monitoreo usa ese módulo para dar seguimiento a los viajes, cambiar sus estados y registrar los tiempos de la operación.",
+    "04 · My implementation work": "04 · Mi trabajo técnico",
+    "I improved the import interface and its validation flow with JavaScript, CSS and SheetJS. PHP controllers and PDO models connect the upload workflow with the internal trip and catalog data.": "Mejoré la interfaz de carga y su flujo de validación con JavaScript, CSS y SheetJS. Los controladores PHP y los modelos con PDO conectan la carga con los datos internos de viajes y catálogos.",
+    "These catalogs provide reference data for Trip Management in both operations and for the Trip Schedule Import module I improved. I used JavaScript and CSS for the interface and PHP controllers and PDO models for catalog data.": "Estos catálogos aportan datos de referencia a Relación de Viajes en ambas áreas y a Carga de Programación, un módulo existente que mejoré. Usé JavaScript y CSS para la interfaz, y controladores PHP y modelos con PDO para gestionar los datos."
+});
