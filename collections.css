@@ -227,7 +227,7 @@ html:has(.project-case[open]) { overflow: hidden; }
 }
 .project-case-body > :first-child { margin-top: 0; }
 
-/* CEPSA collection: the cover stays still while the case sheet turns below it. */
+/* CEPSA project collection. */
 .cepsa-book.gallery-card { cursor: pointer; }
 .cepsa-cover-link {
     position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%;
@@ -245,12 +245,6 @@ html:has(.project-case[open]) { overflow: hidden; }
     min-width: 0; backface-visibility: hidden; transform-style: preserve-3d;
 }
 #projects .cepsa-pages > .cepsa-page.is-current { visibility: visible; }
-#projects .cepsa-pages > .cepsa-turn-sheet {
-    position: absolute; inset: 0; visibility: visible; z-index: 3;
-    pointer-events: none; overflow: hidden; will-change: transform;
-    box-shadow: 5px 0 16px #0003;
-}
-.cepsa-page-shade { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
 .cepsa-book .cepsa-case-link {
     width: 100%; border: 0; border-top: 1px solid var(--work-border); border-radius: 0;
     background: transparent; color: #e3e9e5; padding-inline: 0; padding-bottom: 0;
@@ -282,3 +276,31 @@ html:has(.project-case[open]) { overflow: hidden; }
     .cepsa-book:hover .project-action i,.cepsa-navigation button:active { transform: none; }
     .cepsa-navigation button { transition: none; }
 }
+
+
+
+.cepsa-book.gallery-card { position: relative; }
+.cepsa-book.is-turning { pointer-events: none; }
+.cepsa-flip-viewport {
+    position: absolute; inset: 0; z-index: 10;
+    overflow: hidden; border-radius: inherit; pointer-events: none;
+}
+.cepsa-flip-surface { width: 100%; height: 100%; }
+#projects .cepsa-book-sheet.gallery-card {
+    margin: 0; border-radius: 10px;
+    opacity: 1; visibility: visible;
+    box-sizing: border-box;
+    transition: none; background: var(--work-surface);
+}
+.cepsa-book-sheet .project-cover,
+.cepsa-book.is-turning > .project-visual .project-cover { transform: none !important; }
+
+/* Opaque paper prevents the previous and upcoming descriptions bleeding together. */
+.cepsa-flip-viewport { background: #171c1c; }
+#projects .cepsa-book-sheet.gallery-card { background-color: #242626; opacity: 1 !important; }
+#projects .cepsa-book-sheet.cepsa-sheet-reverse { background: #171c1c; }
+.cepsa-sheet-reverse > * { opacity: 0 !important; }
+
+/* Mirror only the page-turn geometry; keep the artwork and text readable. */
+.cepsa-flip-surface.cepsa-flip-backward { transform: scaleX(-1); }
+.cepsa-flip-backward .cepsa-book-sheet > * { transform: scaleX(-1); }

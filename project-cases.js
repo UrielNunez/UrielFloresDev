@@ -22,7 +22,7 @@ document.querySelectorAll('[data-case]').forEach(card => {
     let current = 0;
     let turning = false;
     let queuedDirection = 0;
-    let runningAnimations = [];
+    let finishTurn = null;
 
     function show(index) {
         pages.forEach((page, number) => {
@@ -42,49 +42,83 @@ document.querySelectorAll('[data-case]').forEach(card => {
             return;
         }
         const next = (current + direction + pages.length) % pages.length;
-        if (reduced.matches || !Element.prototype.animate) {
+        if (reduced.matches || !window.St?.PageFlip) {
             show(next);
             return;
         }
         turning = true;
         book.classList.add('is-turning');
         const forward = direction > 0;
-        const sheet = pages[forward ? current : next].cloneNode(true);
-        sheet.className = 'project-description cepsa-page cepsa-turn-sheet';
-        sheet.removeAttribute('id');
-        sheet.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
-        sheet.querySelectorAll('[aria-describedby]').forEach(element => element.removeAttribute('aria-describedby'));
-        sheet.inert = true;
-        sheet.setAttribute('aria-hidden', 'true');
-        sheet.style.transformOrigin = forward ? 'left center' : 'right center';
-        const shade = document.createElement('span');
-        shade.className = 'cepsa-page-shade';
-        shade.style.background = `linear-gradient(${forward ? '90deg' : '270deg'}, #060c0988, transparent 90%)`;
-        sheet.append(shade);
-        stack.append(sheet);
-        // Advancing exposes the new page below; returning lays the previous page on top.
-        if (forward) show(next);
-        const duration = 620;
-        runningAnimations = [sheet.animate(forward ? [
-            { transform: 'rotateY(0deg) skewY(0deg)', opacity: 1 },
-            { transform: 'rotateY(-38deg) skewY(-1.8deg)', opacity: 1, offset: .55 },
-            { transform: 'rotateY(-96deg) skewY(-2.5deg)', opacity: 0 }
-        ] : [
-            { transform: 'rotateY(96deg) skewY(2.5deg)', opacity: 0 },
-            { transform: 'rotateY(38deg) skewY(1.8deg)', opacity: 1, offset: .45 },
-            { transform: 'rotateY(0deg) skewY(0deg)', opacity: 1 }
-        ], { duration, easing: 'cubic-bezier(.22,.7,.22,1)', fill: 'both' }),
-        shade.animate(forward ? [{ opacity: 0 }, { opacity: .8 }] : [{ opacity: .8 }, { opacity: 0 }],
-            { duration, easing: 'ease-in-out', fill: 'both' })];
+        const width = book.clientWidth;
+        const height = book.clientHeight;
+        function snapshot(index) {
+            const copy = book.cloneNode(true);
+            copy.classList.remove('is-turning');
+            copy.classList.add('cepsa-book-sheet');
+            // A solid reverse separates projects instead of overlapping their text.
+            if (index === next) copy.classList.add('cepsa-sheet-reverse');
+            copy.removeAttribute('id');
+            copy.querySelectorAll('[id], [aria-describedby]').forEach(element => {
+                element.removeAttribute('id');
+                element.removeAttribute('aria-describedby');
+            });
+            copy.querySelectorAll('.cepsa-page').forEach((page, number) => {
+                page.classList.toggle('is-current', number === index);
+            });
+            copy.querySelector('.cepsa-position').textContent = (index + 1) + ' / ' + pages.length;
+            copy.inert = true;
+            copy.setAttribute('aria-hidden', 'true');
+            copy.dataset.density = 'soft';
+            return copy;
+        }
+        // Use the same outgoing-sheet sequence in both directions. Mirror its stage
+        // for Previous so the current card peels from the left, not an incoming blank.
+        const sheets = [snapshot(current), snapshot(next)];
+        const viewport = document.createElement('div');
+        viewport.className = 'cepsa-flip-viewport';
+        viewport.setAttribute('aria-hidden', 'true');
+        viewport.inert = true;
+        const surface = document.createElement('div');
+        surface.className = 'cepsa-flip-surface';
+        if (!forward) surface.classList.add('cepsa-flip-backward');
+        viewport.append(surface);
+        surface.append(...sheets);
+        book.append(viewport);
+        const flip = new St.PageFlip(surface, {
+            width, height, size: 'fixed', autoSize: false,
+            usePortrait: true, showCover: false, drawShadow: true,
+            maxShadowOpacity: .65, flippingTime: 1250,
+            useMouseEvents: false, showPageCorners: false,
+            startPage: 0
+        });
+        let timeout;
         try {
-            await Promise.all(runningAnimations.map(animation => animation.finished));
-        } catch {
-            // Finish on the intended page even when the browser cancels an animation.
+            await new Promise(resolve => {
+                finishTurn = resolve;
+                flip.on('changeState', event => {
+                    if (event.data === 'read') resolve();
+                });
+                timeout = setTimeout(resolve, 2000);
+                flip.on('init', () => {
+                    flip.flipNext('bottom');
+                });
+                flip.loadFromHTML(sheets);
+            });
+            show(next);
+            if (!reduced.matches) {
+                // Let the opaque sheet settle, then reveal the new project underneath.
+                const reveal = viewport.animate([{ opacity: 1 }, { opacity: 0 }], {
+                    delay: 200, duration: 450, easing: 'ease-out', fill: 'forwards'
+                });
+                finishTurn = () => reveal.finish();
+                await reveal.finished;
+            }
         } finally {
-            if (!forward) show(next);
-            runningAnimations.forEach(animation => animation.cancel());
-            runningAnimations = [];
-            sheet.remove();
+            clearTimeout(timeout);
+            finishTurn = null;
+            show(next);
+            flip.destroy();
+            viewport.remove();
             book.classList.remove('is-turning');
             turning = false;
             const pending = queuedDirection;
@@ -109,10 +143,10 @@ document.querySelectorAll('[data-case]').forEach(card => {
         turn(event.key === 'ArrowRight' ? 1 : -1);
     });
     reduced.addEventListener('change', () => {
-        if (reduced.matches) runningAnimations.forEach(animation => animation.finish());
+        if (reduced.matches) finishTurn?.();
     });
     // The translation layer updates the permanent pages, including inactive ones.
     window.addEventListener('portfolio-language-change', () => {
-        runningAnimations.forEach(animation => animation.finish());
+        finishTurn?.();
     });
 })();
