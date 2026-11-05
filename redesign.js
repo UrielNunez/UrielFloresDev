@@ -21,6 +21,9 @@ function playMotion(element, keyframes, delay = 0, duration = 820, fill = 'backw
 }
 
 function motionPieces(item) {
+    if (item.classList.contains('cepsa-book')) {
+        return [item.querySelector('.project-visual'), item.querySelector('.cepsa-book-body')];
+    }
     return item.classList.contains('credential-item')
         ? [item.querySelector('.credential-badge'), ...item.querySelector('.credential-copy').children]
         : item.classList.contains('gallery-card')

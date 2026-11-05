@@ -1,4 +1,10 @@
 const spanish = {
+    "CEPSA internal projects": "Proyectos internos de CEPSA",
+    "Open current CEPSA case study": "Abrir el caso actual de CEPSA",
+    "Browse CEPSA projects": "Explorar proyectos de CEPSA",
+    "Previous CEPSA project": "Proyecto anterior de CEPSA",
+    "Next CEPSA project": "Siguiente proyecto de CEPSA",
+    "6 projects": "6 proyectos",
     "Uriel Flores | Full Stack Developer, WebAR & 3D": "Uriel Flores | Desarrollador full stack, WebAR y 3D",
     "Skip to content": "Saltar al contenido",
     "Preparing experience": "Preparando la experiencia",

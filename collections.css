@@ -226,3 +226,59 @@ html:has(.project-case[open]) { overflow: hidden; }
     padding: clamp(16px, 4vw, 36px);
 }
 .project-case-body > :first-child { margin-top: 0; }
+
+/* CEPSA collection: the cover stays still while the case sheet turns below it. */
+.cepsa-book.gallery-card { cursor: pointer; }
+.cepsa-cover-link {
+    position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%;
+    border: 0; padding: 0; border-radius: 0; background: transparent; cursor: pointer;
+}
+.cepsa-project-count {
+    position: absolute; right: 12px; bottom: 12px; z-index: 2; pointer-events: none;
+    padding: 5px 9px; border-radius: 6px; color: #edf1ed; background: #242626;
+    font-size: 11px; line-height: 1.5;
+}
+.cepsa-book-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.cepsa-pages { display: grid; position: relative; perspective: 1100px; flex: 1; isolation: isolate; }
+#projects .cepsa-pages > .cepsa-page {
+    grid-area: 1 / 1; margin: 0; visibility: hidden; background: var(--work-surface);
+    min-width: 0; backface-visibility: hidden; transform-style: preserve-3d;
+}
+#projects .cepsa-pages > .cepsa-page.is-current { visibility: visible; }
+#projects .cepsa-pages > .cepsa-turn-sheet {
+    position: absolute; inset: 0; visibility: visible; z-index: 3;
+    pointer-events: none; overflow: hidden; will-change: transform;
+    box-shadow: 5px 0 16px #0003;
+}
+.cepsa-page-shade { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.cepsa-book .cepsa-case-link {
+    width: 100%; border: 0; border-top: 1px solid var(--work-border); border-radius: 0;
+    background: transparent; color: #e3e9e5; padding-inline: 0; padding-bottom: 0;
+    font-family: inherit; text-align: left; cursor: pointer;
+}
+.cepsa-navigation {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 0 19px 16px; background: var(--work-surface); position: relative; z-index: 4;
+}
+.cepsa-navigation button {
+    display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+    border: 1px solid #ffffff30; border-radius: 8px; background: #ffffff05;
+    color: #edf1ed; font-size: 24px; cursor: pointer; touch-action: manipulation;
+    transition: transform 180ms var(--work-ease), background 180ms var(--work-ease), border-color 180ms var(--work-ease);
+}
+.cepsa-navigation button:active { transform: scale(.94); background: #75dedb25; }
+.cepsa-position { font-size: 12px; color: var(--work-muted); font-variant-numeric: tabular-nums; }
+.cepsa-book button:focus-visible { outline: 2px solid var(--collection-accent); outline-offset: -3px; }
+.cepsa-book:focus-within { border-color: #75dedb80; }
+.cepsa-book.is-turning .cepsa-case-link,.cepsa-book.is-turning .cepsa-cover-link { pointer-events: none; }
+@media (hover: hover) and (pointer: fine) {
+    .cepsa-book.gallery-card.project-box:hover { transform: translateY(-3px); border-color: #75dedb80; }
+    .cepsa-book:hover .project-cover { transform: scale(1.025); }
+    .cepsa-book:hover .project-action i { transform: translate(2px,-2px); }
+    .cepsa-navigation button:hover { background: #75dedb18; border-color: #75dedb80; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cepsa-book.gallery-card.project-box:hover,.cepsa-book:hover .project-cover,
+    .cepsa-book:hover .project-action i,.cepsa-navigation button:active { transform: none; }
+    .cepsa-navigation button { transition: none; }
+}
